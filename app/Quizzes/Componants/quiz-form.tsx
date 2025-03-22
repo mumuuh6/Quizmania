@@ -20,50 +20,70 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-    difficulty: z.string({
-        required_error: "Please select a difficulty level.",
+    user: z.string({
+        required_error: "Please enter your email",
     }),
-    topic: z.string({
-        required_error: "Please select a topic.",
-    }),
-    quizType: z.string({
-        required_error: "Please select a quizType.",
-    }),
-    quantity: z.number().min(5, "Minimum 5 questions").max(20, "Maximum 20 questions"),
-    timeLimit: z.number().min(5, "Minimum 5 minutes").max(60, "Maximum 60 minutes"),
+    quizCriteria: z.object({
+        difficulty: z.string({
+            message: "Please select a difficulty level.",
+        }),
+        topic: z.string({
+            required_error: "Please select a topic.",
+        }),
+        quizType: z.string({
+            required_error: "Please select a quizType.",
+        }),
+        quantity: z.number().min(5, "Minimum 5 questions").max(20, "Maximum 20 questions"),
+        timeLimit: z.number().min(5, "Minimum 5 minutes").max(60, "Maximum 60 minutes"),
+    }).required(),
+
 });
 
 export default function QuizForm() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-
+    const [quizSetId, setQuizSetId] = useState(null);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            difficulty: "",  // Ensure default value is set
-            topic: "",
-            quantity: 10,
-            timeLimit: 15,
-            quizType: ""
+            user: "m@gmail.com",
+            quizCriteria: {
+                difficulty: "",  // Ensure default value is set
+                topic: "",
+                quantity: 10,
+                timeLimit: 15,
+                quizType: ""
+            }
         },
     });
-
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
-
-        console.log(values); // Debugging purpose
-        alert(`Submitted Values:\n${JSON.stringify(values, null, 2)}`);
-
-        axios.post("http://localhost:5000/generate-quiz", values)
-            .then(res => console.log(res.data))
-
-        setTimeout(() => {
-            setLoading(false);
+    
+        console.log(values.quizCriteria); // Debugging purpose
+    
+        console.log(JSON.stringify(values));
+        try {
+            const res = await axios.post("https://quiz-mania-iota.vercel.app/generate-quiz", values); 
+            console.log(res.data);
+            
+            const quizSetId = res.data.result.insertedId; // Get the insertedId from the response
+    
+            setQuizSetId(quizSetId); // Store the insertedId
+    
+            // Wait for quizSetId to be set before redirecting
             router.push(
-                `/Quizzes/quiz?difficulty=${values.difficulty}&topic=${values.topic}&questions=${values.quantity}&time=${values.timeLimit}`
+                `/Quizzes/quiz?difficulty=${values.quizCriteria.difficulty}&topic=${values.quizCriteria.topic}&questions=${values.quizCriteria.quantity}&time=${values.quizCriteria.timeLimit}&quizSetId=${quizSetId}`
             );
-        }, 1000);
+        } catch (error) {
+            console.error("Error during quiz generation:", error);
+            alert("Failed to generate quiz. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
+    
+
+   
 
     return (
         <Card className="border-primary/20 shadow-md">
@@ -74,7 +94,7 @@ export default function QuizForm() {
                         {/* Difficulty Select */}
                         <FormField
                             control={form.control}
-                            name="difficulty"
+                            name="quizCriteria.difficulty"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Difficulty Level</FormLabel>
@@ -100,7 +120,7 @@ export default function QuizForm() {
                         {/* topic Select */}
                         <FormField
                             control={form.control}
-                            name="topic"
+                            name="quizCriteria.topic"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Topic</FormLabel>
@@ -122,7 +142,7 @@ export default function QuizForm() {
 
                         <FormField
                             control={form.control}
-                            name="quizType"
+                            name="quizCriteria.quizType"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Quiz Type</FormLabel>
@@ -148,7 +168,7 @@ export default function QuizForm() {
                         {/* Number of Questions Slider */}
                         <FormField
                             control={form.control}
-                            name="quantity"
+                            name="quizCriteria.quantity"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Number of Questions: {field.value}</FormLabel>
@@ -170,7 +190,7 @@ export default function QuizForm() {
                         {/* Time Limit Slider */}
                         <FormField
                             control={form.control}
-                            name="timeLimit"
+                            name="quizCriteria.timeLimit"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Time Limit: {field.value} minutes</FormLabel>
