@@ -23,9 +23,9 @@ const routes = [
     label: "Contact",
   },
   {
-    href:'/Quizzes',
-    label:"Quiz"
-  }
+    href: "/Quizzes",
+    label: "Quiz",
+  },
 ];
 
 export function Navbar() {
@@ -60,7 +60,12 @@ export function Navbar() {
 
         <div className="hidden md:flex md:items-center md:gap-4">
           <ThemeToggle />
-          <Button>Login</Button>
+          <Link
+            href="/auth/signin"
+            className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+          >
+            Login
+          </Link>
         </div>
 
         {/* Mobile Navigation */}
@@ -101,9 +106,14 @@ export function Navbar() {
                   <ThemeToggle />
                   <span className="text-sm">Toggle theme</span>
                 </div>
-                <Button className="mt-2" onClick={() => setIsOpen(false)}>
+
+                <Link
+                  href="/auth/signin"
+                  className="mt-2"
+                  onClick={() => setIsOpen(false)}
+                >
                   Login
-                </Button>
+                </Link>
               </nav>
             </div>
           </SheetContent>
