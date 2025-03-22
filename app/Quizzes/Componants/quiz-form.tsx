@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
     difficulty: z.string({
@@ -102,21 +103,40 @@ export default function QuizForm() {
                             name="topic"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>topic</FormLabel>
+                                    <FormLabel>Topic</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            value={field.value || ""} // Ensure value is controlled
+                                            onChange={field.onChange} // Correct event handler for controlled input
+                                            placeholder="Enter topic"
+                                        />
+                                    </FormControl>
+                                    <FormDescription>Select the topic area for your quiz questions.</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/*quizType*/}
+
+                        <FormField
+                            control={form.control}
+                            name="quizType"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Quiz Type</FormLabel>
                                     <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select a topic" />
+                                                <SelectValue placeholder="Select a Quiz type" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="math">Mathematics</SelectItem>
-                                            <SelectItem value="science">Science</SelectItem>
-                                            <SelectItem value="history">History</SelectItem>
-                                            <SelectItem value="literature">Literature</SelectItem>
-                                            <SelectItem value="geography">Geography</SelectItem>
-                                            <SelectItem value="computer-science">Computer Science</SelectItem>
-                                            <SelectItem value="general-knowledge">General Knowledge</SelectItem>
+                                            <SelectItem value="mcq">Multiple Choice</SelectItem>
+                                            <SelectItem value="T/F">True/False</SelectItem>
+
+
                                         </SelectContent>
                                     </Select>
                                     <FormDescription>Select the topic area for your quiz questions.</FormDescription>
@@ -124,27 +144,6 @@ export default function QuizForm() {
                                 </FormItem>
                             )}
                         />
-                        <FormField
-                            control={form.control}
-                            name="quizType"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Quiz Type</FormLabel>
-                                    {/* Input field for quizType */}
-                                    <FormControl>
-                                        <input
-                                            type="text"
-                                            value={field.value || ''} // Ensures value is controlled and falls back to empty string
-                                            onChange={field.onChange}  // Ensures React Hook Form tracks changes
-                                            placeholder="Enter quiz type" // Placeholder for input field
-                                        />
-                                    </FormControl>
-                                    <FormDescription>Enter the type of quiz you want to create.</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
 
                         {/* Number of Questions Slider */}
                         <FormField
