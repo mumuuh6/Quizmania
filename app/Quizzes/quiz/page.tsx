@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -11,17 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Timer, AlertCircle } from "lucide-react"
-
-// Mock quiz data - in a real app, this would come from an API
-const generateMockQuiz = (subject: string, difficulty: string, count: number) => {
-  const questions = [{
-    idd:1,
-  }
-  ]
-
-  // Return the requested number of questions
-  return questions.slice(0, count)
-}
+import axios from "axios"
 
 export default function QuizPage() {
   const searchParams = useSearchParams()
@@ -31,7 +20,8 @@ export default function QuizPage() {
   const subject = searchParams.get("subject") || "general-knowledge"
   const numberOfQuestions = Number.parseInt(searchParams.get("questions") || "10")
   const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60 // Convert to seconds
-
+  const quizSetId= searchParams.get("quizSetId") || "1";
+  
   const [questions, setQuestions] = useState<any[]>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({})
@@ -40,9 +30,16 @@ export default function QuizPage() {
   const [score, setScore] = useState(0)
 
   useEffect(() => {
-    // Generate mock quiz data
-    const quizData = generateMockQuiz(subject, difficulty, numberOfQuestions)
-    setQuestions(quizData)
+    // Fetch quiz data from the API
+    axios
+      .get(`https://quiz-mania-iota.vercel.app/get-quiz-set/${quizSetId}`)
+      .then((res) => {
+        const quizData = res.data?.parsedQuizData || [] // Ensure parsedQuizData exists
+        setQuestions(quizData) // Set the quiz data to the questions state
+      })
+      .catch((error) => {
+        console.error("Error fetching quiz data:", error)
+      })
 
     // Set up timer
     const timer = setInterval(() => {
@@ -230,4 +227,3 @@ export default function QuizPage() {
     </div>
   )
 }
-
