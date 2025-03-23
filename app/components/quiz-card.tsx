@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface QuizCardProps {
   title: string;
@@ -54,7 +55,7 @@ export function QuizCard({
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Start Quiz</Button>
+        <Link href={`Quizzes/create`}><Button className="w-full">Start Quiz</Button></Link>
       </CardFooter>
     </Card>
   );

@@ -59,9 +59,9 @@ export default function QuizForm() {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
     
-        console.log(values.quizCriteria); // Debugging purpose
+        console.log(values); // Debugging purpose
     
-        console.log(JSON.stringify(values));
+       
         try {
             const res = await axios.post("https://quiz-mania-iota.vercel.app/generate-quiz", values); 
             console.log(res.data);
