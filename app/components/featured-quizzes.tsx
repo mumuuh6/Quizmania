@@ -36,7 +36,7 @@ const quizzes = [
 export function FeaturedQuizzes() {
   return (
     <section id="featured-quizzes" className="py-16 md:py-24">
-      <div className="container mx-auto">
+      <div className="container mx-auto px-2">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Featured Quizzes
