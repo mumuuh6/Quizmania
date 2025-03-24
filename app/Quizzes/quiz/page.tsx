@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Timer, AlertCircle } from "lucide-react";
+import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
 import axios from "axios";
 
 export default function QuizPage() {
@@ -28,7 +28,8 @@ export default function QuizPage() {
   const [timeRemaining, setTimeRemaining] = useState(timeLimit);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
-
+  const [viewResult, setViewResult] = useState(false);
+  const [viewQues, setViewQues] = useState([])
   useEffect(() => {
     // Fetch quiz data from the API
     axios
@@ -79,7 +80,9 @@ export default function QuizPage() {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
   };
-
+  const handleviewquestion = () => {
+    setViewResult(!viewResult)
+  }
   const calculateScore = () => {
     const answers = questions.map((question, index) => ({
       question: question.question,
@@ -104,6 +107,7 @@ export default function QuizPage() {
       .then((res) => {
         console.log("Score and answers submitted successfully:", res.data);
         setScore(res.data.quizSet.correctQuizAnswer);
+        setViewQues(res.data.quizSet.parsedQuizData)
         setLoading(false);
       })
       .catch((error) => {
@@ -135,63 +139,14 @@ export default function QuizPage() {
       </div>
     );
   }
-
+  console.log(viewQues)
   if (quizCompleted) {
-    // return (
-    //   <div className="container mx-auto py-10">
-    //     <Card className="mx-auto max-w-2xl">
-    //       <CardHeader>
-    //         <CardTitle>Quiz Results</CardTitle>
-    //         <CardDescription>
-    //           {subject.charAt(0).toUpperCase() + subject.slice(1)} -{" "}
-    //           {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Difficulty
-    //         </CardDescription>
-    //       </CardHeader>
-    //       <CardContent>
-    //         <div className="space-y-6">
-    //           <div className="text-center">
-    //             <h2 className="text-3xl font-bold">
-    //               Your Score: {score} / {questions.length}
-    //             </h2>
-    //             <p className="text-muted-foreground mt-2">{((score / questions.length) * 100).toFixed(2)}% Correct</p>
-    //           </div>
-
-    //           <Progress value={(score / questions.length) * 100} className="h-3" />
-
-    //           {score === questions.length ? (
-    //             <Alert className="bg-primary/10 border-primary/30">
-    //               <AlertCircle className="h-4 w-4 text-primary" />
-    //               <AlertDescription className="text-primary">Perfect score! Congratulations!</AlertDescription>
-    //             </Alert>
-    //           ) : score >= questions.length * 0.7 ? (
-    //             <Alert className="bg-primary/10 border-primary/30">
-    //               <AlertCircle className="h-4 w-4 text-primary" />
-    //               <AlertDescription className="text-primary">Great job! You did well on this quiz.</AlertDescription>
-    //             </Alert>
-    //           ) : (
-    //             <Alert className="bg-blue-50 border-blue-200">
-    //               <AlertCircle className="h-4 w-4 text-blue-600" />
-    //               <AlertDescription className="text-blue-600">
-    //                 Keep practicing! You'll improve with more quizzes.
-    //               </AlertDescription>
-    //             </Alert>
-    //           )}
-    //         </div>
-    //       </CardContent>
-    //       <CardFooter>
-    //         <Button onClick={() => router.push("/Quizzes/create")} className="w-full">
-    //           Create Another Quiz
-    //         </Button>
-    //       </CardFooter>
-    //     </Card>
-    //   </div>
-    // );
     return (
       <div className="container mx-auto py-10">
-        <Card className="mx-auto max-w-2xl">
+        <Card className="md:w-4/5 mx-auto">
           <CardHeader>
-            <CardTitle>Quiz Results</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-bold">Quiz Results</CardTitle>
+            <CardDescription className="text-md">
               {subject.charAt(0).toUpperCase() + subject.slice(1)} -{" "}
               {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Difficulty
             </CardDescription>
@@ -209,29 +164,67 @@ export default function QuizPage() {
 
               {score === questions.length ? (
                 <Alert className="bg-primary/10 border-primary/30">
-                  <AlertCircle className="h-4 w-4 text-primary" />
-                  <AlertDescription className="text-primary">Perfect score! Congratulations!</AlertDescription>
+
+                  <AlertDescription className="text-primary flex justify-center"> <AlertCircle className="h-4 w-4 text-primary flex justify-center items-center py-1" /><span>Perfect score! Congratulations!</span></AlertDescription>
                 </Alert>
               ) : score >= questions.length * 0.7 ? (
                 <Alert className="bg-primary/10 border-primary/30">
                   <AlertCircle className="h-4 w-4 text-primary" />
-                  <AlertDescription className="text-primary">Great job! You did well on this quiz.</AlertDescription>
+                  <AlertDescription className="text-primary flex justify-center py-1">Great job! You did well on this quiz.</AlertDescription>
                 </Alert>
               ) : (
-                <Alert className="bg-blue-50 border-blue-200">
+                <Alert className=" ">
                   <AlertCircle className="h-4 w-4 text-blue-600" />
-                  <AlertDescription className="text-blue-600">
+                  <AlertDescription className=" flex justify-center py-1">
                     Keep practicing! You'll improve with more quizzes.
                   </AlertDescription>
                 </Alert>
               )}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button onClick={() => router.push("/Quizzes/create")} className="w-full">
+          <CardFooter className="flex flex-col justify-between gap-6">
+            <Button onClick={() => router.push("/Quizzes/create")} className="w-full py-6">
               Create Another Quiz
             </Button>
+            <button className="w-full" onClick={handleviewquestion}>
+              <Alert className="bg-primary/10 border-primary/30 ">
+                <AlertDescription className="text-primary flex justify-center">View Questions</AlertDescription>
+              </Alert>
+            </button>
           </CardFooter>
+          {
+            viewResult && <div className="px-6">
+              {viewQues.map((ques, index) => (
+                <div key={index} className="container mx-auto py-4 px-8 border-2 rounded-xl my-6  ">
+                  <div>
+                    <p className="my-2"><span className=" text-md ">Question:{index+1}</span></p>
+                    <p className="font-bold text-2xl">{ques.question}</p>
+                    
+                    <div>
+                      <p className="mb-6"><span className="font-bold text-md"></span></p>
+                      <ul className="grid grid-cols-1 md:grid-cols-2  gap-4">
+                        {ques.options.map((option, index) => (
+                          <li key={index} className="border-2 rounded-lg px-6 py-4 font-medium">{index+1} {option}</li>
+                        ))}
+                      </ul> 
+                      <p className="my-3"><span className="font-bold text-md">Your selected answer:</span> {ques.userAnswer}</p>
+                    </div>
+                  </div>
+                  <div className="">
+                    {ques.userAnswer === ques.answer ? (
+                      <span className="text-green-600">Your answer is Correct </span>
+                    ) : (
+                      
+                      <p className="flex flex-col "><span className="font-bold text-xl mb-2">Correct Answer is: {ques.answer}</span> 
+                      <span className="text-red-600">Your Answer is Wrong</span></p>
+                    )}
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+          }
         </Card>
       </div>
     );
@@ -263,11 +256,10 @@ export default function QuizPage() {
           <h3 className="text-xl font-medium mb-4">{currentQuestion.question}</h3>
           <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
             {currentQuestion.options.map((option: string) => (
-              <div key={option} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${
-                selectedAnswers[currentQuestion.id] === option
-                  ? "bg-primary/5 border-primary"
-                  : "hover:bg-muted/50"
-              }`}>
+              <div key={option} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${selectedAnswers[currentQuestion.id] === option
+                ? "bg-primary/5 border-primary"
+                : "hover:bg-muted/50"
+                }`}>
                 <RadioGroupItem value={option} id={option} />
                 <Label htmlFor={option}>{option}</Label>
               </div>
