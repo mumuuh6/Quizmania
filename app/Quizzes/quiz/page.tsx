@@ -204,7 +204,7 @@ export default function QuizPage() {
                       <p className="mb-6"><span className="font-bold text-md"></span></p>
                       <ul className="grid grid-cols-1 md:grid-cols-2  gap-4">
                         {ques.options.map((option, index) => (
-                          <li key={index} className="border-2 rounded-lg px-6 py-4 font-medium">{index+1} {option}</li>
+                          <li key={index} className="border-2 rounded-lg px-6 py-4 font-medium">{String.fromCharCode(65 + index)}.   {option}</li>
                         ))}
                       </ul> 
                       <p className="my-3"><span className="font-bold text-md">Your selected answer:</span> {ques.userAnswer}</p>
@@ -255,13 +255,13 @@ export default function QuizPage() {
         <CardContent>
           <h3 className="text-xl font-medium mb-4">{currentQuestion.question}</h3>
           <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
-            {currentQuestion.options.map((option: string) => (
+            {currentQuestion.options.map((option: string,index) => (
               <div key={option} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${selectedAnswers[currentQuestion.id] === option
                 ? "bg-primary/5 border-primary"
                 : "hover:bg-muted/50"
                 }`}>
                 <RadioGroupItem value={option} id={option} />
-                <Label htmlFor={option}>{option}</Label>
+                <Label htmlFor={option}>{String.fromCharCode(65 + index)}.   {option}</Label>
               </div>
             ))}
           </RadioGroup>
