@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
+import LottieLoader from '../../../public/loader.json';
+import Lottie from "lottie-react";
 import axios from "axios";
 
 export default function QuizPage() {
@@ -123,7 +125,7 @@ export default function QuizPage() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="w-xl mx-auto"><Lottie animationData={LottieLoader} /></div>;
   }
 
   if (questions.length === 0) {
