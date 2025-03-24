@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
-import LottieLoader from '../../../public/loader.json';
-import Lottie from "lottie-react";
 import axios from "axios";
+import Lottie from "lottie-react";
+import loader from "@/public/loader.json";
 
 export default function QuizPage() {
   const searchParams = useSearchParams();
@@ -28,6 +28,8 @@ export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [timeRemaining, setTimeRemaining] = useState(timeLimit);
+  const [quizData, setQuizData] = useState(null);
+  
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
   const [viewResult, setViewResult] = useState(false);
@@ -61,7 +63,7 @@ export default function QuizPage() {
 
     return () => clearInterval(timer);
   }, [quizSetId]);
-
+  
   const handleAnswerSelect = (index: number, answer: string) => {
     setSelectedAnswers((prev) => ({
       ...prev,
@@ -125,7 +127,9 @@ export default function QuizPage() {
   };
 
   if (loading) {
-    return <div className="w-xl mx-auto"><Lottie animationData={LottieLoader} /></div>;
+    return <div className="w-xl mx-auto">
+      <Lottie animationData={loader} />
+    </div>;
   }
 
   if (questions.length === 0) {
