@@ -23,9 +23,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider>
           <Navbar></Navbar>
-          {children}
+          <div className="min-h-[calc(100vh-300px)]">
+            {children}
+          </div>
           <Footer></Footer>
-          </ThemeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
