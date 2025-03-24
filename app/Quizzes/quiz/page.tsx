@@ -170,7 +170,7 @@ export default function QuizPage() {
               ) : score >= questions.length * 0.7 ? (
                 <Alert className="bg-primary/10 border-primary/30">
                   <AlertCircle className="h-4 w-4 text-primary" />
-                  <AlertDescription className="text-primary flex justify-center py-1">Great job! You did well on this quiz.</AlertDescription>
+                  <AlertDescription className="text-primary flex justify-center py-1">Great job! You did well on this quizz.</AlertDescription>
                 </Alert>
               ) : (
                 <Alert className=" ">
