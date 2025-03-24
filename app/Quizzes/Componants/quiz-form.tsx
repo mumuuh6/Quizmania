@@ -114,7 +114,7 @@ export default function QuizForm() {
                   <FormLabel>Difficulty Level</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select difficulty level" />
                       </SelectTrigger>
                     </FormControl>
@@ -167,7 +167,7 @@ export default function QuizForm() {
                   <FormLabel>Quiz Type</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a Quiz type" />
                       </SelectTrigger>
                     </FormControl>
