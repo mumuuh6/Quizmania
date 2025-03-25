@@ -20,7 +20,7 @@ export default function QuizPage() {
   const difficulty = searchParams.get("difficulty") || "medium";
   const subject = searchParams.get("subject") || "general-knowledge";
   const numberOfQuestions = Number.parseInt(searchParams.get("questions") || "10");
-  const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60; // Convert to seconds
+  const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
 
   const [loading, setLoading] = useState(true);
