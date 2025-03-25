@@ -1,3 +1,5 @@
+"use client"; // Add this to make the component a client component
+
 import Link from "next/link";
 import { Github, Twitter } from "lucide-react";
 
@@ -13,8 +15,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { signIn } from "next-auth/react"; // make sure to import signIn from NextAuth.js
 
-export default function SigninPage() {
+export default function Signin() {
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
   return (
     <div className="container flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
@@ -27,30 +37,32 @@ export default function SigninPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="john@example.com"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
-            <div className="text-right">
-              <Link
-                href="/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
+          <form>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="john@example.com"
+                required
+              />
             </div>
-          </div>
-          <Button type="submit" className="w-full">
-            Sign In
-          </Button>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" required />
+              <div className="text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+            <Button type="submit" className="w-full">
+              Sign In
+            </Button>
+          </form>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -70,7 +82,12 @@ export default function SigninPage() {
             <Button variant="outline" size="icon">
               <Twitter className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              size="icon"
+              onClick={handleGoogleSignIn}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="16"
