@@ -69,7 +69,7 @@ export default function Signin() {
 
   const handleGithubSignIn = async () => {
     try {
-      await signIn("github");
+       await signIn("github");
       // Session handling moved to useEffect
     } catch (error) {
       console.error("Error signing in with Github:", error);
