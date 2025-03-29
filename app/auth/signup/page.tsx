@@ -16,13 +16,11 @@ import { Label } from "@/components/ui/label";
 // import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 const image_hosting_key = process.env.NEXT_PUBLIC_IMGBB_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 export default function SignupPage() {
   const router = useRouter();
-  const { data: session, update } = useSession();
 
   const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -39,7 +37,7 @@ export default function SignupPage() {
         email: formData.get("email") as string,
         phone: formData.get("phone") as string,
         picture: formData.get("picture") as File,
-        // password: formData.get("password") as string,
+        password: formData.get("password") as string,
         // confirmPassword: formData.get("confirm-password") as string,
       };
 
@@ -60,7 +58,7 @@ export default function SignupPage() {
         email: data.email,
         phone: data.phone,
         picture: res.data.data.display_url,
-        // password: data.password,
+        password: data.password,
         // confirmPassword: data.confirmPassword,
       };
 
@@ -71,10 +69,6 @@ export default function SignupPage() {
           "http://localhost:5000/signup",
           userData
         );
-        await update({
-          email: userData.email,
-        });
-        console.log("User data sent to server:", userData, session);
 
         console.log("Response from Sign-up:", response);
         router.push("/");
@@ -85,7 +79,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="container flex items-center justify-center min-h-screen py-8">
+    <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">

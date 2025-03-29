@@ -96,8 +96,9 @@ export default function Signin() {
           `http://localhost:5000/signin/${email}`
         );
         console.log("Response from Signin:", response.data);
-
-        router.push("/");
+        if (response.data.status && response.data.userInfo) {
+          router.push("/");
+        }
       } catch (error) {
         console.error("Error signing in:", error);
       }
@@ -105,7 +106,7 @@ export default function Signin() {
   };
 
   return (
-    <div className="container flex items-center justify-center min-h-screen py-8">
+    <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
