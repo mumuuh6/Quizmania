@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
 import LottieLoader from '../../../public/loader.json';
-import Lottie from "lottie-react";
+import {useLottie} from "lottie-react";
 import axios from "axios";
 
 export default function QuizPage() {
@@ -30,7 +30,9 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [viewResult, setViewResult] = useState(false);
   const [viewQues, setViewQues] = useState([])
-  useEffect(() => {
+  
+  
+    useEffect(() => {
     // Fetch quiz data from the API
     axios
       .get(`https://quiz-mania-iota.vercel.app/get-quiz-set/${quizSetId}`)
@@ -121,9 +123,15 @@ export default function QuizPage() {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
-
+  const MyLottieComponent=() => {
+    const defaultOptions = {
+      animationData: LottieLoader,
+      loop: true,
+    };
+    const { View } = useLottie(defaultOptions);
+    return <div>{View}</div>;}
   if (loading) {
-    return <div className="w-xl mx-auto">Loading...</div>;
+    return <div className="w-xl mx-auto"><MyLottieComponent></MyLottieComponent></div>;
   }
 
   if (questions.length === 0) {
