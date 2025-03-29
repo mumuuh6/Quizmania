@@ -11,6 +11,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./theme-toggle";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
 
 const routes = [
   {
@@ -36,7 +43,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { data: session } = useSession();
 
-  console.log(session);
+  console.log(session?.user?.image);
 
   const handleSignOut = async () => {
     await signOut();
@@ -70,13 +77,19 @@ export function Navbar() {
 
         <div className="hidden md:flex md:items-center md:gap-4">
           <ThemeToggle />
-          {session ? (
-            <button
-              onClick={handleSignOut}
-              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
-            >
-              Log Out
-            </button>
+          {session?.user?.image ? (
+            <div className="flex gap-3 justify-center items-center">
+              <Avatar>
+                <AvatarImage src={session?.user?.image as string} alt="userphoto" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+              >
+                Log Out
+              </button>
+            </div>
           ) : (
             <Link
               href="/auth/signin"
@@ -145,6 +158,9 @@ export function Navbar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right">
+            <VisuallyHidden>
+              <DialogTitle>Navigation Menu</DialogTitle>
+            </VisuallyHidden>
             <motion.div
               initial={{ y: "100%", borderRadius: "0%" }} // Initially from the bottom and square shape
               animate={{ y: 0, borderRadius: "16px" }} // Move to the normal position and round shape
@@ -180,9 +196,25 @@ export function Navbar() {
                   <ThemeToggle />
                   <span className="text-sm">Toggle theme</span>
                 </div>
-                <Button className="mt-2" onClick={() => setIsOpen(false)}>
-                  Login
-                </Button>
+                {session?.user?.name ? (
+                  <div>
+                    <p>{session.user.name}</p>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/auth/signin"
+                    className="mt-2"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Login
+                  </Link>
+                )}
               </nav>
             </motion.div>
           </SheetContent>

@@ -29,7 +29,6 @@ export default function SignupPage() {
     if (form) {
       const formData = new FormData(form);
       // Collecting all form data
-      
       const data = {
         username: formData.get("username") as string,
         email: formData.get("email") as string,

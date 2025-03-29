@@ -97,6 +97,15 @@ export default function Signin() {
         );
         console.log("Response from Signin:", response.data);
         if (response.data.status && response.data.userInfo) {
+          const userInfo = response.data.userInfo;
+          console.log("User info:", userInfo);
+
+          //manually sign the user in nextauth
+          await signIn("credentials", {
+            email: userInfo.email,
+            password: password,
+            redirect: false,});
+          // Redirect to the home page or any other page after successful sign-in
           router.push("/");
         }
       } catch (error) {
