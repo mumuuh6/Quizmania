@@ -38,7 +38,7 @@ export default function Signin() {
           };
 
           const response = await axios.post(
-            "http://localhost:5000/signup",
+            "https://quiz-mania-iota.vercel.app/signup",
             userInfo
           );
           console.log("User info stored:", response.data);
@@ -93,7 +93,7 @@ export default function Signin() {
 
       try {
         const response = await axios.get(
-          `http://localhost:5000/signin/${email}`
+          `https://quiz-mania-iota.vercel.app/signin/${email}`
         );
         console.log("Response from Signin:", response.data);
         if (response.data.status && response.data.userInfo) {

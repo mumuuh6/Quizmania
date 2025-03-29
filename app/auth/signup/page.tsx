@@ -66,7 +66,7 @@ export default function SignupPage() {
 
       try {
         const response = await axios.post(
-          "http://localhost:5000/signup",
+          "https://quiz-mania-iota.vercel.app/signup",
           userData
         );
 
