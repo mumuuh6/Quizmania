@@ -11,7 +11,8 @@ import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
 import LottieLoader from '../../../public/loader.json';
 import {useLottie} from "lottie-react";
 import axios from "axios";
-
+import dynamic from "next/dynamic";
+const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [viewResult, setViewResult] = useState(false);
   const [viewQues, setViewQues] = useState([])
+  
   
   
     useEffect(() => {
@@ -123,15 +125,11 @@ export default function QuizPage() {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
-  const MyLottieComponent=() => {
-    const defaultOptions = {
-      animationData: LottieLoader,
-      loop: true,
-    };
-    const { View } = useLottie(defaultOptions);
-    return <div>{View}</div>;}
+  
   if (loading) {
-    return <div className="w-xl mx-auto"><MyLottieComponent></MyLottieComponent></div>;
+    return <div className="w-xl mx-auto">
+       {/* eslint-disable-next-line @typescript-eslint/no-require-imports */}
+      <Lottieplayer animationData={require("../../../public/loader.json")}></Lottieplayer></div>;
   }
 
   if (questions.length === 0) {
