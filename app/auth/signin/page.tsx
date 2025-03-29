@@ -1,8 +1,10 @@
-"use client"; // Add this to make the component a client component
+"use client";
+
+import type React from "react";
 
 import Link from "next/link";
 import { Github, Twitter } from "lucide-react";
-
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,18 +17,96 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { signIn } from "next-auth/react"; // make sure to import signIn from NextAuth.js
+
+import { useSession, signIn } from "next-auth/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Signin() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Use useEffect to handle the session change
+  useEffect(() => {
+    const storeUserInfo = async () => {
+      if (session?.user) {
+        try {
+          const userInfo = {
+            username: session.user.name,
+            email: session.user.email,
+            picture: session.user.image,
+          };
+
+          const response = await axios.post(
+            "https://quiz-mania-iota.vercel.app/signup",
+            userInfo
+          );
+          console.log("User info stored:", response.data);
+          router.push("/");
+        } catch (error) {
+          console.error("Error storing user info:", error);
+        }
+      }
+    };
+
+    if (status === "authenticated") {
+      storeUserInfo();
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
   const handleGoogleSignIn = async () => {
     try {
       await signIn("google");
+      // it will be handled by the useEffect
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
   };
+
+  const handleGithubSignIn = async () => {
+    try {
+      await signIn("github");
+      // Session handling moved to useEffect
+    } catch (error) {
+      console.error("Error signing in with Github:", error);
+    }
+  };
+
+  const handleSignInByEmail = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    // collecting data from the form
+    const form = (e.target as HTMLButtonElement).closest("form");
+    if (form) {
+      const formData = new FormData(form);
+      const email = formData.get("email");
+      const password = formData.get("pass");
+
+      console.log("Email:", email);
+      console.log("Password:", password);
+
+      try {
+        const response = await axios.get(
+          `https://quiz-mania-iota.vercel.app/signin/${email}`
+        );
+        console.log("Response from Signin:", response.data);
+        if (response.data.status && response.data.userInfo) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error signing in:", error);
+      }
+    }
+  };
+
   return (
-    <div className="container flex items-center justify-center min-h-screen py-8">
+    <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
@@ -41,6 +121,7 @@ export default function Signin() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                name="email"
                 id="email"
                 type="email"
                 placeholder="john@example.com"
@@ -49,7 +130,7 @@ export default function Signin() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input name="pass" id="password" type="password" required />
               <div className="text-right">
                 <Link
                   href="/forgot-password"
@@ -59,7 +140,11 @@ export default function Signin() {
                 </Link>
               </div>
             </div>
-            <Button type="submit" className="w-full">
+            <Button
+              onClick={handleSignInByEmail}
+              type="submit"
+              className="w-full cursor-pointer"
+            >
               Sign In
             </Button>
           </form>
@@ -76,7 +161,12 @@ export default function Signin() {
           </div>
 
           <div className="flex justify-center space-x-4">
-            <Button variant="outline" size="icon">
+            <Button
+              onClick={handleGithubSignIn}
+              className="cursor-pointer"
+              variant="outline"
+              size="icon"
+            >
               <Github className="h-4 w-4" />
             </Button>
             <Button variant="outline" size="icon">
@@ -104,7 +194,7 @@ export default function Signin() {
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
-              className="text-primary underline underline-offset-4 hover:text-primary/90"
+              className="text-primary underline underline-offset-4 hover:text-primary/90 "
             >
               Sign up
             </Link>
