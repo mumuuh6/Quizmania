@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ import axios from "axios";
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const difficulty = searchParams.get("difficulty") || "medium";
   const subject = searchParams.get("subject") || "general-knowledge";
   const numberOfQuestions = Number.parseInt(searchParams.get("questions") || "10");
