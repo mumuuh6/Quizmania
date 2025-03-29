@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./theme-toggle";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const routes = [
   {
@@ -32,6 +34,13 @@ const routes = [
 export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
+  const { data: session } = useSession();
+
+  console.log(session);
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -61,12 +70,21 @@ export function Navbar() {
 
         <div className="hidden md:flex md:items-center md:gap-4">
           <ThemeToggle />
-          <Link
-            href="/auth/signin"
-            className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
-          >
-            Login
-          </Link>
+          {session ? (
+            <button
+              onClick={handleSignOut}
+              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+            >
+              Log Out
+            </button>
+          ) : (
+            <Link
+              href="/auth/signin"
+              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+            >
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Navigation */}
