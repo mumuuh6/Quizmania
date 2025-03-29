@@ -123,7 +123,7 @@ export default function QuizPage() {
   };
 
   if (loading) {
-    return <div className="w-xl mx-auto"><Lottie animationData={LottieLoader} /></div>;
+    return <div className="w-xl mx-auto">Loading...</div>;
   }
 
   if (questions.length === 0) {
