@@ -28,8 +28,8 @@ export default function SignupPage() {
     const form = (e.target as HTMLButtonElement).closest("form");
     if (form) {
       const formData = new FormData(form);
-
       // Collecting all form data
+      
       const data = {
         username: formData.get("username") as string,
         email: formData.get("email") as string,
