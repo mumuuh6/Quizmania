@@ -20,16 +20,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SessionProvider>
+    <ThemeProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
-          <ThemeProvider>
+        <body className={inter.className} cz-shortcut-listen="true">
+          <SessionProvider>
             <Navbar></Navbar>
             {children}
             <Footer></Footer>
-          </ThemeProvider>
+          </SessionProvider>
         </body>
       </html>
-    </SessionProvider>
+    </ThemeProvider>
   );
 }

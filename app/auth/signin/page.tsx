@@ -1,8 +1,10 @@
-"use client"; // Add this to make the component a client component
+"use client";
+
+import type React from "react";
 
 import Link from "next/link";
 import { Github, Twitter } from "lucide-react";
-
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,60 +17,65 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { signIn } from "next-auth/react"; // make sure to import signIn from NextAuth.js
 
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Signin() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  // stored user info in the database
-  const handleGoogleSignIn = async () => {
-    const userInfo = {
-      username: session?.user?.name,
-      email: session?.user?.email,
-      picture: session?.user?.image,
+  // Use useEffect to handle the session change
+  useEffect(() => {
+    const storeUserInfo = async () => {
+      if (session?.user) {
+        try {
+          const userInfo = {
+            username: session.user.name,
+            email: session.user.email,
+            picture: session.user.image,
+          };
+
+          const response = await axios.post(
+            "http://localhost:5000/signup",
+            userInfo
+          );
+          console.log("User info stored:", response.data);
+          router.push("/");
+        } catch (error) {
+          console.error("Error storing user info:", error);
+        }
+      }
     };
 
+    if (status === "authenticated") {
+      storeUserInfo();
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  const handleGoogleSignIn = async () => {
     try {
       await signIn("google");
-      const response = await axios.post(
-        "http://localhost:5000/signup",
-        userInfo
-      );
-      console.log(response.data);
-      if (response.status === 200) {
-        router.push("/");
-      }
+      // it will be handled by the useEffect
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
   };
+
   const handleGithubSignIn = async () => {
-    const userInfo = {
-      email: session?.user?.email,
-      picture: session?.user?.image,
-    };
-
-    console.log(userInfo);
-
     try {
       await signIn("github");
-      const response = await axios.post(
-        "http://localhost:5000/signup",
-        userInfo
-      );
-      console.log(response.data);
-      if (response.status === 200) {
-        router.push("/");
-      }
+      // Session handling moved to useEffect
     } catch (error) {
       console.error("Error signing in with Github:", error);
     }
   };
+
   const handleSignInByEmail = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -88,7 +95,7 @@ export default function Signin() {
         const response = await axios.get(
           `http://localhost:5000/signin/${email}`
         );
-        console.log(response.data);
+        console.log("Response from Signin:", response.data);
 
         router.push("/");
       } catch (error) {
