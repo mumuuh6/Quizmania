@@ -10,13 +10,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import Lottie from "lottie-react";
-import loader from "@/public/loader.json";
+
 import LottieLoader from '../../../public/loader.json';
-import {useLottie} from "lottie-react";
-import axios from "axios";
+
 import dynamic from "next/dynamic";
 const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
-
+const Lottieplayerv2=()=>{
+  return <Lottie animationData={LottieLoader} loop={true}></Lottie>
+}
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -133,8 +134,8 @@ export default function QuizPage() {
   };
   
   if (loading) {
-    return <div className="w-xl mx-auto">
-      <Lottie animationData={loader} />
+    return <div className="w-sm md:w-xl mx-auto">
+      <Lottieplayerv2></Lottieplayerv2>
     </div>;
   }
 
