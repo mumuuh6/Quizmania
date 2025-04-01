@@ -67,8 +67,8 @@ export default function SignupPage() {
           userData
         );
 
-        console.log("Response from Sign-up:", response);
-        router.push("/");
+        //console.log("Response from Sign-up:", response);
+        router.push("/auth/signin");
       } catch (error) {
         console.error("Error signing up:", error);
       }

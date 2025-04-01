@@ -43,7 +43,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { data: session } = useSession();
 
-  console.log(session?.user?.image);
+  console.log(session);
 
   const handleSignOut = async () => {
     await signOut();
@@ -77,7 +77,7 @@ export function Navbar() {
 
         <div className="hidden md:flex md:items-center md:gap-4">
           <ThemeToggle />
-          {session?.user?.image ? (
+          {session?.user ? (
             <div className="flex gap-3 justify-center items-center">
               <Avatar>
                 <AvatarImage src={session?.user?.image as string} alt="userphoto" />
@@ -192,16 +192,22 @@ export function Navbar() {
                     {route.label}
                   </Link>
                 ))}
-                <div className="flex items-center gap-2 pt-2">
+                <div className="flex items-center gap-2 pt-2 w-full">
                   <ThemeToggle />
                   <span className="text-sm">Toggle theme</span>
                 </div>
-                {session?.user?.name ? (
+                {session?.user ? (
                   <div>
-                    <p>{session.user.name}</p>
+                    <div className="flex items-center gap-3 py-2 ">
+                    <Avatar>
+                      <AvatarImage src={session?.user?.image as string} alt="userphoto" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <p>{session.user.email}</p>
+                    </div>
                     <button
                       onClick={handleSignOut}
-                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full"
                     >
                       Log Out
                     </button>
