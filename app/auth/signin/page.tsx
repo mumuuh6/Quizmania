@@ -18,23 +18,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
-import { useSession, signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Signin() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data, status } = useSession();
 
-  // Use useEffect to handle the session change
+  // Use useEffect to handle the data change
   useEffect(() => {
     const storeUserInfo = async () => {
-      if (session?.user) {
+      if (data?.user) {
         try {
+          //console.log("User data from data?.user:", data.user);
           const userInfo = {
-            username: session.user.name,
-            email: session.user.email,
-            picture: session.user.image,
+            username: data.user.name,
+            email: data.user.email,
+            picture: data.user.image,
           };
 
           const response = await axios.post(
@@ -52,7 +53,7 @@ export default function Signin() {
     if (status === "authenticated") {
       storeUserInfo();
     }
-  }, [session, status, router]);
+  }, [data, status, router]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
@@ -70,7 +71,7 @@ export default function Signin() {
   const handleGithubSignIn = async () => {
     try {
        await signIn("github");
-      // Session handling moved to useEffect
+      // data handling moved to useEffect
     } catch (error) {
       console.error("Error signing in with Github:", error);
     }
@@ -103,7 +104,8 @@ export default function Signin() {
           //manually sign the user in nextauth
           await signIn("credentials", {
             email: userInfo.email,
-            password: password,
+            
+            password: userInfo.password,
             redirect: false,});
           // Redirect to the home page or any other page after successful sign-in
           router.push("/");
@@ -113,7 +115,7 @@ export default function Signin() {
       }
     }
   };
-
+console.log("data:", data ,status);
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
