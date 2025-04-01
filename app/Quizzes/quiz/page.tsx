@@ -8,18 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
-<<<<<<< HEAD
 import axios from "axios";
 import Lottie from "lottie-react";
 import loader from "@/public/loader.json";
-
-=======
 import LottieLoader from '../../../public/loader.json';
 import {useLottie} from "lottie-react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
->>>>>>> 78616e02ecde18441066a8862609e2de460cef4d
+
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
