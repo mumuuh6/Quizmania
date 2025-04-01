@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "./components/theme-provider";
 import { Navbar } from "./components/navbar";
 import { Footer } from "./components/footer";
+import NextAuthSessionProvider from "../Providers/NextAuthSessionProvider"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,16 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <NextAuthSessionProvider>
+      <body className={inter.className} cz-shortcut-listen="true">
         <ThemeProvider>
-          <Navbar></Navbar>
-          <div className="min-h-[calc(100vh-300px)]">
-            {children}
-          </div>
-          <Footer></Footer>
+            <Navbar></Navbar>
+            <div className="min-h-[calc(100vh-300px)]">{children}</div>
+            <Footer></Footer>
         </ThemeProvider>
       </body>
+      </NextAuthSessionProvider>
     </html>
   );
 }

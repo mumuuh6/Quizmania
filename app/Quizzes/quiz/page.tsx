@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -9,18 +8,25 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
+<<<<<<< HEAD
 import axios from "axios";
 import Lottie from "lottie-react";
 import loader from "@/public/loader.json";
 
+=======
+import LottieLoader from '../../../public/loader.json';
+import {useLottie} from "lottie-react";
+import axios from "axios";
+import dynamic from "next/dynamic";
+const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
+>>>>>>> 78616e02ecde18441066a8862609e2de460cef4d
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const difficulty = searchParams.get("difficulty") || "medium";
   const subject = searchParams.get("subject") || "general-knowledge";
   const numberOfQuestions = Number.parseInt(searchParams.get("questions") || "10");
-  const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60; // Convert to seconds
+  const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
 
   const [loading, setLoading] = useState(true);
@@ -34,7 +40,10 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [viewResult, setViewResult] = useState(false);
   const [viewQues, setViewQues] = useState([])
-  useEffect(() => {
+  
+  
+  
+    useEffect(() => {
     // Fetch quiz data from the API
     axios
       .get(`https://quiz-mania-iota.vercel.app/get-quiz-set/${quizSetId}`)
@@ -125,11 +134,16 @@ export default function QuizPage() {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
-
+  
   if (loading) {
     return <div className="w-xl mx-auto">
+<<<<<<< HEAD
       <Lottie animationData={loader} />
     </div>;
+=======
+       {/* eslint-disable-next-line @typescript-eslint/no-require-imports */}
+      <Lottieplayer animationData={require("../../../public/loader.json")}></Lottieplayer></div>;
+>>>>>>> 78616e02ecde18441066a8862609e2de460cef4d
   }
 
   if (questions.length === 0) {

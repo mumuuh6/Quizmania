@@ -9,6 +9,18 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./theme-toggle";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { spec } from "node:test/reporters";
+import PrivateRoute from "../api/auth/[...nextauth]/Privateroute/Privateroute";
+import { useRouter } from "next/navigation";
 
 const routes = [
   {
@@ -26,12 +38,21 @@ const routes = [
   {
     href: "/Quizzes",
     label: "Quiz",
+    special: true,
   },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
+  const { data: session } = useSession();
+const router=useRouter()
+  console.log(session);
+
+  const handleSignOut = async () => {
+    await signOut();
+   // router.push("/auth/signin"); // Redirect to login page after sign out
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -44,7 +65,9 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:gap-6">
           {routes.map((route) => (
-            <Link
+            route.special ? (
+            <PrivateRoute key={route.href}>
+              <Link
               key={route.href}
               href={route.href}
               className={cn(
@@ -56,17 +79,46 @@ export function Navbar() {
             >
               {route.label}
             </Link>
+            </PrivateRoute>
+            ):(
+            <Link
+              key={route.href}
+              href={route.href}
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === route.href
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+            >
+              {route.label}
+            </Link>)
           ))}
         </nav>
 
         <div className="hidden md:flex md:items-center md:gap-4">
           <ThemeToggle />
-          <Link
-            href="/auth/signin"
-            className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
-          >
-            Login
-          </Link>
+          {session?.user ? (
+            <div className="flex gap-3 justify-center items-center">
+              <Avatar>
+                <AvatarImage src={session?.user?.image as string} alt="userphoto" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/auth/signin"
+              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+            >
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Navigation */}
@@ -127,6 +179,9 @@ export function Navbar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right">
+            <VisuallyHidden>
+              <DialogTitle>Navigation Menu</DialogTitle>
+            </VisuallyHidden>
             <motion.div
               initial={{ y: "100%", borderRadius: "0%" }} // Initially from the bottom and square shape
               animate={{ y: 0, borderRadius: "16px" }} // Move to the normal position and round shape
@@ -144,7 +199,9 @@ export function Navbar() {
               </Link>
               <nav className="flex flex-col gap-4">
                 {routes.map((route) => (
-                  <Link
+                 route.special ? (
+                  <PrivateRoute key={route.href}>
+                     <Link
                     key={route.href}
                     href={route.href}
                     className={cn(
@@ -157,14 +214,53 @@ export function Navbar() {
                   >
                     {route.label}
                   </Link>
+                  </PrivateRoute>): <Link
+                  key={route.href}
+                  href={route.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname === route.href
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {route.label}
+                </Link>
                 ))}
-                <div className="flex items-center gap-2 pt-2">
+                <div className="flex items-center gap-2 pt-2 w-full">
                   <ThemeToggle />
                   <span className="text-sm">Toggle theme</span>
                 </div>
-                <Button className="mt-2" onClick={() => setIsOpen(false)}>
-                  Login
-                </Button>
+                {session?.user ? (
+                  <div>
+                    <div className="flex items-center gap-3 py-2 ">
+                    <Avatar>
+                      <AvatarImage src={session?.user?.image as string} alt="userphoto" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <p>{session.user.email}</p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/auth/signin"
+                    className="mt-2"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <button
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full"
+                    >
+                      Login
+                    </button>
+                  </Link>
+                )}
               </nav>
             </motion.div>
           </SheetContent>
