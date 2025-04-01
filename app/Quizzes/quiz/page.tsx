@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
-<<<<<<< HEAD
 import axios from "axios";
 import Lottie from "lottie-react";
 import loader from "@/public/loader.json";
