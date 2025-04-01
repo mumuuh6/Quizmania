@@ -15,9 +15,9 @@ import LottieLoader from '../../../public/loader.json';
 
 import dynamic from "next/dynamic";
 const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
-const Lottieplayerv2=()=>{
-  return <Lottie animationData={LottieLoader} loop={true}></Lottie>
-}
+// const Lottieplayerv2=()=>{
+//   return <Lottieplayer animationData={LottieLoader} loop={true}></Lottieplayer>
+// }
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -135,7 +135,8 @@ export default function QuizPage() {
   
   if (loading) {
     return <div className="w-sm md:w-xl mx-auto">
-      <Lottieplayerv2></Lottieplayerv2>
+      <Lottieplayer animationData={LottieLoader} loop={true} />
+      
     </div>;
   }
 
