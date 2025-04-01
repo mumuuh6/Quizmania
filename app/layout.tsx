@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "./components/theme-provider";
 import { Navbar } from "./components/navbar";
 import { Footer } from "./components/footer";
-import { SessionProvider } from "next-auth/react";
+import NextAuthSessionProvider from "../Providers/NextAuthSessionProvider"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,16 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    
     <html lang="en" suppressHydrationWarning>
+      <NextAuthSessionProvider>
       <body className={inter.className} cz-shortcut-listen="true">
         <ThemeProvider>
-          <SessionProvider>
             <Navbar></Navbar>
             <div className="min-h-[calc(100vh-300px)]">{children}</div>
             <Footer></Footer>
-          </SessionProvider>
         </ThemeProvider>
       </body>
+      </NextAuthSessionProvider>
     </html>
   );
 }
