@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "EmailCredentials",
