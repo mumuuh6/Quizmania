@@ -134,13 +134,8 @@ export default function QuizPage() {
   
   if (loading) {
     return <div className="w-xl mx-auto">
-<<<<<<< HEAD
       <Lottie animationData={loader} />
     </div>;
-=======
-       {/* eslint-disable-next-line @typescript-eslint/no-require-imports */}
-      <Lottieplayer animationData={require("../../../public/loader.json")}></Lottieplayer></div>;
->>>>>>> 78616e02ecde18441066a8862609e2de460cef4d
   }
 
   if (questions.length === 0) {
