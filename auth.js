@@ -42,6 +42,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async session({ session }) {
+      
       return session;
     }
   }
