@@ -17,8 +17,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         const res = await axios.get(`https://quiz-mania-iota.vercel.app/signin/${credentials.email}`);
         const user = res.data.userInfo
-        console.log(res.data.userInfo, "res from auth.js")
-        console.log(user, "user from auth.js")
+        
         if (user) {
           return {
             id: user._id,               
