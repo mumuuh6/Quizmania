@@ -12,7 +12,7 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-        router.push("/auth/signin"); // Redirect to Home page if not authenticated
+        router.push("/"); // Redirect to Home page if not authenticated
     } // Do nothing while loading
    
   }, [status, router]);
