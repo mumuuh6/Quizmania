@@ -5,13 +5,10 @@ import { X, Moon, Star, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-interface EidWelcomeModalProps {
-  onClose: () => void;
-}
-
-export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
+export default function EidWelcomeModal() {
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [showModal, setShowModal] = useState(true);
 
   useEffect(() => {
     // Show close button after 5.5 seconds
@@ -22,7 +19,13 @@ export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  const onClose = () => {
+    setShowModal(false);
+  };
+
   const handleClose = () => {
+    console.log("Close button clicked");
+
     setIsExiting(true);
     // Wait for exit animation to complete
     setTimeout(() => {
@@ -31,7 +34,11 @@ export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className={` ${
+        showModal ? "block" : "hidden"
+      } fixed inset-0 z-50 flex items-center justify-center`}
+    >
       {/* Backdrop */}
       <div
         className={cn(
@@ -118,7 +125,10 @@ export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
               onClick={handleClose}
               className="mt-8 bg-white text-primary/80 hover:bg-primary/40 cursor-pointer hover:text-white"
             >
-              <a href="https://eid-salami-digital-envelope.vercel.app">
+              <a
+                href="https://eid-salami-digital-envelope.vercel.app"
+                target="_blank"
+              >
                 Continue to Website
               </a>
             </Button>
@@ -129,7 +139,7 @@ export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
         {showCloseButton && (
           <button
             onClick={handleClose}
-            className="absolute top-4 cursor-pointer left-4 text-white/70 hover:text-white transition-colors"
+            className="absolute top-4 z-50 cursor-pointer left-4 text-white/70 hover:text-white transition-colors"
             aria-label="Close modal"
           >
             <X className="w-6 h-6" />
