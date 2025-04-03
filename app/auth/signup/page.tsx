@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-const image_hosting_key = process.env.NEXT_PUBLIC_IMGBB_IMAGE_HOSTING_KEY;
+const image_hosting_key = process.env.IMGBB_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 export default function SignupPage() {
   const router = useRouter();

@@ -17,9 +17,9 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
    
   }, [status, router]);
 
-  if (status === "loading") {
-    return <div>Loading...</div>; // You can show a loading spinner here
-  }
+  // if (status === "loading") {
+  //   return <div>Loading...</div>; // You can show a loading spinner here
+  // }
 
   return session?<>{children}</>: null; // Render children if authenticated
 }
