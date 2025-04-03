@@ -16,8 +16,9 @@ import { Label } from "@/components/ui/label";
 // import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-const image_hosting_key = process.env.IMGBB_IMAGE_HOSTING_KEY;
+const image_hosting_key = process.env.NEXT_PUBLIC_IMGBB_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 export default function SignupPage() {
   const router = useRouter();
@@ -35,8 +36,38 @@ export default function SignupPage() {
         phone: formData.get("phone") as string,
         picture: formData.get("picture") as File,
         password: formData.get("password") as string,
-        // confirmPassword: formData.get("confirm-password") as string,
+        confirmPassword: formData.get("confirm-password") as string,
+      
       };
+      
+      if (!data.username || !data.email || !data.phone || !data.password || !data.confirmPassword || !data.picture) {
+        toast.error("Please fill in all required fields.");
+        return;}
+      if (data.password.length < 6) {
+        toast.error("Password should be at least 6 characters.");
+        return;
+      }
+      if (!/[A-Z]/.test(data.password)) {
+        toast.error("Password must contain at least one uppercase letter.");
+        return;
+      }
+      if (!/[a-z]/.test(data.password)) {
+        toast.error("Password must contain at least one lowercase letter.");
+        return;
+      }
+      if (!/[0-9]/.test(data.password)) {
+        toast.error("Password must contain at least one number.");
+        return;
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(data.password)) {
+        toast.error("Password must contain at least one special character (!@#$%^&* etc.).");
+        return;
+      }
+      if (data.password !== data.confirmPassword) {
+        toast.error("Passwords do not match.");
+        return;
+      }
+
 
       // Upload the image to imgbb
       const imageFile = data.picture;
@@ -66,7 +97,7 @@ export default function SignupPage() {
           "https://quiz-mania-iota.vercel.app/signup",
           userData
         );
-
+        toast.success("Account created successfully! Please sign in.");
         //console.log("Response from Sign-up:", response);
         router.push("/auth/signin");
       } catch (error) {

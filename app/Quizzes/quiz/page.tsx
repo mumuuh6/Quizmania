@@ -12,6 +12,7 @@ import axios from "axios";
 import LottieLoader from '../../../public/loader.json';
 
 import dynamic from "next/dynamic";
+import { useSession } from "next-auth/react";
 const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
 // const Lottieplayerv2=()=>{
 //   return <Lottieplayer animationData={LottieLoader} loop={true}></Lottieplayer>
@@ -19,19 +20,20 @@ const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const difficulty = searchParams.get("difficulty") || "medium";
+  const difficulty = searchParams.get("difficulty") || "easy";
   const subject = searchParams.get("subject") || "general-knowledge";
-  const quantity = Number.parseInt(searchParams.get("questions") || "10");
-  const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60;
+  const quantity = Number.parseInt(searchParams.get("questions") || "5");
+  const timeLimit = Number.parseInt(searchParams.get("time") || "5") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
-  console.log("Fromquizpage",difficulty)
+  console.log("Fromquizpage",difficulty);
   const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [questions, setQuestions] = useState<any[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [timeRemaining, setTimeRemaining] = useState(timeLimit);
   const [quizData, setQuizData] = useState(null);
-  
+  const { data: session } = useSession();
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
   const [viewResult, setViewResult] = useState(false);
@@ -271,17 +273,19 @@ export default function QuizPage() {
               <div key={option} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${selectedAnswers[currentQuestion.id] === option
                 ? "bg-primary/5 border-primary"
                 : "hover:bg-muted/50"
-                }`}>
+                }` 
+                }
+                onClick={() => handleAnswerSelect(currentQuestionIndex, option)}>
                 <RadioGroupItem value={option} id={option} />
                 <Label htmlFor={option}>{String.fromCharCode(65 + index)}.   {option}</Label>
               </div>
-              // mumu
+              
             ))}
           </RadioGroup>
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Previous</Button>
-          <Button onClick={handleNext}>Next</Button>
+          <Button onClick={handleNext} disabled={!selectedAnswers[currentQuestionIndex]}>Next</Button>
         </CardFooter>
       </Card>
     </div>
