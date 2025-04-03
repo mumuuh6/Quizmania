@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden py-20 md:py-32">
+    <section className="relative overflow-hidden py-20 md:py-32 px-2">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background" />
       <div className="container mx-auto relative z-10">
         <div className="grid gap-12 md:grid-cols-2 md:gap-16">
@@ -28,7 +28,7 @@ export function HeroSection() {
               </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center pr-3 md:pr-0">
             <div className="relative aspect-square w-full max-w-md rounded-full bg-gradient-to-br from-primary/20 via-primary/10 to-background p-4">
               <div className="absolute inset-0 flex items-center justify-center">
                 <Brain className="h-32 w-32 text-primary md:h-48 md:w-48" />

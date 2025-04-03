@@ -59,7 +59,7 @@ export default function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col">
       
-      <main className="flex-1">
+      <main className="flex-1 px-2">
         {/* Hero Section */}
         <section className="bg-muted/50 py-16 md:py-24">
           <div className="container mx-auto">

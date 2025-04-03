@@ -6,8 +6,8 @@ export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-muted/50 py-16 md:py-24">
+        {/* Hero Section  */}
+        <section className="bg-muted/50 py-16 md:py-24  px-2">
           <div className="container mx-auto">
             <div className="grid gap-8 md:grid-cols-2 md:gap-12">
               <div>
@@ -24,7 +24,7 @@ export default function AboutPage() {
                   <Image
                     src="/placeholder.svg?height=400&width=400"
                     alt="About Quizmania"
-                    width={400}
+                    width={300}
                     height={400}
                     className="rounded-lg object-cover"
                   />
@@ -35,7 +35,7 @@ export default function AboutPage() {
         </section>
 
         {/* Our Story */}
-        <section className="py-16 md:py-24">
+        <section className="py-16 md:py-24  px-2">
           <div className="container mx-auto">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
@@ -65,7 +65,7 @@ export default function AboutPage() {
         </section>
 
         {/* Our Values */}
-        <section className="bg-muted/50 py-16 md:py-24">
+        <section className="bg-muted/50 py-16 md:py-24  px-2">
           <div className="container mx-auto">
             <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl">
               Our Values
@@ -100,7 +100,7 @@ export default function AboutPage() {
         </section>
 
         {/* Team Section */}
-        <section className="py-16 md:py-24">
+        <section className="py-16 md:py-24  px-2">
           <div className="container mx-auto">
             <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl">
               Meet Our Team

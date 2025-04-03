@@ -5,6 +5,7 @@ import { X, Moon, Star, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function EidWelcomeModal() {
   const [showCloseButton, setShowCloseButton] = useState(false);
@@ -20,26 +21,14 @@ export default function EidWelcomeModal() {
     return () => clearTimeout(timer);
   }, []);
 
-  const onClose = () => {
-    setShowModal(false);
-  };
-
   const handleClose = () => {
-    console.log("Close button clicked");
-
+    toast.success("Stay here! And Sharp your Brain with Quiz Mania");
     setIsExiting(true);
     // Wait for exit animation to complete
     setTimeout(() => {
-      onClose();
+      setShowModal(false);
     }, 500);
   };
-
-  function triggerToast() {
-    toast({
-      title: "Message sent! 🎉",
-      description: "We'll get back to you as soon as possible.",
-    });
-  }
 
   return (
     <div
@@ -136,7 +125,6 @@ export default function EidWelcomeModal() {
               <Link
                 href="https://eid-salami-digital-envelope.vercel.app"
                 target="_blank"
-                onClick={triggerToast}
               >
                 Continue to Website
               </Link>

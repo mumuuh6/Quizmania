@@ -11,22 +11,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import path from "path";
 
 interface QuizCardProps {
-  title: string;
+  topic: string;
   description: string;
   category: string;
   duration: string;
-  questions: number;
+  difficulty: string;
+  quizType: string;
+  quantity: number;
   className?: string;
 }
 
 export function QuizCard({
-  title,
+  topic,
   description,
   category,
   duration,
-  questions,
+  difficulty,
+  quizType,
+  quantity,
   className,
 }: QuizCardProps) {
   return (
@@ -35,14 +41,14 @@ export function QuizCard({
         <div className="flex items-center justify-between">
           <Badge variant="outline" className="flex items-center gap-1">
             <Tag className="h-3 w-3" />
-            {category}
+            {quizType}
           </Badge>
           <Badge variant="secondary" className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
             {duration}
           </Badge>
         </div>
-        <CardTitle className="line-clamp-1">{title}</CardTitle>
+        <CardTitle className="line-clamp-1">{topic}</CardTitle>
         <CardDescription className="line-clamp-2">
           {description}
         </CardDescription>
@@ -50,11 +56,24 @@ export function QuizCard({
       <CardContent>
         <div className="flex items-center text-sm text-muted-foreground">
           <Brain className="mr-1 h-4 w-4" />
-          {questions} questions
+          {quantity} quantity
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Start Quiz</Button>
+        <Link href={
+          {
+            pathname:"Quizzes/create",
+            query: {
+              topic: topic,
+              description: description,
+              category: category,
+              duration: duration,
+              difficulty: difficulty,
+              quizType: quizType,
+              quantity: quantity,
+            },
+          }
+        }><Button className="w-full">Start Quiz</Button></Link>
       </CardFooter>
     </Card>
   );

@@ -1,6 +1,7 @@
+"use client";
+
 import Link from "next/link";
 import { Github, Twitter } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,11 +13,101 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
+const image_hosting_key = process.env.NEXT_PUBLIC_IMGBB_IMAGE_HOSTING_KEY;
+const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 export default function SignupPage() {
+  const router = useRouter();
+
+  const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const form = (e.target as HTMLButtonElement).closest("form");
+    if (form) {
+      const formData = new FormData(form);
+      // Collecting all form data
+      const data = {
+        username: formData.get("username") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        picture: formData.get("picture") as File,
+        password: formData.get("password") as string,
+        confirmPassword: formData.get("confirm-password") as string,
+      
+      };
+      
+      if (!data.username || !data.email || !data.phone || !data.password || !data.confirmPassword || !data.picture) {
+        toast.error("Please fill in all required fields.");
+        return;}
+      if (data.password.length < 6) {
+        toast.error("Password should be at least 6 characters.");
+        return;
+      }
+      if (!/[A-Z]/.test(data.password)) {
+        toast.error("Password must contain at least one uppercase letter.");
+        return;
+      }
+      if (!/[a-z]/.test(data.password)) {
+        toast.error("Password must contain at least one lowercase letter.");
+        return;
+      }
+      if (!/[0-9]/.test(data.password)) {
+        toast.error("Password must contain at least one number.");
+        return;
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(data.password)) {
+        toast.error("Password must contain at least one special character (!@#$%^&* etc.).");
+        return;
+      }
+      if (data.password !== data.confirmPassword) {
+        toast.error("Passwords do not match.");
+        return;
+      }
+
+
+      // Upload the image to imgbb
+      const imageFile = data.picture;
+      const formDataForImage = new FormData();
+      formDataForImage.append("image", imageFile);
+      const res = await axios.post(image_hosting_api, formDataForImage, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+
+      // now send this data to database
+
+      const userData = {
+        username: data.username,
+        email: data.email,
+        phone: data.phone,
+        picture: res.data.data.display_url,
+        password: data.password,
+        // confirmPassword: data.confirmPassword,
+      };
+
+      console.log(userData);
+
+      try {
+        const response = await axios.post(
+          "https://quiz-mania-iota.vercel.app/signup",
+          userData
+        );
+        toast.success("Account created successfully! Please sign in.");
+        //console.log("Response from Sign-up:", response);
+        router.push("/auth/signin");
+      } catch (error) {
+        console.error("Error signing up:", error);
+      }
+    }
+  };
+
   return (
-    <div className="container flex items-center justify-center min-h-screen py-8">
+    <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
@@ -26,75 +117,69 @@ export default function SignupPage() {
             Create a new account to get started
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" placeholder="johndoe" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="john@example.com"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="+1 (555) 000-0000"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="picture">Profile Picture</Label>
-            <Input id="picture" type="file" accept="image/*" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm Password</Label>
-            <Input id="confirm-password" type="password" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Sign Up
-          </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
+        <form>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                name="username"
+                id="username"
+                placeholder="johndoe"
+                required
+              />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                name="email"
+                id="email"
+                type="email"
+                placeholder="john@example.com"
+                required
+              />
             </div>
-          </div>
-
-          <div className="flex justify-center space-x-4">
-            <Button variant="outline" size="icon">
-              <Github className="h-4 w-4" />
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="+1 (555) 000-0000"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="picture">Profile Picture</Label>
+              <Input
+                id="picture"
+                name="picture"
+                type="file"
+                accept="image/*"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" name="password" type="password" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Input
+                id="confirm-password"
+                name="confirm-password"
+                type="password"
+                required
+              />
+            </div>
+            <Button
+              onClick={handleSignUp}
+              type="submit"
+              className="w-full cursor-pointer"
+            >
+              Sign Up
             </Button>
-            <Button variant="outline" size="icon">
-              <Twitter className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="16"
-                width="15.25"
-                viewBox="0 0 488 512"
-              >
-                <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-              </svg>
-            </Button>
-          </div>
-        </CardContent>
+          </CardContent>
+        </form>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
             Already have an account?{" "}

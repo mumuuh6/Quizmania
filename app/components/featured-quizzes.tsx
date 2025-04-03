@@ -2,41 +2,49 @@ import { QuizCard } from "./quiz-card";
 
 const quizzes = [
   {
-    title: "Science Fundamentals",
+    topic: "Science Fundamentals",
     description:
       "Test your knowledge of basic scientific principles and discoveries.",
     category: "Science",
+    difficulty: "Easy",
+    quizType: "mcq",
     duration: "10 min",
-    questions: 15,
+    quantity: 15,
   },
   {
-    title: "World History Challenge",
+    topic: "World History Challenge",
     description:
       "Explore key historical events and figures from around the globe.",
     category: "History",
+    difficulty: "expert",
+    quizType: "t/f",
     duration: "15 min",
-    questions: 20,
+    quantity: 20,
   },
   {
-    title: "Tech Innovations",
+    topic: "Tech Innovations",
     description: "How well do you know the latest technological breakthroughs?",
     category: "Technology",
+    difficulty: "Medium",
+    quizType: "mcq",
     duration: "12 min",
-    questions: 18,
+    quantity: 18,
   },
   {
-    title: "Geography Explorer",
+    topic: "Geography Explorer",
     description: "Test your knowledge of countries, capitals, and landmarks.",
     category: "Geography",
+    difficulty: "diffifult",
+    quizType: "t/f",
     duration: "10 min",
-    questions: 15,
+    quantity: 15,
   },
 ];
 
 export function FeaturedQuizzes() {
   return (
     <section id="featured-quizzes" className="py-16 md:py-24">
-      <div className="container mx-auto">
+      <div className="container mx-auto px-2">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Featured Quizzes
@@ -50,11 +58,13 @@ export function FeaturedQuizzes() {
           {quizzes.map((quiz, index) => (
             <QuizCard
               key={index}
-              title={quiz.title}
+              topic={quiz.topic}
               description={quiz.description}
               category={quiz.category}
+              difficulty= {quiz.difficulty}
+              quizType={quiz.difficulty}
               duration={quiz.duration}
-              questions={quiz.questions}
+              quantity={quiz.quantity}
             />
           ))}
         </div>
