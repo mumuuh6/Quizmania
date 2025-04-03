@@ -9,8 +9,6 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
 import axios from "axios";
-import Lottie from "lottie-react";
-
 import LottieLoader from '../../../public/loader.json';
 
 import dynamic from "next/dynamic";
@@ -23,10 +21,10 @@ export default function QuizPage() {
   const router = useRouter();
   const difficulty = searchParams.get("difficulty") || "medium";
   const subject = searchParams.get("subject") || "general-knowledge";
-  const numberOfQuestions = Number.parseInt(searchParams.get("questions") || "10");
+  const quantity = Number.parseInt(searchParams.get("questions") || "10");
   const timeLimit = Number.parseInt(searchParams.get("time") || "15") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
-
+  console.log("Fromquizpage",difficulty)
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<any[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
