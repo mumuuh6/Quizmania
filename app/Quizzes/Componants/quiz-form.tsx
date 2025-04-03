@@ -27,6 +27,8 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   user: z.string({
@@ -59,24 +61,27 @@ export default function QuizForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [quizSetId, setQuizSetId] = useState(null);
+  const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user: "m@gmail.com",
+      user: session?.user?.email as string,
       quizCriteria: {
-        difficulty: "", // Ensure default value is set
+        difficulty: "easy", // Ensure default value is set
         topic: "",
         quantity: 10,
-        timeLimit: 15,
-        quizType: "",
+        timeLimit: 10,
+        quizType: "mcq",
       },
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if(!values.quizCriteria.topic){
+      toast.error('Please specify the topic')
+      return;
+    }
     setLoading(true);
-
     console.log(values); // Debugging purpose
-
     try {
       const res = await axios.post(
         "https://quiz-mania-iota.vercel.app/generate-quiz",
@@ -114,7 +119,7 @@ export default function QuizForm() {
                   <FormLabel>Difficulty Level</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select difficulty level" />
                       </SelectTrigger>
                     </FormControl>
@@ -167,7 +172,7 @@ export default function QuizForm() {
                   <FormLabel>Quiz Type</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a Quiz type" />
                       </SelectTrigger>
                     </FormControl>
@@ -233,7 +238,7 @@ export default function QuizForm() {
             />
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading} >
               {loading ? "Generating Quiz..." : "Generate Quiz"}
             </Button>
           </form>
