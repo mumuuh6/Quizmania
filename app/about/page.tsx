@@ -6,7 +6,7 @@ export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        {/* Hero Section */}
+        {/* Hero Sectionv  */}
         <section className="bg-muted/50 py-16 md:py-24  px-2">
           <div className="container mx-auto">
             <div className="grid gap-8 md:grid-cols-2 md:gap-12">
