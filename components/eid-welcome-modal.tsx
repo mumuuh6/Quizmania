@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Moon, Star, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function EidWelcomeModal() {
   const [showCloseButton, setShowCloseButton] = useState(false);
@@ -32,6 +33,13 @@ export default function EidWelcomeModal() {
       onClose();
     }, 500);
   };
+
+  function triggerToast() {
+    toast({
+      title: "Message sent! 🎉",
+      description: "We'll get back to you as soon as possible.",
+    });
+  }
 
   return (
     <div
@@ -125,12 +133,13 @@ export default function EidWelcomeModal() {
               onClick={handleClose}
               className="mt-8 bg-white text-primary/80 hover:bg-primary/40 cursor-pointer hover:text-white"
             >
-              <a
+              <Link
                 href="https://eid-salami-digital-envelope.vercel.app"
                 target="_blank"
+                onClick={triggerToast}
               >
                 Continue to Website
-              </a>
+              </Link>
             </Button>
           )}
         </div>
