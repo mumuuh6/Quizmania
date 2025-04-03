@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { signIn, useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function Signin() {
   const router = useRouter();
@@ -37,7 +38,6 @@ export default function Signin() {
             email: data.user.email,
             picture: data.user.image,
           };
-
           const response = await axios.post(
             "https://quiz-mania-iota.vercel.app/signup",
             userInfo
@@ -62,6 +62,7 @@ export default function Signin() {
   const handleGoogleSignIn = async () => {
     try {
       await signIn("google");
+      toast.success(` You'r Successfully Logged in`);
       // it will be handled by the useEffect
     } catch (error) {
       console.error("Error signing in with Google:", error);
@@ -71,6 +72,7 @@ export default function Signin() {
   const handleGithubSignIn = async () => {
     try {
        await signIn("github");
+       toast.success(` You'r Successfully Logged in`);
       // data handling moved to useEffect
     } catch (error) {
       console.error("Error signing in with Github:", error);
@@ -88,7 +90,30 @@ export default function Signin() {
       const formData = new FormData(form);
       const email = formData.get("email");
       const password = formData.get("pass");
-
+      if (!email || !password) {
+        toast.error("Please fill in all fields.");
+        return;
+      }
+      if (typeof password === "string" && password.length < 6) {
+        toast.error("Password should be at least 6 characters.");
+        return;
+      }
+      if (typeof password === "string" && !/[A-Z]/.test(password)) {
+        toast.error("Password must contain at least one uppercase letter.");
+        return;
+      }
+      if (typeof password === "string" && !/[a-z]/.test(password)) {
+        toast.error("Password must contain at least one lowercase letter.");
+        return;
+      }
+      if (typeof password === "string" && !/[0-9]/.test(password)) {
+        toast.error("Password must contain at least one number.");
+        return;
+      }
+      if (typeof password === "string" && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        toast.error("Password must contain at least one special character (!@#$%^&* etc.).");
+        return;
+      }
       console.log("Email:", email);
       console.log("Password:", password);
 
@@ -104,9 +129,9 @@ export default function Signin() {
           //manually sign the user in nextauth
           await signIn("credentials", {
             email: userInfo.email,
-            
             password: userInfo.password,
             redirect: false,});
+            toast.success(` You'r Successfully Logged in`);
           // Redirect to the home page or any other page after successful sign-in
           router.push("/");
         }
