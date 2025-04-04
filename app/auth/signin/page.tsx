@@ -118,7 +118,7 @@ export default function Signin() {
       console.log("Password:", password);
 
       try {
-        const response = await axios.get(
+        const response = await axios.post(
           `https://quiz-mania-iota.vercel.app/signin/${email}`
         );
         console.log("Response from Signin:", response.data);
