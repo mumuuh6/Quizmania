@@ -42,7 +42,7 @@ export default function SignupPage() {
       
       if (!data.username || !data.email || !data.phone || !data.password || !data.confirmPassword || !data.picture) {
         toast.error("Please fill in all required fields.");
-        return;}
+        }
       if (data.password.length < 6) {
         toast.error("Password should be at least 6 characters.");
         return;
@@ -87,6 +87,8 @@ export default function SignupPage() {
         phone: data.phone,
         picture: res.data.data.display_url,
         password: data.password,
+        lastLoginTime: new Date().toISOString(),
+        creationTime: new Date().toISOString(),
         // confirmPassword: data.confirmPassword,
       };
 
@@ -97,9 +99,15 @@ export default function SignupPage() {
           "https://quiz-mania-iota.vercel.app/signup",
           userData
         );
-        toast.success("Account created successfully! Please sign in.");
-        //console.log("Response from Sign-up:", response);
-        router.push("/auth/signin");
+        if(response?.data?.status) {
+          toast.success(`${response.data.message}`);
+          router.push("/auth/signin");
+        }
+        else if(!response?.data?.status) {
+          toast.error(`${response.data.message}`);
+        }
+        console.log("Response from Sign-up:", response);
+        
       } catch (error) {
         console.error("Error signing up:", error);
       }
