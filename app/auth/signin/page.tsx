@@ -132,7 +132,7 @@ export default function Signin() {
             password: userInfo.password,
             redirect: false,});
             toast.success(` You'r Successfully Logged in`);
-          // Redirect to the home page or any other page after successful sign-in
+          // Redirect to the home page or any otherr page after successful sign-in
           router.push("/");
         }
       } catch (error) {
