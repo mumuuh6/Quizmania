@@ -39,7 +39,7 @@ export default function EidWelcomeModal() {
       {/* Backdrop */}
       <div
         className={cn(
-          "fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+          "fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300",
           isExiting ? "opacity-0" : "opacity-100"
         )}
         onClick={showCloseButton ? handleClose : undefined}
@@ -126,7 +126,7 @@ export default function EidWelcomeModal() {
                 href="https://eid-salami-digital-envelope.vercel.app"
                 target="_blank"
               >
-                Continue to Website
+                Send Salami Gift
               </Link>
             </Button>
           )}
