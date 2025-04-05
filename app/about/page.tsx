@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Brain, CheckCircle, Users } from "lucide-react";
-
+import Quizmania from "@/public/quizmania.png"
 
 export default function AboutPage() {
   return (
@@ -9,7 +9,7 @@ export default function AboutPage() {
         {/* Hero Section  */}
         <section className="bg-muted/50 py-16 md:py-24  px-2">
           <div className="container mx-auto">
-            <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+            <div className="grid gap-8 md:grid-cols-2 md:gap-8 justify-center items-center">
               <div>
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">
                   About Quizmania
@@ -22,11 +22,9 @@ export default function AboutPage() {
               <div className="flex items-center justify-center">
                 <div className="relative aspect-square w-full max-w-md">
                   <Image
-                    src="/placeholder.svg?height=400&width=400"
+                    src={Quizmania}
                     alt="About Quizmania"
-                    width={300}
-                    height={400}
-                    className="rounded-lg object-cover"
+                    className="rounded-2xl object-cover w-full h-full"
                   />
                 </div>
               </div>
@@ -108,23 +106,36 @@ export default function AboutPage() {
             <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {[
                 {
-                  name: "Emma Rodriguez",
+                  name: "Jaber Ahmed Riyan",
                   role: "Founder & CEO",
                   bio: "Former educator with a passion for AI and learning technologies.",
                   image: "/placeholder.svg?height=300&width=300",
                 },
                 {
-                  name: "David Kim",
+                  name: "Ifratul Jannat Ritu",
                   role: "CTO",
                   bio: "AI researcher with expertise in natural language processing and adaptive learning.",
                   image: "/placeholder.svg?height=300&width=300",
                 },
                 {
-                  name: "Priya Patel",
+                  name: "Mahmuda Akter mumu",
                   role: "Head of Content",
                   bio: "Educational content specialist with a background in curriculum development.",
+                  image: "https://lh3.googleusercontent.com/a/ACg8ocLmuPEKDHpuj5xJlTINwgZ46x3yiEAv1JN0OZGtOqbvpVWAnkY=s192-c-rg-br100",
+                },
+                {
+                  name: "Salman Izhar",
+                  role: "Lead Developer",
+                  bio: "Full-stack developer with a focus on AI and machine learning applications.",
                   image: "/placeholder.svg?height=300&width=300",
                 },
+                {
+                  name: "Abdur Rahman",
+                  role: "Marketing Manager",
+                  bio: "Digital marketing expert with a passion for education and technology.",
+                  image: "/placeholder.svg?height=300&width=300",
+                },
+                
               ].map((member, index) => (
                 <div
                   key={index}

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Footer } from "../components/footer";
+import { toast } from "react-toastify";
 
 
 export default function ContactPage() {
@@ -43,7 +44,7 @@ export default function ContactPage() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({
-      title: "Message sent!",
+      title: "Message Sent",
       description: "We'll get back to you as soon as possible.",
     });
 
@@ -121,10 +122,10 @@ export default function ContactPage() {
                     <CardContent>
                       <CardDescription>
                         <a
-                          href="tel:+1234567890"
+                          href="tel:+01934567890"
                           className="hover:text-primary"
                         >
-                          +1 (234) 567-890
+                          +8801934567890
                         </a>
                       </CardDescription>
                     </CardContent>
@@ -139,7 +140,7 @@ export default function ContactPage() {
                     </CardHeader>
                     <CardContent>
                       <CardDescription>
-                        123 Quiz Street, Knowledge City, QZ 12345
+                        Dhaka,Bangladesh
                       </CardDescription>
                     </CardContent>
                   </Card>

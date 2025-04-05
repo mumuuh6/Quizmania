@@ -18,6 +18,7 @@ import axios from "axios";
 import { time } from "console";
 import { use, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface QuizCardProps {
   
@@ -44,6 +45,7 @@ export function QuizCard({
 }: QuizCardProps) {
   const [loading, setLoading] = useState(false);
   const [quizSetId, setQuizSetId] = useState(null);
+  const {data: session} = useSession();
   const Router=useRouter();
   const handlestartQuiz = async() => {
    setLoading(true);
@@ -56,7 +58,7 @@ export function QuizCard({
     };
     try{
       const response =await axios.post("https://quiz-mania-iota.vercel.app/generate-quiz",{
-        user:"",
+        user:session?.user?.email||"",
         quizCriteria: quizCriteria,
       });
       console.log("Response:", response.data);
