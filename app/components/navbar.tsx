@@ -62,7 +62,7 @@ const router=useRouter()
           <span className="text-xl font-bold">Quizmania</span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigationn */}
         <nav className="hidden md:flex md:gap-6">
           {routes.map((route) => (
             route.special ? (
