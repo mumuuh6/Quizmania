@@ -21,7 +21,7 @@ export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const difficulty = searchParams.get("difficulty") || "easy";
-  const subject = searchParams.get("subject") || "general-knowledge";
+  const subject = searchParams.get("topic") || "general-knowledge";
   const quantity = Number.parseInt(searchParams.get("questions") || "5");
   const timeLimit = Number.parseInt(searchParams.get("time") || "5") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
@@ -153,7 +153,7 @@ export default function QuizPage() {
       </div>
     );
   }
-  console.log(viewQues)
+  
   if (quizCompleted) {
     return (
       <div className="container mx-auto py-10">
@@ -272,7 +272,7 @@ export default function QuizPage() {
               </CardTitle>
               <CardDescription>
                 {subject.charAt(0).toUpperCase() + subject.slice(1)} -{" "}
-                {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Difficulty
+                Level:{difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} 
               </CardDescription>
             </div>
             <div className="flex items-center gap-2 bg-muted px-3 py-1 rounded-md">
