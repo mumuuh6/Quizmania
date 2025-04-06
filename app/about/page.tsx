@@ -109,7 +109,7 @@ export default function AboutPage() {
                   name: "Jaber Ahmed Riyan",
                   role: "Founder & CEO",
                   bio: "Former educator with a passion for AI and learning technologies.",
-                  image: "/placeholder.svg?height=300&width=300",
+                  image: "https://drive.google.com/file/d/1pUgWquxlNqAKt2SrvsSWpUBWVWD-XwcN/view?usp=sharing",
                 },
                 {
                   name: "Ifratul Jannat Ritu",
@@ -143,7 +143,7 @@ export default function AboutPage() {
                 >
                   <div className="overflow-hidden rounded-full">
                     <Image
-                      src={member.image || "/placeholder.svg"}
+                      src={member.image}
                       alt={member.name}
                       width={150}
                       height={150}

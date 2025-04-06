@@ -98,7 +98,7 @@ export function QuizCard({
       </CardHeader>
       <CardContent>
         <div className="flex items-center text-sm text-muted-foreground">
-          <Brain className="mr-1 h-4 w-4" /> {quantity} quantity | Level:{difficulty} | Type: {quizType.toUpperCase()}
+          <Brain className="mr-1 h-4 w-4" /> {quantity} questions | Level:{difficulty} | Type: {quizType.toUpperCase()}
         </div>
       </CardContent>
       <CardFooter>
