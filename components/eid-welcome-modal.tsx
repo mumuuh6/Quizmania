@@ -5,9 +5,13 @@ import { X, Moon, Star, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
-export default function EidWelcomeModal() {
+interface EidWelcomeModalProps {
+  onClose: () => void;
+}
+
+export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [showModal, setShowModal] = useState(true);
@@ -22,10 +26,11 @@ export default function EidWelcomeModal() {
   }, []);
 
   const handleClose = () => {
-    toast.success("Stay here! And Sharp your Brain with Quiz Mania");
+    // toast.success("Stay here! And Sharp your Brain with Quiz Mania");
     setIsExiting(true);
     // Wait for exit animation to complete
     setTimeout(() => {
+      onClose();
       setShowModal(false);
     }, 500);
   };
@@ -118,13 +123,12 @@ export default function EidWelcomeModal() {
 
           {/* Close button */}
           {showCloseButton && (
-            <Button
-              onClick={handleClose}
-              className="mt-8 bg-white text-primary/80 hover:bg-primary/40 cursor-pointer hover:text-white"
-            >
+            <Button className="mt-8 bg-white text-primary/80 hover:bg-primary/40 cursor-pointer hover:text-white">
               <Link
+                onClick={handleClose}
                 href="https://eid-salami-digital-envelope.vercel.app"
                 target="_blank"
+                className=""
               >
                 Send Salami Gift
               </Link>
