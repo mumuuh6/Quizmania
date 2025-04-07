@@ -2,43 +2,91 @@ import { QuizCard } from "./quiz-card";
 
 const quizzes = [
   {
+    id:1,
     topic: "Science Fundamentals",
     description:
       "Test your knowledge of basic scientific principles and discoveries.",
     category: "Science",
     difficulty: "Easy",
     quizType: "mcq",
-    duration: "10 min",
+    timeLimit: "10 min",
     quantity: 15,
   },
   {
+    id:2,
     topic: "World History Challenge",
     description:
       "Explore key historical events and figures from around the globe.",
     category: "History",
     difficulty: "expert",
     quizType: "t/f",
-    duration: "15 min",
+    timeLimit: "15 min",
     quantity: 20,
   },
   {
+    id:3,
     topic: "Tech Innovations",
     description: "How well do you know the latest technological breakthroughs?",
     category: "Technology",
     difficulty: "Medium",
     quizType: "mcq",
-    duration: "12 min",
+    timeLimit: "12 min",
     quantity: 18,
   },
   {
+    id:4,
     topic: "Geography Explorer",
     description: "Test your knowledge of countries, capitals, and landmarks.",
     category: "Geography",
     difficulty: "diffifult",
     quizType: "t/f",
-    duration: "10 min",
+    timeLimit: "10 min",
     quantity: 15,
   },
+  {
+    id:5,
+    topic: "Literature Classics",
+    description:
+      "Dive into the world of classic literature and famous authors.",
+    category: "Literature",
+    difficulty: "Easy",
+    quizType: "mcq",
+    timeLimit: "8 min",
+    quantity: 10,
+  },
+  {
+    id:6,
+    topic: "Mathematics Mastery",
+    description:
+      "Challenge your math skills with problems from various branches.",
+    category: "Mathematics",
+    difficulty: "Medium",
+    quizType: "t/f",
+    timeLimit: "15 min",
+    quantity: 20,
+  },
+  {
+    id:7,
+    topic: "Art and Culture",
+    description:
+      "Explore the world of art, music, and cultural movements.",
+    category: "Arts",
+    difficulty: "expert",
+    quizType: "mcq",
+    timeLimit: "12 min",
+    quantity: 18,
+  },
+  {
+    id:8,
+    topic: "Sports Trivia",
+    description:
+      "Test your knowledge of sports history, athletes, and events.",
+    category: "Sports",
+    difficulty: "Easy",
+    quizType: "t/f",
+    timeLimit: "10 min",
+    quantity: 15,
+  }
 ];
 
 export function FeaturedQuizzes() {
@@ -62,8 +110,8 @@ export function FeaturedQuizzes() {
               description={quiz.description}
               category={quiz.category}
               difficulty= {quiz.difficulty}
-              quizType={quiz.difficulty}
-              duration={quiz.duration}
+              quizType={quiz.quizType}
+              timeLimit={quiz.timeLimit}
               quantity={quiz.quantity}
             />
           ))}

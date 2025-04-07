@@ -26,7 +26,7 @@ import { toast } from "react-toastify";
 export default function Signin() {
   const router = useRouter();
   const { data, status } = useSession();
-
+  
   // Use useEffect to handle the data change
   useEffect(() => {
     const storeUserInfo = async () => {
@@ -116,23 +116,33 @@ export default function Signin() {
       }
       console.log("Email:", email);
       console.log("Password:", password);
-
+      const userInformation = {
+        email: email,
+        password: password ,
+        lastLoginTime: new Date().toISOString(),
+      }
       try {
-        const response = await axios.get(
+        const response = await axios.post(
           `https://quiz-mania-iota.vercel.app/signin/${email}`
-        );
+        ,userInformation);
+        if(response?.data?.status) {
+          toast.success(`${response.data.message}`);
+          router.push("/auth/signin");
+        }
+        else if(!response?.data?.status) {
+          toast.error(`${response.data.message}`);
+        }
         console.log("Response from Signin:", response.data);
         if (response.data.status && response.data.userInfo) {
           const userInfo = response.data.userInfo;
           console.log("User info:", userInfo);
-
           //manually sign the user in nextauth
           await signIn("credentials", {
             email: userInfo.email,
             password: userInfo.password,
             redirect: false,});
             toast.success(` You'r Successfully Logged in`);
-          // Redirect to the home page or any other page after successful sign-in
+          // Redirect to the home page or any otherr page after successful sign-in
           router.push("/");
         }
       } catch (error) {

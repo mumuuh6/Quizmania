@@ -21,7 +21,7 @@ export default function QuizPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const difficulty = searchParams.get("difficulty") || "easy";
-  const subject = searchParams.get("subject") || "general-knowledge";
+  const subject = searchParams.get("topic") || "general-knowledge";
   const quantity = Number.parseInt(searchParams.get("questions") || "5");
   const timeLimit = Number.parseInt(searchParams.get("time") || "5") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
@@ -153,7 +153,7 @@ export default function QuizPage() {
       </div>
     );
   }
-  console.log(viewQues)
+  
   if (quizCompleted) {
     return (
       <div className="container mx-auto py-10">
@@ -197,12 +197,12 @@ export default function QuizPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col justify-between gap-6">
-            <Button onClick={() => router.push("/Quizzes/create")} className="w-full py-6">
+            <Button onClick={() => router.push("/Quizzes/create")} className="w-full py-6 cursor-pointer">
               Create Another Quiz
             </Button>
             <button className="w-full" onClick={handleviewquestion}>
               <Alert className="bg-primary/10 border-primary/30 ">
-                <AlertDescription className="text-primary flex justify-center">View Questions</AlertDescription>
+                <AlertDescription className="text-primary flex justify-center cursor-pointer">View Questions</AlertDescription>
               </Alert>
             </button>
           </CardFooter>
@@ -216,20 +216,35 @@ export default function QuizPage() {
                     
                     <div>
                       <p className="mb-6"><span className="font-bold text-md"></span></p>
-                      <ul className="grid grid-cols-1 md:grid-cols-2  gap-4">
-                        {ques.options.map((option, index) => (
-                          <li key={index} className="border-2 rounded-lg px-6 py-4 font-medium">{String.fromCharCode(65 + index)}.   {option}</li>
-                        ))}
-                      </ul> 
-                      <p className="my-3"><span className="font-bold text-md">Your selected answer:</span> {ques.userAnswer}</p>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {ques.options.map((option, index) => {
+    const isSelected = ques.userAnswer === option;
+    const isCorrect = ques.answer === option;
+    
+    return (
+      <li
+        key={index}
+        className={`border-2 rounded-lg px-6 py-4 font-medium transition-colors 
+          ${isSelected && isCorrect ? 'border-green-500 shadow-[0px_0px_10px_0px_#008000]' : ''} 
+          ${isSelected && !isCorrect ? 'border-red-500 shadow-[0px_0px_10px_0px_#ff0000]' : ''}
+          ${!isSelected ? 'border-gray-700' : ''}
+        `}
+      >
+        {String.fromCharCode(65 + index)}. {option}
+      </li>
+    );
+  })}
+</ul>
+
+                      
                     </div>
                   </div>
-                  <div className="">
+                  <div className="mt-4">
                     {ques.userAnswer === ques.answer ? (
-                      <span className="text-green-600">Your answer is Correct </span>
+                      <span className="text-green-600 ">Your answer is Correct </span>
                     ) : (
                       
-                      <p className="flex flex-col "><span className="font-bold text-xl mb-2">Correct Answer is: {ques.answer}</span> 
+                      <p className="flex flex-col "><span className="font-bold text-xl mb-2">Correct Answer is: {String.fromCharCode(65 + ques.options.indexOf(ques.answer))}</span> 
                       <span className="text-red-600">Your Answer is Wrong</span></p>
                     )}
                   </div>
@@ -257,7 +272,7 @@ export default function QuizPage() {
               </CardTitle>
               <CardDescription>
                 {subject.charAt(0).toUpperCase() + subject.slice(1)} -{" "}
-                {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Difficulty
+                Level:{difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} 
               </CardDescription>
             </div>
             <div className="flex items-center gap-2 bg-muted px-3 py-1 rounded-md">

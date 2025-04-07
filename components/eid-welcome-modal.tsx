@@ -44,7 +44,7 @@ export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
       {/* Backdrop */}
       <div
         className={cn(
-          "fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+          "fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300",
           isExiting ? "opacity-0" : "opacity-100"
         )}
         onClick={showCloseButton ? handleClose : undefined}
@@ -130,7 +130,7 @@ export default function EidWelcomeModal({ onClose }: EidWelcomeModalProps) {
                 target="_blank"
                 className=""
               >
-                Continue to Website
+                Send Salami Gift
               </Link>
             </Button>
           )}
