@@ -12,6 +12,8 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Quizmania - AI-Powered Quiz App",
   description: "Test your knowledge with AI-generated quizzes",
+  icons: {
+    icon: "/brain (1).png",}
 };
 
 export default function RootLayout({
