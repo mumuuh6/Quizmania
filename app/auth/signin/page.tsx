@@ -4,7 +4,7 @@ import type React from "react";
 
 import Link from "next/link";
 import { Github, Twitter } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,11 +22,20 @@ import { signIn, useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function Signin() {
   const router = useRouter();
   const { data, status } = useSession();
-  
+  const [open, setOpen] = useState(false)
   // Use useEffect to handle the data change
   useEffect(() => {
     const storeUserInfo = async () => {
@@ -150,6 +159,23 @@ export default function Signin() {
       }
     }
   };
+  const handlesubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const form = (e.target as HTMLButtonElement).closest("form");
+    if(form){
+      const formData = new FormData(form);
+      const forgot_email = formData.get("forgot-email") as string;
+      const response =await axios.get(`https://quiz-mania-iota.vercel.app/reset-password/${forgot_email}`);
+      if(response?.data?.status){
+        toast.success(response.data.message);
+        setOpen(false)
+      }
+      else if(!response?.data?.status){
+        toast.error(response.data.message);
+      }
+
+    }
+  }
 console.log("data:", data ,status);
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
@@ -178,12 +204,40 @@ console.log("data:", data ,status);
               <Label htmlFor="password">Password</Label>
               <Input name="pass" id="password" type="password" required />
               <div className="text-right">
-                <Link
-                  href="/forgot-password"
-                  className="text-sm text-primary hover:underline"
-                >
-                  Forgot password?
-                </Link>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="link" className="p-0 h-auto font-normal text-sm">
+                    Forgot password?
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <form>
+                    <DialogHeader>
+                      <DialogTitle>Forgot Password</DialogTitle>
+                      <DialogDescription>
+                        Enter your email address and we'll send you a link to reset your password
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="forgot-email">Email</Label>
+                        <Input
+                          id="forgot-email"
+                          type="forgot-email"
+                          name="forgot-email"
+                          placeholder="john@example.com"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handlesubmit} type="submit" className="w-full cursor-pointer">
+                        Send Reset Link
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
               </div>
             </div>
             <Button
