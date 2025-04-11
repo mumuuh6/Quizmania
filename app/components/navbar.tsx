@@ -21,6 +21,15 @@ import {
 import { spec } from "node:test/reporters";
 import PrivateRoute from "../api/auth/[...nextauth]/Privateroute/Privateroute";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const routes = [
   {
@@ -36,22 +45,28 @@ const routes = [
     label: "Contact",
   },
   {
+    href: "/dashboard",
+    label: "DashBoard",
+    special: true,
+  },
+  {
     href: "/Quizzes",
     label: "Quiz",
     special: true,
   },
+
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const { data: session } = useSession();
-const router=useRouter()
-  console.log(session);
+  const router = useRouter()
+  const [position, setPosition] = React.useState("dashboard")
 
   const handleSignOut = async () => {
     await signOut();
-   // router.push("/auth/signin"); // Redirect to login page after sign out
+    // router.push("/auth/signin"); // Redirect to login page after sign out
   };
 
   return (
@@ -66,44 +81,59 @@ const router=useRouter()
         <nav className="hidden md:flex md:gap-6">
           {routes.map((route) => (
             route.special ? (
-            <PrivateRoute key={route.href}>
+              route.href !='/dashboard' &&<PrivateRoute key={route.href}>
               <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === route.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              )}
-            >
-              {route.label}
-            </Link>
+                key={route.href}
+                href={route.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === route.href
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                {route.label}
+              </Link>
             </PrivateRoute>
-            ):(
-            <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === route.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              )}
-            >
-              {route.label}
-            </Link>)
+            ) : (
+              <Link
+                key={route.href}
+                href={route.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === route.href
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                {route.label}
+              </Link>)
           ))}
         </nav>
 
         <div className="hidden md:flex md:items-center md:gap-4">
           <ThemeToggle />
           {session?.user ? (
-            <div className="flex gap-3 justify-center items-center">
-              <Avatar>
-                <AvatarImage src={session?.user?.image as string} alt="userphoto" />
+            <div className="flex gap-3 justify-center items-center cursor-pointer">
+              <DropdownMenu >
+                <DropdownMenuTrigger asChild className="cursor-pointer">
+                  <Button variant="outline" >
+                  <Avatar >
+                <AvatarImage src={session?.user?.image as string} alt="userphoto"  />
                 <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+                </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 shadow-[0px_0px_5px_0px_#8B5CF6] mt-2 ">
+                  <DropdownMenuLabel className="capitalize">{session?.user?.name}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup  value={position} onValueChange={setPosition}>
+                    <DropdownMenuRadioItem className="cursor-pointer" value="dashboard">
+                      <Link href="/dashboard">Dashboard</Link>
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <button
                 onClick={handleSignOut}
                 className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
@@ -199,34 +229,34 @@ const router=useRouter()
               </Link>
               <nav className="flex flex-col gap-4">
                 {routes.map((route) => (
-                 route.special ? (
-                  <PrivateRoute key={route.href}>
-                     <Link
-                    key={route.href}
-                    href={route.href}
-                    className={cn(
-                      "text-sm font-medium transition-colors hover:text-primary",
-                      pathname === route.href
-                        ? "text-primary"
-                        : "text-muted-foreground"
-                    )}
-                    onClick={() => setIsOpen(false)}
-                  >
+                  route.special ? (
+                    <PrivateRoute key={route.href}>
+                      <Link
+                        key={route.href}
+                        href={route.href}
+                        className={cn(
+                          "text-sm font-medium transition-colors hover:text-primary",
+                          pathname === route.href
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                        )}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {route.label}
+                      </Link>
+                    </PrivateRoute>) : <Link
+                      key={route.href}
+                      href={route.href}
+                      className={cn(
+                        "text-sm font-medium transition-colors hover:text-primary",
+                        pathname === route.href
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      )}
+                      onClick={() => setIsOpen(false)}
+                    >
                     {route.label}
                   </Link>
-                  </PrivateRoute>): <Link
-                  key={route.href}
-                  href={route.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname === route.href
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {route.label}
-                </Link>
                 ))}
                 <div className="flex items-center gap-2 pt-2 w-full">
                   <ThemeToggle />
@@ -235,11 +265,11 @@ const router=useRouter()
                 {session?.user ? (
                   <div>
                     <div className="flex items-center gap-3 py-2 ">
-                    <Avatar>
-                      <AvatarImage src={session?.user?.image as string} alt="userphoto" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <p>{session.user.email}</p>
+                      <Avatar>
+                        <AvatarImage src={session?.user?.image as string} alt="userphoto" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <p>{session.user.email}</p>
                     </div>
                     <button
                       onClick={handleSignOut}
