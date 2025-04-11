@@ -32,8 +32,10 @@ export default function RootLayout({
               closeOnClick={true}
               pauseOnHover={true}
               draggable={true} />
+            <div className="max-w-[97%] mx-auto">
             <Navbar></Navbar>
             <div className="min-h-[calc(100vh-300px)]">{children}</div>
+            </div>
             <Footer></Footer>
         </ThemeProvider>
       </body>
