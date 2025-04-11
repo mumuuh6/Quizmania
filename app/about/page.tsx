@@ -107,19 +107,19 @@ export default function AboutPage() {
               {[
                 {
                   name: "Jaber Ahmed Riyan",
-                  role: "Founder & CEO",
+                  role: "Backend Developer",
                   bio: "Former educator with a passion for AI and learning technologies.",
-                  image: "https://drive.google.com/file/d/1pUgWquxlNqAKt2SrvsSWpUBWVWD-XwcN/view?usp=sharing",
+                  image: "https://i.ibb.co.com/N27VRy61/Whats-App-Image-2024-06-16-at-21-17-30-339e9296.jpg",
                 },
                 {
                   name: "Ifratul Jannat Ritu",
-                  role: "CTO",
+                  role: "UI/UX Designer",
                   bio: "AI researcher with expertise in natural language processing and adaptive learning.",
                   image: "/placeholder.svg?height=300&width=300",
                 },
                 {
                   name: "Mahmuda Akter mumu",
-                  role: "Head of Content",
+                  role: "Frontend Developer",
                   bio: "Educational content specialist with a background in curriculum development.",
                   image: "https://lh3.googleusercontent.com/a/ACg8ocLmuPEKDHpuj5xJlTINwgZ46x3yiEAv1JN0OZGtOqbvpVWAnkY=s192-c-rg-br100",
                 },
@@ -127,7 +127,7 @@ export default function AboutPage() {
                   name: "Salman Izhar",
                   role: "Lead Developer",
                   bio: "Full-stack developer with a focus on AI and machine learning applications.",
-                  image: "/placeholder.svg?height=300&width=300",
+                  image: "https://i.ibb.co.com/YBRJnfkZ/profilepick.jpg",
                 },
                 {
                   name: "Abdur Rahman",

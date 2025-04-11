@@ -202,7 +202,7 @@ export default function QuizPage() {
             </Button>
             <button className="w-full" onClick={handleviewquestion}>
               <Alert className="bg-primary/10 border-primary/30 ">
-                <AlertDescription className="text-primary flex justify-center cursor-pointer">View Questions</AlertDescription>
+                <AlertDescription className="text-primary flex justify-center cursor-pointer">View Results</AlertDescription>
               </Alert>
             </button>
           </CardFooter>
