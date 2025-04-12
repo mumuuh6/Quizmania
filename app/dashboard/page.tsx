@@ -86,10 +86,11 @@ export default function DashboardPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">
-                                    {userStats?.solvedQuiz && userStats?.totalQuiz
-                                        ? ((userStats.solvedQuiz.length / userStats.totalQuiz.length) * 100).toFixed(2) + "%"
-                                        : "0.00%"}
+                                    {userStats?.totalQuiz?.length > 0
+                                        ? ((userStats?.solvedQuiz?.length || 0) / userStats?.totalQuiz?.length * 100).toFixed(2) + "%"
+                                        : "Not started yet"}
                                 </div>
+
 
 
                                 {/* <p className="text-xs text-muted-foreground">+2% from last month</p> */}

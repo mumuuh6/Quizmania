@@ -1,82 +1,49 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import axios from "axios"
+import { useEffect, useState } from "react"
 
-interface UserItem {
-  id: string
-  name: string
-  email: string
-  status: "active" | "inactive" | "pending"
-  joinDate: string
-  avatar?: string
-}
 
-const recentUsers: UserItem[] = [
-  {
-    id: "u1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    status: "active",
-    joinDate: "2 days ago",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "u2",
-    name: "Sarah Johnson",
-    email: "sarah.j@example.com",
-    status: "active",
-    joinDate: "3 days ago",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "u3",
-    name: "Michael Brown",
-    email: "michael.b@example.com",
-    status: "pending",
-    joinDate: "5 days ago",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "u4",
-    name: "Emily Wilson",
-    email: "emily.w@example.com",
-    status: "active",
-    joinDate: "1 week ago",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "u5",
-    name: "Robert Garcia",
-    email: "robert.g@example.com",
-    status: "inactive",
-    joinDate: "1 week ago",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-]
 
 export function RecentUsers() {
+  const [recentUsers,setRecentUsers]=useState([])
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
+        console.log("response from dashboard", response.data)
+        setRecentUsers(response.data.users)
+      } catch (err) {
+        console.error("Failed to fetch Admin stats:", err)
+      }
+    }
+
+    fetchStats()
+  }, [])
   return (
     <div className="space-y-4">
-      {recentUsers.map((user) => (
-        <div key={user.id} className="flex items-center justify-between">
+      {recentUsers.slice(0,7).map((user) => (
+        <div key={user._id} className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage src={user.picture} alt={user.username} className="object-cover" />
               <AvatarFallback>
-                {user.name.charAt(0)}
-                {user.name.split(" ")[1]?.charAt(0)}
+                {user.username.charAt(0)}
+                {user.username.split(" ")[1]?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">{user.name}</p>
+              <p className="text-sm font-medium leading-none">{user.username}</p>
               <p className="text-xs text-muted-foreground">{user.email}</p>
-              <p className="text-xs text-muted-foreground">{user.joinDate}</p>
+              <p className="text-xs text-muted-foreground">{user.creationTime}</p>
             </div>
           </div>
           <Badge
-            variant={user.status === "active" ? "default" : user.status === "pending" ? "secondary" : "outline"}
+            // variant={user.status === "active" ? "default" : user.status === "pending" ? "secondary" : "outline"}
+            variant="destructive"
             className="capitalize"
           >
-            {user.status}
+            Offline
           </Badge>
         </div>
       ))}
