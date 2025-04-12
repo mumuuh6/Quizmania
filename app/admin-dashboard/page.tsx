@@ -1,3 +1,4 @@
+"use client"
 import { Activity, CheckCircle, FileText, Users } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,11 +12,31 @@ import { UserManagement } from "./components/user-management"
 import { QuizManagement } from "./components/quiz-management"
 import { ReportsAnalytics } from "./components/reports-analytics"
 import { AdminSettings } from "./components/admin-setting"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 export default function AdminDashboardPage() {
+  const { data: session } = useSession()
+  const [adminStats, setAdminStats] = useState(null)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
+        console.log("response from dashboard", response.data)
+        setAdminStats(response.data)
+      } catch (err) {
+        console.error("Failed to fetch Admin stats:", err)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
   return (
     <AdminShell>
-      <AdminHeader heading="Admin Dashboard" text="Manage your quiz platform and users."></AdminHeader>
+      <AdminHeader heading="Admin Dashboard" text="Manage your quiz platform and Admins."></AdminHeader>
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -32,8 +53,8 @@ export default function AdminDashboardPage() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">2,853</div>
-                <p className="text-xs text-muted-foreground">+180 from last month</p>
+                <div className="text-2xl font-bold">{adminStats?.users?.length}</div>
+                {/* <p className="text-xs text-muted-foreground">+180 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
@@ -42,8 +63,8 @@ export default function AdminDashboardPage() {
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,245</div>
-                <p className="text-xs text-muted-foreground">+42 from last month</p>
+                <div className="text-2xl font-bold">{adminStats?.quizzes?.length}</div>
+                {/* <p className="text-xs text-muted-foreground">+42 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
@@ -52,8 +73,13 @@ export default function AdminDashboardPage() {
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">87.4%</div>
-                <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+                <div className="text-2xl font-bold">
+                  {adminStats?.quizzes?.length > 0
+                    ? ((adminStats?.solvedQuizzes?.length || 0) / adminStats?.quizzes?.length * 100).toFixed(2) + "%"
+                    : "Not started yet"}
+                </div>
+
+                {/* <p className="text-xs text-muted-foreground">+2.1% from last month</p> */}
               </CardContent>
             </Card>
             <Card>
@@ -62,8 +88,8 @@ export default function AdminDashboardPage() {
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,429</div>
-                <p className="text-xs text-muted-foreground">+8.2% from last month</p>
+                <div className="text-2xl font-bold">0</div>
+                {/* <p className="text-xs text-muted-foreground">+8.2% from last month</p> */}
               </CardContent>
             </Card>
           </div>

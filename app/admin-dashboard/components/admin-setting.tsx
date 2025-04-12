@@ -1,10 +1,8 @@
 "use client"
 
 import { Checkbox } from "@/components/ui/checkbox"
-
 import { useState } from "react"
 import { Bell, Globe, Lock, Moon, Palette, Save, Sun } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
