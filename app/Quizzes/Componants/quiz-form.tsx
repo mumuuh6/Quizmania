@@ -53,6 +53,7 @@ const formSchema = z.object({
         .number()
         .min(5, "Minimum 5 minutes")
         .max(60, "Maximum 60 minutes"),
+      created: z.string()
     })
     .required(),
 });
@@ -72,6 +73,7 @@ export default function QuizForm() {
         quantity: 10,
         timeLimit: 10,
         quizType: "mcq",
+        created:new Date().toISOString(),
       },
     },
   });

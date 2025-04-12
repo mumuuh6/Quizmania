@@ -1,81 +1,34 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import axios from "axios"
 import { Eye, Edit, Trash2 } from "lucide-react"
+import { useEffect, useState } from "react"
 
-interface QuizItem {
-  id: string
-  title: string
-  category: string
-  author: string
-  status: "published" | "draft" | "archived"
-  createdAt: string
-  questions: number
-  difficulty: "easy" | "medium" | "hard"
-}
 
-const recentQuizzes: QuizItem[] = [
-  {
-    id: "q1",
-    title: "Basic Mathematics",
-    category: "Math",
-    author: "John Doe",
-    status: "published",
-    createdAt: "2023-06-15",
-    questions: 20,
-    difficulty: "easy",
-  },
-  {
-    id: "q2",
-    title: "World Geography",
-    category: "Geography",
-    author: "Sarah Johnson",
-    status: "published",
-    createdAt: "2023-06-12",
-    questions: 25,
-    difficulty: "medium",
-  },
-  {
-    id: "q3",
-    title: "Computer Science Fundamentals",
-    category: "Computer",
-    author: "Michael Brown",
-    status: "draft",
-    createdAt: "2023-06-08",
-    questions: 30,
-    difficulty: "hard",
-  },
-  {
-    id: "q4",
-    title: "English Literature",
-    category: "English",
-    author: "Emily Wilson",
-    status: "published",
-    createdAt: "2023-06-05",
-    questions: 20,
-    difficulty: "medium",
-  },
-  {
-    id: "q5",
-    title: "World History",
-    category: "History",
-    author: "Robert Garcia",
-    status: "archived",
-    createdAt: "2023-06-01",
-    questions: 25,
-    difficulty: "medium",
-  },
-]
 
 export function RecentQuizzes() {
+  const [recentQuizzes,setRecentQuizzes]=useState([])
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
+        console.log("response from dashboard", response.data)
+        setRecentQuizzes(response.data.quizzes)
+      } catch (err) {
+        console.error("Failed to fetch Admin stats:", err)
+      }
+    }
+
+    fetchStats()
+  }, [])
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Author</TableHead>
+            <TableHead>Topic</TableHead>
+            <TableHead>Author Email</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Questions</TableHead>
             <TableHead>Difficulty</TableHead>
@@ -84,31 +37,30 @@ export function RecentQuizzes() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recentQuizzes.map((quiz) => (
-            <TableRow key={quiz.id}>
-              <TableCell className="font-medium">{quiz.title}</TableCell>
-              <TableCell>{quiz.category}</TableCell>
-              <TableCell>{quiz.author}</TableCell>
+          {recentQuizzes.map((quiz, index) => (
+            <TableRow key={index} >
+              <TableCell className="font-medium capitalize">{quiz?.quizCriteria?.topic}</TableCell>
+              <TableCell>{quiz?.user}</TableCell>
               <TableCell>
                 <Badge
-                  variant={quiz.status === "published" ? "default" : quiz.status === "draft" ? "secondary" : "outline"}
+                  variant={quiz.status === "solved" ? "default" : "destructive"}
                   className="capitalize"
                 >
-                  {quiz.status}
+                  {quiz?.status || "Not Solved"}
                 </Badge>
               </TableCell>
-              <TableCell>{quiz.questions}</TableCell>
+              <TableCell>{quiz?.parsedQuizData?.length}</TableCell>
               <TableCell>
                 <Badge
                   variant={
-                    quiz.difficulty === "easy" ? "outline" : quiz.difficulty === "medium" ? "secondary" : "default"
+                    quiz?.quizCriteria?.difficulty === "easy" ? "outline" : quiz?.quizCriteria?.difficulty === "medium" ? "secondary" : "default"
                   }
                   className="capitalize"
                 >
-                  {quiz.difficulty}
+                  {quiz?.quizCriteria?.difficulty}
                 </Badge>
               </TableCell>
-              <TableCell>{quiz.createdAt}</TableCell>
+              <TableCell>{quiz?.quizCriteria?.created}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
                   <Button variant="ghost" size="icon">
