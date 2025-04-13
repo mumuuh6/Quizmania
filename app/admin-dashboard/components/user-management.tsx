@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Search, Filter, PlusCircle, Edit, Trash2, MoreHorizontal, UserCog, UserX, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -30,109 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-
-interface User {
-  id: string
-  name: string
-  email: string
-  role: "admin" | "moderator" | "user"
-  status: "active" | "inactive" | "pending"
-  joinDate: string
-  lastActive: string
-  quizzesTaken: number
-  avatar?: string
-}
-
-const users: User[] = [
-  {
-    id: "u1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "admin",
-    status: "active",
-    joinDate: "2023-01-15",
-    lastActive: "2023-06-20",
-    quizzesTaken: 42,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u2",
-    name: "Sarah Johnson",
-    email: "sarah.j@example.com",
-    role: "moderator",
-    status: "active",
-    joinDate: "2023-02-10",
-    lastActive: "2023-06-19",
-    quizzesTaken: 38,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u3",
-    name: "Michael Brown",
-    email: "michael.b@example.com",
-    role: "user",
-    status: "pending",
-    joinDate: "2023-03-05",
-    lastActive: "2023-06-15",
-    quizzesTaken: 12,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u4",
-    name: "Emily Wilson",
-    email: "emily.w@example.com",
-    role: "user",
-    status: "active",
-    joinDate: "2023-03-20",
-    lastActive: "2023-06-18",
-    quizzesTaken: 27,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u5",
-    name: "Robert Garcia",
-    email: "robert.g@example.com",
-    role: "user",
-    status: "inactive",
-    joinDate: "2023-04-12",
-    lastActive: "2023-05-30",
-    quizzesTaken: 8,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u6",
-    name: "Jennifer Lee",
-    email: "jennifer.l@example.com",
-    role: "moderator",
-    status: "active",
-    joinDate: "2023-04-25",
-    lastActive: "2023-06-20",
-    quizzesTaken: 31,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u7",
-    name: "David Miller",
-    email: "david.m@example.com",
-    role: "user",
-    status: "active",
-    joinDate: "2023-05-08",
-    lastActive: "2023-06-17",
-    quizzesTaken: 19,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "u8",
-    name: "Lisa Taylor",
-    email: "lisa.t@example.com",
-    role: "user",
-    status: "active",
-    joinDate: "2023-05-22",
-    lastActive: "2023-06-19",
-    quizzesTaken: 15,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-]
+import axios from "axios"
 
 export function UserManagement() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -140,20 +38,36 @@ export function UserManagement() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
+        setUsers(res.data.users) // Updated to use 'users' from API response
+      } catch (error) {
+        console.error("Failed to fetch stats", error)
+      }
+    }
+
+    fetchStats()
+  }, [])
 
   // Filter users based on search query and filters
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesRole = roleFilter === "all" || user.role === roleFilter
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter
+    const matchesStatus = statusFilter === "all" || user.userStatus === statusFilter
     return matchesSearch && matchesRole && matchesStatus
   })
 
   // Toggle user selection
   const toggleUserSelection = (userId: string) => {
-    setSelectedUsers((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]))
+    setSelectedUsers((prev) =>
+      prev.includes(userId) ? prev.filter((_id) => _id !== userId) : [...prev, userId]
+    )
   }
 
   // Toggle all users selection
@@ -161,64 +75,17 @@ export function UserManagement() {
     if (selectedUsers.length === filteredUsers.length) {
       setSelectedUsers([])
     } else {
-      setSelectedUsers(filteredUsers.map((user) => user.id))
+      setSelectedUsers(filteredUsers.map((user) => user._id))
     }
+  }
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString()
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
-        <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>
-                Create a new user account. The user will receive an email with instructions to set their password.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input id="email" type="email" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Role
-                </Label>
-                <Select>
-                  <SelectTrigger id="role" className="col-span-3">
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="moderator">Moderator</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Create User</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -239,7 +106,6 @@ export function UserManagement() {
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="moderator">Moderator</SelectItem>
                   <SelectItem value="user">User</SelectItem>
                 </SelectContent>
               </Select>
@@ -249,9 +115,8 @@ export function UserManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="online">Online</SelectItem>
+                  <SelectItem value="offline">Offline</SelectItem>
                 </SelectContent>
               </Select>
               <Button variant="outline" size="sm" className="h-9">
@@ -265,10 +130,11 @@ export function UserManagement() {
           <Tabs defaultValue="all" className="space-y-4">
             <TabsList>
               <TabsTrigger value="all">All Users ({users.length})</TabsTrigger>
-              <TabsTrigger value="active">Active ({users.filter((u) => u.status === "active").length})</TabsTrigger>
-              <TabsTrigger value="pending">Pending ({users.filter((u) => u.status === "pending").length})</TabsTrigger>
-              <TabsTrigger value="inactive">
-                Inactive ({users.filter((u) => u.status === "inactive").length})
+              <TabsTrigger value="online">
+                Online ({users.filter((u) => u.userStatus === "online").length})
+              </TabsTrigger>
+              <TabsTrigger value="offline">
+                Offline ({users.filter((u) => u.userStatus === "offline").length})
               </TabsTrigger>
             </TabsList>
             <TabsContent value="all" className="space-y-4">
@@ -293,24 +159,21 @@ export function UserManagement() {
                   </TableHeader>
                   <TableBody>
                     {filteredUsers.map((user) => (
-                      <TableRow key={user.id}>
+                      <TableRow key={user._id}>
                         <TableCell>
                           <Checkbox
-                            checked={selectedUsers.includes(user.id)}
-                            onCheckedChange={() => toggleUserSelection(user.id)}
+                            checked={selectedUsers.includes(user._id)}
+                            onCheckedChange={() => toggleUserSelection(user._id)}
                           />
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar className="h-9 w-9">
-                              <AvatarImage src={user.avatar} alt={user.name} />
-                              <AvatarFallback>
-                                {user.name.charAt(0)}
-                                {user.name.split(" ")[1]?.charAt(0)}
-                              </AvatarFallback>
+                              <AvatarImage src={user.picture} className="object-cover" alt={user.username} />
+                              <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className="space-y-1">
-                              <p className="text-sm font-medium leading-none">{user.name}</p>
+                              <p className="text-sm font-medium leading-none">{user.username}</p>
                               <p className="text-xs text-muted-foreground">{user.email}</p>
                             </div>
                           </div>
@@ -327,17 +190,15 @@ export function UserManagement() {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={
-                              user.status === "active" ? "default" : user.status === "pending" ? "secondary" : "outline"
-                            }
+                            variant={user.userStatus === "online" ? "default" : "outline"}
                             className="capitalize"
                           >
-                            {user.status}
+                            {user.userStatus}
                           </Badge>
                         </TableCell>
-                        <TableCell>{user.joinDate}</TableCell>
-                        <TableCell>{user.lastActive}</TableCell>
-                        <TableCell>{user.quizzesTaken}</TableCell>
+                        <TableCell>{formatDate(user.creationTime)}</TableCell>
+                        <TableCell>{formatDate(user.lastLoginTime)}</TableCell>
+                        <TableCell>{user.totalQuizzes}</TableCell>
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -378,7 +239,7 @@ export function UserManagement() {
                 </Table>
               </div>
             </TabsContent>
-            <TabsContent value="active">
+            <TabsContent value="online">
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
@@ -397,23 +258,23 @@ export function UserManagement() {
                   </TableHeader>
                   <TableBody>
                     {users
-                      .filter((user) => user.status === "active")
+                      .filter((user) => user.userStatus === "online")
                       .map((user) => (
-                        <TableRow key={user.id}>
+                        <TableRow key={user._id}>
                           <TableCell>
-                            <Checkbox />
+                            <Checkbox
+                              checked={selectedUsers.includes(user._id)}
+                              onCheckedChange={() => toggleUserSelection(user._id)}
+                            />
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <Avatar className="h-9 w-9">
-                                <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback>
-                                  {user.name.charAt(0)}
-                                  {user.name.split(" ")[1]?.charAt(0)}
-                                </AvatarFallback>
+                                <AvatarImage src={user.picture} alt={user.username} />
+                                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
                               </Avatar>
                               <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">{user.name}</p>
+                                <p className="text-sm font-medium leading-none">{user.username}</p>
                                 <p className="text-xs text-muted-foreground">{user.email}</p>
                               </div>
                             </div>
@@ -430,17 +291,45 @@ export function UserManagement() {
                           </TableCell>
                           <TableCell>
                             <Badge variant="default" className="capitalize">
-                              {user.status}
+                              {user.userStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell>{user.joinDate}</TableCell>
-                          <TableCell>{user.lastActive}</TableCell>
-                          <TableCell>{user.quizzesTaken}</TableCell>
+                          <TableCell>{formatDate(user.creationTime)}</TableCell>
+                          <TableCell>{formatDate(user.lastLoginTime)}</TableCell>
+                          <TableCell>{user.totalQuizzes}</TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Actions</span>
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Actions</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem>
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  Edit User
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Mail className="mr-2 h-4 w-4" />
+                                  Send Email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <UserCog className="mr-2 h-4 w-4" />
+                                  Change Role
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive">
+                                  <UserX className="mr-2 h-4 w-4" />
+                                  Suspend User
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete User
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -448,7 +337,7 @@ export function UserManagement() {
                 </Table>
               </div>
             </TabsContent>
-            <TabsContent value="pending">
+            <TabsContent value="offline">
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
@@ -467,93 +356,23 @@ export function UserManagement() {
                   </TableHeader>
                   <TableBody>
                     {users
-                      .filter((user) => user.status === "pending")
+                      .filter((user) => user.userStatus === "offline")
                       .map((user) => (
-                        <TableRow key={user.id}>
+                        <TableRow key={user._id}>
                           <TableCell>
-                            <Checkbox />
+                            <Checkbox
+                              checked={selectedUsers.includes(user._id)}
+                              onCheckedChange={() => toggleUserSelection(user._id)}
+                            />
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <Avatar className="h-9 w-9">
-                                <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback>
-                                  {user.name.charAt(0)}
-                                  {user.name.split(" ")[1]?.charAt(0)}
-                                </AvatarFallback>
+                                <AvatarImage src={user.picture} alt={user.username} />
+                                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
                               </Avatar>
                               <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">{user.name}</p>
-                                <p className="text-xs text-muted-foreground">{user.email}</p>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                user.role === "admin" ? "default" : user.role === "moderator" ? "secondary" : "outline"
-                              }
-                              className="capitalize"
-                            >
-                              {user.role}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary" className="capitalize">
-                              {user.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{user.joinDate}</TableCell>
-                          <TableCell>{user.lastActive}</TableCell>
-                          <TableCell>{user.quizzesTaken}</TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Actions</span>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </TabsContent>
-            <TabsContent value="inactive">
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[40px]">
-                        <Checkbox />
-                      </TableHead>
-                      <TableHead>User</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Joined</TableHead>
-                      <TableHead>Last Active</TableHead>
-                      <TableHead>Quizzes</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users
-                      .filter((user) => user.status === "inactive")
-                      .map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell>
-                            <Checkbox />
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-9 w-9">
-                                <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback>
-                                  {user.name.charAt(0)}
-                                  {user.name.split(" ")[1]?.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">{user.name}</p>
+                                <p className="text-sm font-medium leading-none">{user.username}</p>
                                 <p className="text-xs text-muted-foreground">{user.email}</p>
                               </div>
                             </div>
@@ -570,17 +389,45 @@ export function UserManagement() {
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline" className="capitalize">
-                              {user.status}
+                              {user.userStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell>{user.joinDate}</TableCell>
-                          <TableCell>{user.lastActive}</TableCell>
-                          <TableCell>{user.quizzesTaken}</TableCell>
+                          <TableCell>{formatDate(user.creationTime)}</TableCell>
+                          <TableCell>{formatDate(user.lastLoginTime)}</TableCell>
+                          <TableCell>{user.totalQuizzes}</TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Actions</span>
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Actions</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem>
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  Edit User
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Mail className="mr-2 h-4 w-4" />
+                                  Send Email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <UserCog className="mr-2 h-4 w-4" />
+                                  Change Role
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive">
+                                  <UserX className="mr-2 h-4 w-4" />
+                                  Suspend User
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete User
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}
