@@ -24,6 +24,7 @@ export function RecentQuizzes() {
   }, [])
   return (
     <div className="rounded-md border">
+      {/* table */}
       <Table>
         <TableHeader>
           <TableRow>
