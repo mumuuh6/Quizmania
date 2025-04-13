@@ -1,12 +1,12 @@
+"use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-
-
 export function RecentUsers() {
-  const [recentUsers,setRecentUsers]=useState([])
+  const [recentUsers, setRecentUsers] = useState([])
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -20,33 +20,41 @@ export function RecentUsers() {
 
     fetchStats()
   }, [])
+
   return (
     <div className="space-y-4">
-      {recentUsers.slice(0,7).map((user) => (
-        <div key={user._id} className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src={user.picture} alt={user.username} className="object-cover" />
-              <AvatarFallback>
-                {user.username.charAt(0)}
-                {user.username.split(" ")[1]?.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">{user.username}</p>
-              <p className="text-xs text-muted-foreground">{user.email}</p>
-              <p className="text-xs text-muted-foreground">{user.creationTime}</p>
+      {recentUsers.slice(0, 7).map((user) => {
+        const lastActive = new Date(user.lastLoginTime)
+        const now = new Date()
+        const diffInMs = now.getTime() - lastActive.getTime()
+        const diffInHours = diffInMs / (1000 * 60 * 60)
+        const userStatus = diffInHours > 24 ? "offline" : "online"
+
+        return (
+          <div key={user._id} className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={user.picture} alt={user.username} className="object-cover" />
+                <AvatarFallback>
+                  {user.username.charAt(0)}
+                  {user.username.split(" ")[1]?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="space-y-1">
+                <p className="text-sm font-medium leading-none">{user.username}</p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
+                <p className="text-xs text-muted-foreground">{new Date(user.creationTime).toLocaleString()}</p>
+              </div>
             </div>
+            <Badge
+              variant={userStatus === "online" ? "default" : "secondary"}
+              className="capitalize"
+            >
+              {userStatus}
+            </Badge>
           </div>
-          <Badge
-            // variant={user.status === "active" ? "default" : user.status === "pending" ? "secondary" : "outline"}
-            variant="destructive"
-            className="capitalize"
-          >
-            Offline
-          </Badge>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
