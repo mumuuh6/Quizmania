@@ -52,7 +52,7 @@ export function AdminNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="grid items-start gap-2">
+    <nav className="flex flex-wrap md:fixed md:pt-6 pb-2">
       {navItems.map((item) => (
         <Link key={item.href} href={item.href}>
           <span
