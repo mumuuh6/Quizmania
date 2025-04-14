@@ -63,7 +63,7 @@ export function Navbar() {
 
   const handleSignOut = async () => {
     await signOut();
-    // router.push("/auth/signin"); // Redirect to login page after sign out
+    router.push("/auth/signin"); // Redirect to login page after sign out
   };
 
   React.useEffect(() => {
@@ -80,7 +80,8 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
   return (
-    <header className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 `}>
+    <header
+      className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 `}>
       <div className="container mx-auto flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 pl-2 md:pl-0">
           <Brain className="h-6 w-6 text-primary" />
@@ -101,8 +102,7 @@ export function Navbar() {
                       pathname === route.href
                         ? "text-primary"
                         : "text-muted-foreground"
-                    )}
-                  >
+                    )}>
                     {route.label}
                   </Link>
                 </PrivateRoute>
@@ -116,8 +116,7 @@ export function Navbar() {
                   pathname === route.href
                     ? "text-primary"
                     : "text-muted-foreground"
-                )}
-              >
+                )}>
                 {route.label}
               </Link>
             )
@@ -133,6 +132,7 @@ export function Navbar() {
                   <Button variant="outline">
                     <Avatar>
                       <AvatarImage
+                        className="object-cover"
                         src={session?.user?.image as string}
                         alt="userphoto"
                       />
@@ -147,12 +147,10 @@ export function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup
                     value={position}
-                    onValueChange={setPosition}
-                  >
+                    onValueChange={setPosition}>
                     <DropdownMenuRadioItem
                       className="cursor-pointer"
-                      value="dashboard"
-                    >
+                      value="dashboard">
                       <Link href="/dashboard">Dashboard</Link>
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
@@ -160,16 +158,14 @@ export function Navbar() {
               </DropdownMenu>
               <button
                 onClick={handleSignOut}
-                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
-              >
+                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md">
                 Log Out
               </button>
             </div>
           ) : (
             <Link
               href="/auth/signin"
-              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
-            >
+              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md">
               Login
             </Link>
           )}
@@ -241,13 +237,11 @@ export function Navbar() {
               animate={{ y: 0, borderRadius: "16px" }} // Move to the normal position and round shape
               exit={{ y: "100%", borderRadius: "0%" }} // Exit back to the bottom with square shape
               transition={{ type: "spring", stiffness: 120 }}
-              className="flex flex-col gap-6 pt-6 px-4"
-            >
+              className="flex flex-col gap-6 pt-6 px-4">
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
-              >
+                onClick={() => setIsOpen(false)}>
                 <Brain className="h-6 w-6 text-primary" />
                 <span className="text-xl font-bold">Quizmania</span>
               </Link>
@@ -264,8 +258,7 @@ export function Navbar() {
                             ? "text-primary"
                             : "text-muted-foreground"
                         )}
-                        onClick={() => setIsOpen(false)}
-                      >
+                        onClick={() => setIsOpen(false)}>
                         {route.label}
                       </Link>
                     </PrivateRoute>
@@ -279,8 +272,7 @@ export function Navbar() {
                           ? "text-primary"
                           : "text-muted-foreground"
                       )}
-                      onClick={() => setIsOpen(false)}
-                    >
+                      onClick={() => setIsOpen(false)}>
                       {route.label}
                     </Link>
                   )
@@ -303,8 +295,7 @@ export function Navbar() {
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full"
-                    >
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full">
                       Log Out
                     </button>
                   </div>
@@ -312,8 +303,7 @@ export function Navbar() {
                   <Link
                     href="/auth/signin"
                     className="mt-2"
-                    onClick={() => setIsOpen(false)}
-                  >
+                    onClick={() => setIsOpen(false)}>
                     <button className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full">
                       Login
                     </button>
