@@ -12,28 +12,26 @@ import { PerformanceAnalytics } from "./components/performance-analytics"
 import { QuizHistory } from "./components/quiz-history"
 import { Achievements } from "./components/achievements"
 import Link from "next/link"
-import axios from "axios"
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import UseAxiosNormal from "../hook/(axoisSecureNormal)/axiosNormal"
+import BrainLoading from "../components/brain-loading"
+// import { useEffect, useState } from "react"
 
 export default function DashboardPage() {
     const { data: session } = useSession()
-    const [userStats, setUserStats] = useState(null)
-
-    useEffect(() => {
-        const fetchStats = async () => {
-            if (!session?.user?.email) return
-            try {
-                const response = await axios.get(`https://quiz-mania-iota.vercel.app/user/stats/${session.user.email}`)
-                console.log("response from dashboard", response.data)
-                setUserStats(response.data)
-            } catch (err) {
-                console.error("Failed to fetch user stats:", err)
-            }
-        }
-
-        fetchStats()
-    }, [session?.user?.email])
+    const axiosInstanceNormal = UseAxiosNormal()
+   
+    const { data: userStats, isLoading, error } = useQuery({
+        queryKey: ['userStats', session?.user?.email],
+        queryFn: async () => {
+            const response = await axiosInstanceNormal.get(`/user/stats/${session?.user?.email}`)
+            return response.data
+        },
+        enabled: !!session?.user?.email,
+      });
+    
+      if (isLoading) return <BrainLoading />;
 
     return (
         <DashboardShell>
