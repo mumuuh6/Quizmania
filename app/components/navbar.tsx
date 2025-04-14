@@ -62,8 +62,7 @@ export function Navbar() {
   const [lastScrollY, setLastScrollY] = React.useState(0);
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push("/auth/signin"); // Redirect to login page after sign out
+    await signOut({callbackUrl: "/auth/signin"});
   };
 
   React.useEffect(() => {
@@ -82,7 +81,7 @@ export function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 `}>
-      <div className="container mx-auto flex h-16 items-center justify-between">
+      <div className="md:w-[95%] mx-auto flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 pl-2 md:pl-0">
           <Brain className="h-6 w-6 text-primary" />
           <span className="text-xl font-bold">Quizmania</span>
@@ -295,7 +294,7 @@ export function Navbar() {
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full">
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full cursor-pointer">
                       Log Out
                     </button>
                   </div>
