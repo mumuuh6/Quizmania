@@ -92,7 +92,7 @@ const quizzes = [
 export function FeaturedQuizzes() {
   return (
     <section id="featured-quizzes" className="py-16 md:py-24">
-      <div className="container mx-auto px-2">
+      <div className="md:w-[95%] mx-auto px-2">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Featured Quizzes
@@ -102,7 +102,7 @@ export function FeaturedQuizzes() {
             topics. Challenge yourself and expand your knowledge.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {quizzes.map((quiz, index) => (
             <QuizCard
               key={index}
