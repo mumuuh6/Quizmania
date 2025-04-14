@@ -54,6 +54,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
+import { usePathname } from "next/navigation";
 
 export function QuizManagement() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,6 +62,7 @@ export function QuizManagement() {
   const [selectedQuizzes, setSelectedQuizzes] = useState([]);
   const [isAddQuizOpen, setIsAddQuizOpen] = useState(false);
   const [quizzes, setQuizzes] = useState([]);
+  const location = usePathname();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -75,10 +77,11 @@ export function QuizManagement() {
           id: quiz._id,
           title: quiz.quizCriteria.topic,
           author: quiz.author || "Unknown", // Fallback if author is missing
-          status: quiz.status === "solved" ? "published" : quiz.status || "draft",
+          status:
+            quiz.status === "solved" ? "published" : quiz.status || "draft",
           questions: quiz.parsedQuizData.length,
           difficulty: normalizeDifficulty(quiz.quizCriteria.difficulty),
-          completions: quiz.status === "solved" ? 1 : 0,
+          completions: quiz.status === "solved" ? quiz.status : "Not Solved",
           avgScore: quiz.correctQuizAnswer
             ? Math.round(
                 (quiz.correctQuizAnswer / quiz.parsedQuizData.length) * 100
@@ -237,8 +240,7 @@ export function QuizManagement() {
             <div className="flex flex-wrap items-center gap-2">
               <Select
                 value={difficultyFilter}
-                onValueChange={setDifficultyFilter}
-              >
+                onValueChange={setDifficultyFilter}>
                 <SelectTrigger className="h-9 w-[130px]">
                   <SelectValue placeholder="Difficulty" />
                 </SelectTrigger>
@@ -326,8 +328,7 @@ export function QuizManagement() {
                                 ? "secondary"
                                 : "outline"
                             }
-                            className="capitalize"
-                          >
+                            className="capitalize">
                             {quiz.status}
                           </Badge>
                         </TableCell>
@@ -341,12 +342,11 @@ export function QuizManagement() {
                                 ? "secondary"
                                 : "default"
                             }
-                            className="capitalize"
-                          >
+                            className="capitalize">
                             {quiz.difficulty}
                           </Badge>
                         </TableCell>
-                        <TableCell>{quiz.completions}</TableCell>
+                        <TableCell className="capitalize">{quiz.completions}</TableCell>
                         <TableCell>
                           {quiz.avgScore > 0 ? (
                             <span
@@ -356,12 +356,11 @@ export function QuizManagement() {
                                   : quiz.avgScore >= 60
                                   ? "text-blue-600 font-medium"
                                   : "text-orange-600 font-medium"
-                              }
-                            >
+                              }>
                               {quiz.avgScore}%
                             </span>
                           ) : (
-                            <span className="text-muted-foreground">-</span>
+                            <span className="text-muted-foreground">0%</span>
                           )}
                         </TableCell>
                         <TableCell className="text-right">
@@ -430,7 +429,9 @@ export function QuizManagement() {
                           <TableCell>
                             <Checkbox
                               checked={selectedQuizzes.includes(quiz.id)}
-                              onCheckedChange={() => toggleQuizSelection(quiz.id)}
+                              onCheckedChange={() =>
+                                toggleQuizSelection(quiz.id)
+                              }
                             />
                           </TableCell>
                           <TableCell>
@@ -458,12 +459,11 @@ export function QuizManagement() {
                                   ? "secondary"
                                   : "default"
                               }
-                              className="capitalize"
-                            >
+                              className="capitalize">
                               {quiz.difficulty}
                             </Badge>
                           </TableCell>
-                          <TableCell>{quiz.completions}</TableCell>
+                          <TableCell className="capitalize">{quiz.completions}</TableCell>
                           <TableCell>
                             <span
                               className={
@@ -472,8 +472,7 @@ export function QuizManagement() {
                                   : quiz.avgScore >= 60
                                   ? "text-blue-600 font-medium"
                                   : "text-orange-600 font-medium"
-                              }
-                            >
+                              }>
                               {quiz.avgScore}%
                             </span>
                           </TableCell>
@@ -514,7 +513,9 @@ export function QuizManagement() {
                           <TableCell>
                             <Checkbox
                               checked={selectedQuizzes.includes(quiz.id)}
-                              onCheckedChange={() => toggleQuizSelection(quiz.id)}
+                              onCheckedChange={() =>
+                                toggleQuizSelection(quiz.id)
+                              }
                             />
                           </TableCell>
                           <TableCell>
@@ -542,8 +543,7 @@ export function QuizManagement() {
                                   ? "secondary"
                                   : "default"
                               }
-                              className="capitalize"
-                            >
+                              className="capitalize">
                               {quiz.difficulty}
                             </Badge>
                           </TableCell>
@@ -585,7 +585,9 @@ export function QuizManagement() {
                           <TableCell>
                             <Checkbox
                               checked={selectedQuizzes.includes(quiz.id)}
-                              onCheckedChange={() => toggleQuizSelection(quiz.id)}
+                              onCheckedChange={() =>
+                                toggleQuizSelection(quiz.id)
+                              }
                             />
                           </TableCell>
                           <TableCell>
@@ -613,8 +615,7 @@ export function QuizManagement() {
                                   ? "secondary"
                                   : "default"
                               }
-                              className="capitalize"
-                            >
+                              className="capitalize">
                               {quiz.difficulty}
                             </Badge>
                           </TableCell>
