@@ -7,11 +7,11 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden py-20 md:py-32 px-2">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background" />
-      <div className="container mx-auto relative z-10">
+      <div className="md:w-[95%] mx-auto relative z-10">
         <div className="grid gap-12 md:grid-cols-2 md:gap-16">
           <div className="flex flex-col justify-center space-y-6">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
                 Test Your Knowledge with AI-Powered Quizzes
               </h1>
               <p className="text-lg text-muted-foreground md:text-xl">

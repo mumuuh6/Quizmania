@@ -60,25 +60,24 @@ export default function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col">
       
-      <main className="flex-1 px-2">
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-muted/50 py-16 md:py-24">
-          <div className="container mx-auto">
+        <section className="bg-muted/50 py-16 md:py-24 px-2">
+          <div className="md:w-[95%] mx-auto">
             <div className="mx-auto max-w-3xl text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">
                 Contact Us
               </h1>
               <p className="mt-4 text-lg text-muted-foreground">
-                Have questions or feedback? We'd love to hear from you. Get in
-                touch with our team.
+              If you have any questions, suggestions, or feedback, we’d be absolutely thrilled to hear from you! Don’t hesitate to reach out — our team is always here and ready to connect with you.
               </p>
             </div>
           </div>
         </section>
 
         {/* Contact Form and Info */}
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto">
+        <section className="py-16 md:py-24 px-2">
+          <div className="md:w-[95%] mx-auto">
             <div className="grid gap-8 md:grid-cols-2 lg:gap-16">
               {/* Contact Information */}
               <div className="space-y-8">
@@ -221,8 +220,8 @@ export default function ContactPage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="bg-muted/50 py-16 md:py-24">
-          <div className="container mx-auto">
+        <section className="bg-muted/50 py-16 md:py-24 px-2">
+          <div className="md:w-[95%] mx-auto">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                 Frequently Asked Questions

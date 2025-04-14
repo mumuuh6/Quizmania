@@ -8,15 +8,14 @@ export default function AboutPage() {
       <main className="flex-1">
         {/* Hero Section  */}
         <section className="bg-muted/50 py-16 md:py-24  px-2">
-          <div className="container mx-auto">
+          <div className="md:w-[95%] mx-auto">
             <div className="grid gap-8 md:grid-cols-2 md:gap-8 justify-center items-center">
               <div>
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">
                   About Quizmania
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  We're on a mission to make learning fun, engaging, and
-                  personalized through the power of AI.
+                At QuizMania, our mission is to revolutionize the way people learn by transforming education into a more enjoyable, interactive, and tailored experience, all made possible through the innovative use of artificial intelligence.
                 </p>
               </div>
               <div className="flex items-center justify-center">
@@ -34,7 +33,7 @@ export default function AboutPage() {
 
         {/* Our Story */}
         <section className="py-16 md:py-24  px-2">
-          <div className="container mx-auto">
+          <div className="md:w-[95%] mx-auto">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                 Our Story
@@ -64,7 +63,7 @@ export default function AboutPage() {
 
         {/* Our Values */}
         <section className="bg-muted/50 py-16 md:py-24  px-2">
-          <div className="container mx-auto">
+          <div className="md:w-[95%] mx-auto">
             <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl">
               Our Values
             </h2>
@@ -99,7 +98,7 @@ export default function AboutPage() {
 
         {/* Team Section */}
         <section className="py-16 md:py-24  px-2">
-          <div className="container mx-auto">
+          <div className="md:w-[95%] mx-auto">
             <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl">
               Meet Our Team
             </h2>
