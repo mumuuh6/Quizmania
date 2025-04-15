@@ -5,15 +5,18 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "./components/theme-provider";
 import { Navbar } from "./components/navbar";
 import { Footer } from "./components/footer";
-import NextAuthSessionProvider from "../Providers/NextAuthSessionProvider"
+import NextAuthSessionProvider from "../Providers/NextAuthSessionProvider";
 import { ToastContainer } from "react-toastify";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import QueryProvider from "./providers/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Quizmania - AI-Powered Quiz App",
   description: "Test your knowledge with AI-generated quizzes",
   icons: {
-    icon: "/brain (1).png",}
+    icon: "/brain (1).png",
+  },
 };
 
 export default function RootLayout({
@@ -21,24 +24,29 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const queryClient = new QueryClient();
   return (
     <html lang="en" suppressHydrationWarning>
       <NextAuthSessionProvider>
-      <body className={inter.className} cz-shortcut-listen="true" >
-        <ThemeProvider>
-            <ToastContainer position="top-center"
+        <body className={inter.className} cz-shortcut-listen="true">
+          <ThemeProvider>
+            <ToastContainer
+              position="top-center"
               autoClose={1500}
               hideProgressBar={false}
               closeOnClick={true}
               pauseOnHover={true}
-              draggable={true} />
-            <div className="max-w-[97%] mx-auto">
-            <Navbar></Navbar>
-            <div className="min-h-[calc(100vh-300px)]">{children}</div>
+              draggable={true}
+            />
+            <div>
+              <Navbar></Navbar>
+              <QueryProvider>
+                <div className="min-h-[calc(100vh-300px)]">{children}</div>
+              </QueryProvider>
             </div>
             <Footer></Footer>
-        </ThemeProvider>
-      </body>
+          </ThemeProvider>
+        </body>
       </NextAuthSessionProvider>
     </html>
   );
