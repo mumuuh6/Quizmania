@@ -38,7 +38,7 @@ export function RecentQuizzes() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recentQuizzes.map((quiz, index) => (
+          {recentQuizzes.slice(0,5).map((quiz, index) => (
             <TableRow key={index} >
               <TableCell className="font-medium capitalize">{quiz?.quizCriteria?.topic}</TableCell>
               <TableCell>{quiz?.user}</TableCell>
