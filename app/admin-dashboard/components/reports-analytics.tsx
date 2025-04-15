@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Download, Calendar, BarChart2, TrendingUp, Users, FileText, CheckCircle, Clock } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -24,6 +24,7 @@ import {
   Cell,
   LineChart,
 } from "recharts"
+import axios from "axios"
 
 // Sample data for charts
 const userActivityData = [
@@ -73,6 +74,21 @@ const scoreDistributionData = [
 ]
 
 export function ReportsAnalytics() {
+  const [adminStats, setAdminStats] = useState(null)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
+        console.log("response from dashboard", response.data)
+        setAdminStats(response.data)
+      } catch (err) {
+        console.error("Failed to fetch Admin stats:", err)
+      }
+    }
+
+    fetchStats()
+  }, [])
   const [timeRange, setTimeRange] = useState("6months")
 
   return (
@@ -126,8 +142,8 @@ export function ReportsAnalytics() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">2,853</div>
-                <p className="text-xs text-muted-foreground">+180 from last month</p>
+                <div className="text-2xl font-bold">{adminStats?.users?.length}</div>
+                {/* <p className="text-xs text-muted-foreground">+180 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
@@ -136,8 +152,8 @@ export function ReportsAnalytics() {
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,245</div>
-                <p className="text-xs text-muted-foreground">+42 from last month</p>
+                <div className="text-2xl font-bold">{adminStats?.quizzes?.length}</div>
+                {/* <p className="text-xs text-muted-foreground">+42 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
@@ -146,8 +162,11 @@ export function ReportsAnalytics() {
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">87.4%</div>
-                <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+              <div className="text-2xl font-bold">
+                  {adminStats?.quizzes?.length > 0
+                    ? ((adminStats?.solvedQuizzes?.length || 0) / adminStats?.quizzes?.length * 100).toFixed(2) + "%"
+                    : "Not started yet"}
+                </div>
               </CardContent>
             </Card>
             <Card>
@@ -157,7 +176,7 @@ export function ReportsAnalytics() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">76.2%</div>
-                <p className="text-xs text-muted-foreground">+1.8% from last month</p>
+                {/* <p className="text-xs text-muted-foreground">+1.8% from last month</p> */}
               </CardContent>
             </Card>
           </div>
@@ -268,7 +287,7 @@ export function ReportsAnalytics() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+180</div>
+                <div className="text-2xl font-bold">{adminStats?.newUsersCount || 0}</div>
                 <p className="text-xs text-muted-foreground">This month</p>
               </CardContent>
             </Card>
@@ -278,7 +297,7 @@ export function ReportsAnalytics() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,429</div>
+                <div className="text-2xl font-bold">{adminStats?.users?.filter(user => user.userStatus === "online").length || 0}</div>
                 <p className="text-xs text-muted-foreground">+8.2% from last month</p>
               </CardContent>
             </Card>
@@ -384,8 +403,8 @@ export function ReportsAnalytics() {
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,245</div>
-                <p className="text-xs text-muted-foreground">+42 from last month</p>
+                <div className="text-2xl font-bold">{adminStats?.quizzes?.length}</div>
+                {/* <p className="text-xs text-muted-foreground">+42 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
