@@ -88,7 +88,7 @@ export default function AdminDashboardPage() {
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{adminStats?.users?.filter(user => user.userStatus === "online").length || 0}</div>
                 {/* <p className="text-xs text-muted-foreground">+8.2% from last month</p> */}
               </CardContent>
             </Card>
