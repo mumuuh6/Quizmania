@@ -25,19 +25,20 @@ import BrainLoading from "../components/brain-loading"
 // import { useEffect, useState } from "react"
 
 export default function DashboardPage() {
-    const { data: session } = useSession()
-    const axiosInstanceNormal = UseAxiosNormal()
-   
-    const { data: userStats, isLoading, error } = useQuery({
-        queryKey: ['userStats', session?.user?.email],
-        queryFn: async () => {
-            const response = await axiosInstanceNormal.get(`/user/stats/${session?.user?.email}`)
-            return response.data
-        },
-        enabled: !!session?.user?.email,
-      });
-    
-      if (isLoading) return <BrainLoading />;
+  const { data: session } = useSession()
+  const axiosInstanceNormal = UseAxiosNormal()
+
+  const { data: userStats, isLoading, error } = useQuery({
+    queryKey: ['userStats', session?.user?.email],
+    queryFn: async () => {
+      const response = await axiosInstanceNormal.get(`/user/stats/${session?.user?.email}`)
+      return response.data
+    },
+    enabled: !!session?.user?.email,
+  });
+
+  if (isLoading) return <BrainLoading />;
+
   return (
     <DashboardShell>
       <DashboardHeader
@@ -57,6 +58,7 @@ export default function DashboardPage() {
           </Link>
         </div>
       </DashboardHeader>
+
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -64,141 +66,93 @@ export default function DashboardPage() {
           <TabsTrigger value="history">History</TabsTrigger>
           <TabsTrigger value="achievements">Achievements</TabsTrigger>
         </TabsList>
+
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Quizzes
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Total Quizzes</CardTitle>
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {userStats?.totalQuiz ? userStats?.totalQuiz?.length : 0}
                 </div>
-                {/* <p className="text-xs text-muted-foreground">+8 from last month</p> */}
               </CardContent>
             </Card>
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Average Score
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Average Score</CardTitle>
                 <Award className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {userStats?.averageMark}
                 </div>
-                {/* <p className="text-xs text-muted-foreground">+5% from last month</p> */}
               </CardContent>
             </Card>
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Completion Rate
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {userStats?.solvedQuiz && userStats?.totalQuiz
-                    ? (
-                        (userStats.solvedQuiz.length /
-                          userStats.totalQuiz.length) *
-                        100
-                      ).toFixed(2) + "%"
-                    : "0.00%"}
+                  {userStats?.totalQuiz?.length > 0
+                    ? ((userStats?.solvedQuiz?.length || 0) / userStats?.totalQuiz?.length * 100).toFixed(2) + "%"
+                    : "Not started yet"}
                 </div>
-            </DashboardHeader>
-            <Tabs defaultValue="overview" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="performance">Performance</TabsTrigger>
-                    <TabsTrigger value="history">History</TabsTrigger>
-                    <TabsTrigger value="achievements">Achievements</TabsTrigger>
-                </TabsList>
-                <TabsContent value="overview" className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Quizzes</CardTitle>
-                                <BookOpen className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">{userStats?.totalQuiz?.length}</div>
-                                {/* <p className="text-xs text-muted-foreground">+8 from last month</p> */}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Average Score</CardTitle>
-                                <Award className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">{userStats?.averageMark}</div>
-                                {/* <p className="text-xs text-muted-foreground">+5% from last month</p> */}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
-                                <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">
-                                    {userStats?.totalQuiz?.length > 0
-                                        ? ((userStats?.solvedQuiz?.length || 0) / userStats?.totalQuiz?.length * 100).toFixed(2) + "%"
-                                        : "Not started yet"}
-                                </div>
+              </CardContent>
+            </Card>
 
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg. Time</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">14:32</div>
+              </CardContent>
+            </Card>
+          </div>
 
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <Card className="col-span-4">
+              <CardHeader>
+                <CardTitle>Quiz Performance</CardTitle>
+              </CardHeader>
+              <CardContent className="pl-2">
+                <QuizPerformance />
+              </CardContent>
+            </Card>
+            <Card className="col-span-3">
+              <CardHeader>
+                <CardTitle>Recent Quizzes</CardTitle>
+                <CardDescription>
+                  You've completed <span className="text-green-600">{userStats?.solvedQuiz?.length}</span> quizzes this month.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RecentQuizzes />
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
 
-                                {/* <p className="text-xs text-muted-foreground">+2% from last month</p> */}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Avg. Time</CardTitle>
-                                <Clock className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">14:32</div>
-                                {/* <p className="text-xs text-muted-foreground">-1:20 from last month</p> */}
-                            </CardContent>
-                        </Card>
-                    </div>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                        <Card className="col-span-4">
-                            <CardHeader>
-                                <CardTitle>Quiz Performance</CardTitle>
-                            </CardHeader>
-                            <CardContent className="pl-2">
-                                <QuizPerformance />
-                            </CardContent>
-                        </Card>
-                        <Card className="col-span-3">
-                            <CardHeader>
-                                <CardTitle>Recent Quizzes</CardTitle>
-                                <CardDescription>You've completed <span className="text-green-600">{userStats?.solvedQuiz?.length}</span> quizzes this month.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <RecentQuizzes />
-                            </CardContent>
-                        </Card>
-                    </div>
-                </TabsContent>
-                <TabsContent value="performance" className="space-y-6">
-                    <PerformanceAnalytics />
-                </TabsContent>
-                <TabsContent value="history" className="space-y-6">
-                    <QuizHistory />
-                </TabsContent>
-                <TabsContent value="achievements" className="space-y-6">
-                    <Achievements />
-                </TabsContent>
-            </Tabs>
-        </DashboardShell>
-    )
+        <TabsContent value="performance" className="space-y-6">
+          <PerformanceAnalytics />
+        </TabsContent>
+
+        <TabsContent value="history" className="space-y-6">
+          <QuizHistory />
+        </TabsContent>
+
+        <TabsContent value="achievements" className="space-y-6">
+          <Achievements />
+        </TabsContent>
+      </Tabs>
+    </DashboardShell>
+  )
 }

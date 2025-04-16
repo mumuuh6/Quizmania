@@ -20,7 +20,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { signIn, useSession } from "next-auth/react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import {
   Dialog,
@@ -30,12 +30,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 export default function Signin() {
   const router = useRouter();
   const { data, status } = useSession();
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   // Use useEffect to handle the data change
   useEffect(() => {
     const storeUserInfo = async () => {
@@ -80,8 +82,8 @@ export default function Signin() {
 
   const handleGithubSignIn = async () => {
     try {
-       await signIn("github");
-       toast.success(` You'r Successfully Logged in`);
+      await signIn("github");
+      toast.success(` You'r Successfully Logged in`);
       // data handling moved to useEffect
     } catch (error) {
       console.error("Error signing in with Github:", error);
@@ -119,41 +121,46 @@ export default function Signin() {
         toast.error("Password must contain at least one number.");
         return;
       }
-      if (typeof password === "string" && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        toast.error("Password must contain at least one special character (!@#$%^&* etc.).");
+      if (
+        typeof password === "string" &&
+        !/[!@#$%^&*(),.?":{}|<>]/.test(password)
+      ) {
+        toast.error(
+          "Password must contain at least one special character (!@#$%^&* etc.)."
+        );
         return;
       }
       console.log("Email:", email);
       console.log("Password:", password);
       const userInformation = {
         email: email,
-        password: password ,
+        password: password,
         lastLoginTime: new Date().toISOString(),
-      }
+      };
       try {
         const response = await axios.post(
-          `https://quiz-mania-iota.vercel.app/signin/${email}`
-        ,userInformation);
-        if(response?.data?.status) {
-          toast.success(`${response.data.message}`);
-          router.push("/auth/signin");
-        }
-        else if(!response?.data?.status) {
-          toast.error(`${response.data.message}`);
-        }
-        console.log("Response from Signin:", response.data);
-        if (response.data.status && response.data.userInfo) {
+          `https://quiz-mania-iota.vercel.app/signin/${email}`,
+          userInformation
+        );
+        if (response?.data?.status && response.data.userInfo) {
           const userInfo = response.data.userInfo;
           console.log("User info:", userInfo);
           //manually sign the user in nextauth
           await signIn("credentials", {
             email: userInfo.email,
             password: userInfo.password,
-            redirect: false,});
-            toast.success(` You'r Successfully Logged in`);
-          // Redirect to the home page or any otherr page after successful sign-in
-          router.push("/");
+            redirect: false,
+          });
+          // Redirect to the home page or any other page after successful sign-in
+          toast.success(`${response.data.message}`);
+          router.push(callbackUrl ? callbackUrl : "/");
+        } else if (!response?.data?.status) {
+          toast.error(`${response.data.message}`);
         }
+        console.log("Response from Signin:", response.data);
+        // if (response.data.status && response.data.userInfo) {
+
+        // }
       } catch (error) {
         console.error("Error signing in:", error);
       }
@@ -162,21 +169,21 @@ export default function Signin() {
   const handlesubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const form = (e.target as HTMLButtonElement).closest("form");
-    if(form){
+    if (form) {
       const formData = new FormData(form);
       const forgot_email = formData.get("forgot-email") as string;
-      const response =await axios.get(`https://quiz-mania-iota.vercel.app/reset-password/${forgot_email}`);
-      if(response?.data?.status){
+      const response = await axios.get(
+        `https://quiz-mania-iota.vercel.app/reset-password/${forgot_email}`
+      );
+      if (response?.data?.status) {
         toast.success(response.data.message);
-        setOpen(false)
-      }
-      else if(!response?.data?.status){
+        setOpen(false);
+      } else if (!response?.data?.status) {
         toast.error(response.data.message);
       }
-
     }
-  }
-console.log("data:", data ,status);
+  };
+  console.log("data:", data, status);
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
@@ -204,47 +211,52 @@ console.log("data:", data ,status);
               <Label htmlFor="password">Password</Label>
               <Input name="pass" id="password" type="password" required />
               <div className="text-right">
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="link" className="p-0 h-auto font-normal text-sm">
-                    Forgot password?
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <form>
-                    <DialogHeader>
-                      <DialogTitle>Forgot Password</DialogTitle>
-                      <DialogDescription>
-                        Enter your email address and we'll send you a link to reset your password
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="forgot-email">Email</Label>
-                        <Input
-                          id="forgot-email"
-                          type="forgot-email"
-                          name="forgot-email"
-                          placeholder="john@example.com"
-                          required
-                        />
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto font-normal text-sm">
+                      Forgot password?
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <form>
+                      <DialogHeader>
+                        <DialogTitle>Forgot Password</DialogTitle>
+                        <DialogDescription>
+                          Enter your email address and we'll send you a link to
+                          reset your password
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="forgot-email">Email</Label>
+                          <Input
+                            id="forgot-email"
+                            type="forgot-email"
+                            name="forgot-email"
+                            placeholder="john@example.com"
+                            required
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <DialogFooter>
-                      <Button onClick={handlesubmit} type="submit" className="w-full cursor-pointer">
-                        Send Reset Link
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
+                      <DialogFooter>
+                        <Button
+                          onClick={handlesubmit}
+                          type="submit"
+                          className="w-full cursor-pointer">
+                          Send Reset Link
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
             <Button
               onClick={handleSignInByEmail}
               type="submit"
-              className="w-full cursor-pointer"
-            >
+              className="w-full cursor-pointer">
               Sign In
             </Button>
           </form>
@@ -265,8 +277,7 @@ console.log("data:", data ,status);
               onClick={handleGithubSignIn}
               className="cursor-pointer"
               variant="outline"
-              size="icon"
-            >
+              size="icon">
               <Github className="h-4 w-4" />
             </Button>
             <Button variant="outline" size="icon">
@@ -276,14 +287,12 @@ console.log("data:", data ,status);
               variant="outline"
               className="cursor-pointer"
               size="icon"
-              onClick={handleGoogleSignIn}
-            >
+              onClick={handleGoogleSignIn}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="16"
                 width="15.25"
-                viewBox="0 0 488 512"
-              >
+                viewBox="0 0 488 512">
                 <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
               </svg>
             </Button>
@@ -294,8 +303,7 @@ console.log("data:", data ,status);
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
-              className="text-primary underline underline-offset-4 hover:text-primary/90 "
-            >
+              className="text-primary underline underline-offset-4 hover:text-primary/90 ">
               Sign up
             </Link>
           </p>
