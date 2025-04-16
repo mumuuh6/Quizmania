@@ -7,7 +7,6 @@ import { Navbar } from "./components/navbar";
 import { Footer } from "./components/footer";
 import NextAuthSessionProvider from "../Providers/NextAuthSessionProvider";
 import { ToastContainer } from "react-toastify";
-import { QueryClient } from "@tanstack/react-query";
 import QueryProvider from "./providers/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +23,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = new QueryClient();
   return (
     <html lang="en" suppressHydrationWarning>
       <NextAuthSessionProvider>

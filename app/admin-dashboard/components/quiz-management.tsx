@@ -55,6 +55,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function QuizManagement() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,6 +138,19 @@ export function QuizManagement() {
       setSelectedQuizzes(filteredQuizzes.map((quiz) => quiz.id));
     }
   };
+
+  // function handleDeleteQuiz(quizId) {
+  //   axios
+  //     .delete(`https://quiz-mania-iota.vercel.app/admin/quiz/${quizId}`)
+  //     .then((response) => {
+  //       console.log("Quiz deleted successfully:", response.data);
+  //       // Refresh the page to update the quiz list
+  //       window.location.reload();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting quiz:", error);
+  //     });
+  // }
 
   return (
     <div className="space-y-4">
@@ -240,7 +254,8 @@ export function QuizManagement() {
             <div className="flex flex-wrap items-center gap-2">
               <Select
                 value={difficultyFilter}
-                onValueChange={setDifficultyFilter}>
+                onValueChange={setDifficultyFilter}
+              >
                 <SelectTrigger className="h-9 w-[130px]">
                   <SelectValue placeholder="Difficulty" />
                 </SelectTrigger>
@@ -328,7 +343,8 @@ export function QuizManagement() {
                                 ? "secondary"
                                 : "outline"
                             }
-                            className="capitalize">
+                            className="capitalize"
+                          >
                             {quiz.status}
                           </Badge>
                         </TableCell>
@@ -342,11 +358,14 @@ export function QuizManagement() {
                                 ? "secondary"
                                 : "default"
                             }
-                            className="capitalize">
+                            className="capitalize"
+                          >
                             {quiz.difficulty}
                           </Badge>
                         </TableCell>
-                        <TableCell className="capitalize">{quiz.completions}</TableCell>
+                        <TableCell className="capitalize">
+                          {quiz.completions}
+                        </TableCell>
                         <TableCell>
                           {quiz.avgScore > 0 ? (
                             <span
@@ -356,7 +375,8 @@ export function QuizManagement() {
                                   : quiz.avgScore >= 60
                                   ? "text-blue-600 font-medium"
                                   : "text-orange-600 font-medium"
-                              }>
+                              }
+                            >
                               {quiz.avgScore}%
                             </span>
                           ) : (
@@ -374,8 +394,13 @@ export function QuizManagement() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuItem>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View Quiz
+                                <Link
+                                  href={`/admin-dashboard/quizzes/details/${quiz.id}`}
+                                  className="flex items-center gap-2"
+                                >
+                                  <Eye className="mr-2 h-4 w-4" />{" "}
+                                  <p>View Quiz</p>
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem>
                                 <Edit className="mr-2 h-4 w-4" />
@@ -390,7 +415,10 @@ export function QuizManagement() {
                                 Duplicate
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-destructive">
+                              <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={() => handleDeleteQuiz(quiz.id)}
+                              >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete Quiz
                               </DropdownMenuItem>
@@ -459,11 +487,14 @@ export function QuizManagement() {
                                   ? "secondary"
                                   : "default"
                               }
-                              className="capitalize">
+                              className="capitalize"
+                            >
                               {quiz.difficulty}
                             </Badge>
                           </TableCell>
-                          <TableCell className="capitalize">{quiz.completions}</TableCell>
+                          <TableCell className="capitalize">
+                            {quiz.completions}
+                          </TableCell>
                           <TableCell>
                             <span
                               className={
@@ -472,7 +503,8 @@ export function QuizManagement() {
                                   : quiz.avgScore >= 60
                                   ? "text-blue-600 font-medium"
                                   : "text-orange-600 font-medium"
-                              }>
+                              }
+                            >
                               {quiz.avgScore}%
                             </span>
                           </TableCell>
@@ -543,7 +575,8 @@ export function QuizManagement() {
                                   ? "secondary"
                                   : "default"
                               }
-                              className="capitalize">
+                              className="capitalize"
+                            >
                               {quiz.difficulty}
                             </Badge>
                           </TableCell>
@@ -615,7 +648,8 @@ export function QuizManagement() {
                                   ? "secondary"
                                   : "default"
                               }
-                              className="capitalize">
+                              className="capitalize"
+                            >
                               {quiz.difficulty}
                             </Badge>
                           </TableCell>
