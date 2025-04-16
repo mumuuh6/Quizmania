@@ -73,6 +73,7 @@ export default function Signin() {
   const handleGoogleSignIn = async () => {
     try {
       await signIn("google");
+      
       toast.success(` You'r Successfully Logged in`);
       // it will be handled by the useEffect
     } catch (error) {

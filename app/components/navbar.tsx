@@ -24,6 +24,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import UseAxiosNormal from "../hook/(axoisSecureNormal)/axiosNormal";
+import { useQuery } from "@tanstack/react-query";
 
 const routes = [
   {
@@ -42,6 +44,8 @@ const routes = [
     href: "/dashboard",
     label: "Dashboard",
     special: true,
+    type:"dashboard"
+    
   },
   {
     href: "/Quizzes",
@@ -57,7 +61,23 @@ export function Navbar() {
   const [position, setPosition] = React.useState("dashboard");
   const [isVisible, setIsVisible] = React.useState(true);
   const [lastScrollY, setLastScrollY] = React.useState(0);
+  const [checkRole, setCheckRole] = React.useState("user");
 
+  const axiosInstanceNormal=UseAxiosNormal();
+  
+  const { data: userinfos = [], refetch } = useQuery({
+      queryKey: ['user'],
+      queryFn: async () => {
+        const res = await axiosInstanceNormal.get(`/signin/${session?.user?.email}`);
+        setCheckRole(res?.data?.userInfo?.role);
+        console.log(res?.data?.userInfo?.role);
+        return res.data;
+      },
+      enabled:!!session?.user?.email
+    });
+    
+    
+ 
   const handleSignOut = async () => {
     await signOut({callbackUrl: "/auth/signin"});
   };
@@ -90,10 +110,10 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:gap-6">
           {routes.map((route) =>
-            route.special ? (
+            route.special? (
               <PrivateRoute key={route.href}>
                 <Link
-                  href={route.href}
+                  href={route.type=="dashboard"?(checkRole=="admin"? "/admin-dashboard":"/dashboard"):route.href}
                   className={cn(
                     "text-sm font-medium transition-colors hover:text-primary",
                     pathname === route.href
