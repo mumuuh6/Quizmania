@@ -20,8 +20,8 @@ import { Achievements } from "./components/achievements"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { useQuery } from "@tanstack/react-query"
-import UseAxiosNormal from "../hook/(axoisSecureNormal)/axiosNormal"
-import BrainLoading from "../components/brain-loading"
+import UseAxiosNormal from "../../hook/(axoisSecureNormal)/axiosNormal"
+import BrainLoading from "../../components/brain-loading"
 // import { useEffect, useState } from "react"
 
 export default function DashboardPage() {
