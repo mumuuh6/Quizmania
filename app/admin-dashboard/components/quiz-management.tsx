@@ -56,6 +56,7 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export function QuizManagement() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -139,18 +140,46 @@ export function QuizManagement() {
     }
   };
 
-  // function handleDeleteQuiz(quizId) {
-  //   axios
-  //     .delete(`https://quiz-mania-iota.vercel.app/admin/quiz/${quizId}`)
-  //     .then((response) => {
-  //       console.log("Quiz deleted successfully:", response.data);
-  //       // Refresh the page to update the quiz list
-  //       window.location.reload();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error deleting quiz:", error);
-  //     });
-  // }
+  function handleDeleteQuiz(quizId: string) {
+    toast.warn("Are you sure you want to delete this quiz?", {
+      position: "top-center",
+      autoClose: false,
+      closeOnClick: false,
+      draggable: false,
+      style: {
+        backgroundColor: "#fff",
+        color: "#000",
+        border: "1px solid #7C3AED",
+      },
+      progressStyle: { background: "#7C3AED" },
+      icon: "⚠️",
+      closeButton: true,
+      onClose: () => {
+        // Do nothing on close without confirmation
+      },
+      toastId: `confirm-delete-${quizId}`,
+      onClick: () => {
+        // If user clicks the toast, proceed to delete
+        axios
+          .delete(`https://quiz-mania-iota.vercel.app/delete-quiz/${quizId}`)
+          .then((response) => {
+            toast.success("Quiz deleted successfully!", {
+              position: "top-center",
+              style: { backgroundColor: "#7C3AED", color: "#fff" },
+            });
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          })
+          .catch((error) => {
+            toast.error("Failed to delete quiz.", {
+              position: "top-center",
+              style: { backgroundColor: "#ff4d4f", color: "#fff" },
+            });
+          });
+      },
+    });
+  }
 
   return (
     <div className="space-y-4">
