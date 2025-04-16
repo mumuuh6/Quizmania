@@ -8,6 +8,7 @@ import { Footer } from "./components/footer";
 import NextAuthSessionProvider from "../Providers/NextAuthSessionProvider";
 import { ToastContainer } from "react-toastify";
 import QueryProvider from "./providers/QueryProvider";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -25,27 +26,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <NextAuthSessionProvider>
-        <body className={inter.className} cz-shortcut-listen="true">
-          <ThemeProvider>
-            <ToastContainer
-              position="top-center"
-              autoClose={1500}
-              hideProgressBar={false}
-              closeOnClick={true}
-              pauseOnHover={true}
-              draggable={true}
-            />
-            <div>
-              <Navbar></Navbar>
-              <QueryProvider>
-                <div className="min-h-[calc(100vh-300px)]">{children}</div>
-              </QueryProvider>
-            </div>
-            <Footer></Footer>
-          </ThemeProvider>
-        </body>
-      </NextAuthSessionProvider>
+      <body className={inter.className} cz-shortcut-listen="true">
+        <NextAuthSessionProvider>
+          <QueryProvider>
+            <ThemeProvider>
+              <ToastContainer
+                position="top-center"
+                autoClose={1500}
+                hideProgressBar={false}
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={true}
+              />
+              <Navbar />
+              <div className="min-h-[calc(100vh-300px)]">{children}</div>
+              <Footer />
+            </ThemeProvider>
+          </QueryProvider>
+        </NextAuthSessionProvider>
+      </body>
     </html>
   );
 }
