@@ -33,7 +33,7 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
   }, [status, pathname, router]);
 
   if (status === "loading" || !hasChecked) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return <>{children}</>;
