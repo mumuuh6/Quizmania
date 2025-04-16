@@ -195,3 +195,7 @@ body {
 .shadow-glow {
   box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.3);
 }
+
+.bg-brand {
+  background-color: #884cee;
+}
