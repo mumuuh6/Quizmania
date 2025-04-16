@@ -118,7 +118,7 @@ export default function AboutPage() {
                 },
                 {
                   name: "Mahmuda Akter Mumu",
-                  role: "Frontend Developer",
+                  role: "Frontend Developerr",
                   bio: "Passionate about creating user-friendly interfaces and enhancing user experience.",
                   image: "https://lh3.googleusercontent.com/a/ACg8ocLmuPEKDHpuj5xJlTINwgZ46x3yiEAv1JN0OZGtOqbvpVWAnkY=s192-c-rg-br100",
                 },
