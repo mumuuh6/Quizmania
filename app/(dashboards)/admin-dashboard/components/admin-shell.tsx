@@ -8,7 +8,7 @@ interface AdminShellProps {
   children: React.ReactNode;
 }
 
-export function AdminShell({ children }: AdminShellProps) {
+ function AdminShell({ children }: AdminShellProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -42,3 +42,4 @@ export function AdminShell({ children }: AdminShellProps) {
     </div>
   );
 }
+export default AdminShell;
