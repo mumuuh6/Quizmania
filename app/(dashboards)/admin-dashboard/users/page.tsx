@@ -1,4 +1,5 @@
-import { UserManagement } from "../components/user-management"
+"use client"
+import  {UserManagement}  from "../components/user-management"
 import { AdminHeader } from "../components/admin-header"
 import  AdminShell  from "../components/admin-shell"
 

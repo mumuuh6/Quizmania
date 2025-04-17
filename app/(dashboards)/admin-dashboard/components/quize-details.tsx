@@ -68,9 +68,11 @@ function QuizDetailsPage() {
 
   const score =
     (quizData.correctQuizAnswer / quizData.parsedQuizData.length) * 100;
-  const formattedDate = isValid(new Date(quizData.quizCriteria.created))
-    ? format(new Date(quizData.quizCriteria.created), "dd MMM yyyy")
-    : "Invalid Date";
+
+    const formattedDate = quizData.quizCriteria.created
+    ? format(new Date(quizData.quizCriteria.created), "PPP")
+    : "N/A";
+
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -107,7 +109,7 @@ function QuizDetailsPage() {
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-brand" />
               <span className="font-medium">Time Limit:</span>{" "}
-              {quizData.quizCriteria.timeLimit} minutes
+              {quizData.quizCriteria.timeLimit}
             </div>
           </div>
         </CardContent>
