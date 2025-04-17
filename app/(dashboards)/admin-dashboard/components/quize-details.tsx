@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import {
   CheckCircle,
   XCircle,
@@ -68,9 +68,11 @@ function QuizDetailsPage() {
 
   const score =
     (quizData.correctQuizAnswer / quizData.parsedQuizData.length) * 100;
+
     const formattedDate = quizData.quizCriteria.created
     ? format(new Date(quizData.quizCriteria.created), "PPP")
     : "N/A";
+
 
   return (
     <div className="container mx-auto py-8 px-4">

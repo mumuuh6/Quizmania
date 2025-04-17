@@ -44,8 +44,7 @@ const routes = [
     href: "/dashboard",
     label: "Dashboard",
     special: true,
-    type:"dashboard"
-    
+    type: "dashboard",
   },
   {
     href: "/Quizzes",
@@ -63,23 +62,23 @@ export function Navbar() {
   const [lastScrollY, setLastScrollY] = React.useState(0);
   const [checkRole, setCheckRole] = React.useState("user");
 
-  const axiosInstanceNormal=UseAxiosNormal();
-  
+  const axiosInstanceNormal = UseAxiosNormal();
+
   const { data: userinfos = [], refetch } = useQuery({
-      queryKey: ['user'],
-      queryFn: async () => {
-        const res = await axiosInstanceNormal.get(`/signin/${session?.user?.email}`);
-        setCheckRole(res?.data?.userInfo?.role);
-        console.log(res?.data?.userInfo?.role);
-        return res.data;
-      },
-      enabled:!!session?.user?.email
-    });
-    
-    
- 
+    queryKey: ["user"],
+    queryFn: async () => {
+      const res = await axiosInstanceNormal.get(
+        `/signin/${session?.user?.email}`
+      );
+      setCheckRole(res?.data?.userInfo?.role);
+      console.log(res?.data?.userInfo?.role);
+      return res.data;
+    },
+    enabled: !!session?.user?.email,
+  });
+
   const handleSignOut = async () => {
-    await signOut({callbackUrl: "/auth/signin"});
+    await signOut({ callbackUrl: "/auth/signin" });
   };
 
   React.useEffect(() => {
@@ -98,8 +97,9 @@ export function Navbar() {
 
   return (
     <header
-
-      className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${isVisible ? "translate-y-0" : "-translate-y-full"} transition-transform duration-300`}
+      className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } transition-transform duration-300`}
     >
       <div className="w-[95%] mx-auto flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 pl-2 md:pl-0">
@@ -110,10 +110,16 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:gap-6">
           {routes.map((route) =>
-            route.special? (
+            route.special ? (
               <PrivateRoute key={route.href}>
                 <Link
-                  href={route.type=="dashboard"?(checkRole=="admin"? "/admin-dashboard":"/dashboard"):route.href}
+                  href={
+                    route.type == "dashboard"
+                      ? checkRole == "admin"
+                        ? "/admin-dashboard"
+                        : "/dashboard"
+                      : route.href
+                  }
                   className={cn(
                     "text-sm font-medium transition-colors hover:text-primary",
                     pathname === route.href
@@ -271,7 +277,9 @@ export function Navbar() {
                     </div>
                     <button
                       onClick={handleSignOut}
+
                       className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full cursor-pointer">
+
                       Log Out
                     </button>
                   </div>

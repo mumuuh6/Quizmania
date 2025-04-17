@@ -23,7 +23,7 @@ const navItems: NavItem[] = [
   },
   {
     title: "Quizzes",
-    href: "/Quizzes/create",
+    href: "/dashboard/quizzes",
     icon: FileText,
   },
   {
