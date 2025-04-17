@@ -74,6 +74,9 @@ export default function Signin() {
     try {
       await signIn("google");
       
+      
+
+
       toast.success(` You'r Successfully Logged in`);
       // it will be handled by the useEffect
     } catch (error) {
@@ -225,7 +228,7 @@ export default function Signin() {
                       <DialogHeader>
                         <DialogTitle>Forgot Password</DialogTitle>
                         <DialogDescription>
-                          Enter your email address and we'll send you a link to
+                          Enter your email address and we will send you a link to
                           reset your password
                         </DialogDescription>
                       </DialogHeader>
