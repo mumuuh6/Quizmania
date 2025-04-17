@@ -184,7 +184,7 @@ export function Navbar() {
               </DropdownMenu>
               <button
                 onClick={handleSignOut}
-                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+                className="text-sm font-medium bg-primary cursor-pointer text-white px-4 py-2 rounded-md"
               >
                 Log Out
               </button>
@@ -277,8 +277,9 @@ export function Navbar() {
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full cursor-pointer"
-                    >
+
+                      className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full cursor-pointer">
+
                       Log Out
                     </button>
                   </div>

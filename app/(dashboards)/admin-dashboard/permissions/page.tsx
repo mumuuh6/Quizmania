@@ -1,20 +1,24 @@
-import { AdminHeader } from "../components/admin-header"
-import  AdminShell  from "../components/admin-shell"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { AdminHeader } from "../components/admin-header";
+import AdminShell from "../components/admin-shell";
 
 export default function PermissionsPage() {
   return (
     <AdminShell>
-      <AdminHeader heading="Permissions" text="Manage user roles and access permissions."></AdminHeader>
+      <AdminHeader
+        heading="Permissions"
+        text="Manage user roles and access permissions."></AdminHeader>
 
       <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Role Permissions</CardTitle>
-            <CardDescription>Configure what each user role can access and modify</CardDescription>
+            <CardDescription>
+              Configure what each user role can access and modify
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -112,7 +116,9 @@ export default function PermissionsPage() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="font-medium">Manage Permissions</TableCell>
+                  <TableCell className="font-medium">
+                    Manage Permissions
+                  </TableCell>
                   <TableCell>
                     <Switch defaultChecked disabled />
                   </TableCell>
@@ -151,7 +157,9 @@ export default function PermissionsPage() {
                     <Badge variant="default">Admin</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200">
                       Active
                     </Badge>
                   </TableCell>
@@ -163,7 +171,9 @@ export default function PermissionsPage() {
                     <Badge variant="secondary">Moderator</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200">
                       Active
                     </Badge>
                   </TableCell>
@@ -175,7 +185,9 @@ export default function PermissionsPage() {
                     <Badge variant="secondary">Moderator</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200">
                       Active
                     </Badge>
                   </TableCell>
@@ -187,7 +199,9 @@ export default function PermissionsPage() {
                     <Badge variant="outline">User</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-yellow-50 text-yellow-700 border-yellow-200">
                       Pending
                     </Badge>
                   </TableCell>
@@ -199,7 +213,9 @@ export default function PermissionsPage() {
                     <Badge variant="outline">User</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200">
                       Active
                     </Badge>
                   </TableCell>
@@ -210,5 +226,5 @@ export default function PermissionsPage() {
         </Card>
       </div>
     </AdminShell>
-  )
+  );
 }
