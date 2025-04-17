@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Search,
   Filter,
@@ -54,56 +54,73 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function QuizManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [selectedQuizzes, setSelectedQuizzes] = useState([]);
   const [isAddQuizOpen, setIsAddQuizOpen] = useState(false);
-  const [quizzes, setQuizzes] = useState([]);
-  const location = usePathname();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [quizToDelete, setQuizToDelete] = useState(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await axios.get(
-          "https://quiz-mania-iota.vercel.app/admin/stats"
-        );
-        const { quizzes: rawQuizzes } = res.data;
+  // Fetch quizzes using TanStack Query
+  const { data: quizzes = [], isLoading } = useQuery({
+    queryKey: ["quizzes"],
+    queryFn: async () => {
+      const res = await axios.get(
+        "https://quiz-mania-iota.vercel.app/admin/stats"
+      );
+      const { quizzes: rawQuizzes } = res.data;
 
-        // Transform JSON data to match component's expected quiz structure
-        const transformedQuizzes = rawQuizzes.map((quiz) => ({
-          id: quiz._id,
-          title: quiz.quizCriteria.topic,
-          author: quiz.author || "Unknown", // Fallback if author is missing
-          status:
-            quiz.status === "solved" ? "published" : quiz.status || "draft",
-          questions: quiz.parsedQuizData.length,
-          difficulty: normalizeDifficulty(quiz.quizCriteria.difficulty),
-          completions: quiz.status === "solved" ? quiz.status : "Not Solved",
-          avgScore: quiz.correctQuizAnswer
-            ? Math.round(
-                (quiz.correctQuizAnswer / quiz.parsedQuizData.length) * 100
-              )
-            : 0,
-          updatedAt: quiz.quizCriteria.created
-            ? new Date(quiz.quizCriteria.created).toLocaleDateString()
-            : new Date().toLocaleDateString(),
-        }));
+      return rawQuizzes.map((quiz) => ({
+        id: quiz._id,
+        title: quiz.quizCriteria.topic,
+        author: quiz.author || "Unknown",
+        status: quiz.status === "solved" ? "published" : quiz.status || "draft",
+        questions: quiz.parsedQuizData.length,
+        difficulty: normalizeDifficulty(quiz.quizCriteria.difficulty),
+        completions: quiz.status === "solved" ? quiz.status : "Not Solved",
+        avgScore: quiz.correctQuizAnswer
+          ? Math.round(
+              (quiz.correctQuizAnswer / quiz.parsedQuizData.length) * 100
+            )
+          : 0,
+        updatedAt: quiz.quizCriteria.created
+          ? new Date(quiz.quizCriteria.created).toLocaleDateString()
+          : new Date().toLocaleDateString(),
+      }));
+    },
+  });
 
-        setQuizzes(transformedQuizzes);
-      } catch (error) {
-        console.error("Failed to fetch stats", error);
-      }
-    };
+  // Mutation for deleting a quiz
+  const deleteQuizMutation = useMutation({
+    mutationFn: (quizId: string) =>
+      axios.delete(`https://quiz-mania-iota.vercel.app/delete-quiz/${quizId}`),
+    onSuccess: (_, quizId) => {
+      // Update the quizzes cache
+      queryClient.setQueryData(["quizzes"], (oldQuizzes) =>
+        oldQuizzes.filter((quiz) => quiz.id !== quizId)
+      );
+      toast.success("Quiz deleted successfully!", {
+        position: "top-center",
+        style: { backgroundColor: "#7C3AED", color: "#fff" },
+      });
+      setIsDeleteDialogOpen(false);
+      setQuizToDelete(null);
+    },
+    onError: () => {
+      toast.error("Failed to delete quiz.", {
+        position: "top-center",
+        style: { backgroundColor: "#ff4d4f", color: "#fff" },
+      });
+    },
+  });
 
-    fetchStats();
-  }, []);
-
-  // Normalize difficulty to match filter options
+  // Normalize difficulty
   const normalizeDifficulty = (difficulty) => {
     const difficultyMap = {
       Easy: "easy",
@@ -112,7 +129,7 @@ export function QuizManagement() {
     return difficultyMap[difficulty] || difficulty.toLowerCase();
   };
 
-  // Filter quizzes based on search query and difficulty
+  // Filter quizzes
   const filteredQuizzes = quizzes.filter((quiz) => {
     const matchesSearch =
       quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -140,45 +157,21 @@ export function QuizManagement() {
     }
   };
 
-  function handleDeleteQuiz(quizId: string) {
-    toast.warn("Are you sure you want to delete this quiz?", {
-      position: "top-center",
-      autoClose: false,
-      closeOnClick: false,
-      draggable: false,
-      style: {
-        backgroundColor: "#fff",
-        color: "#000",
-        border: "1px solid #7C3AED",
-      },
-      progressStyle: { background: "#7C3AED" },
-      icon: "⚠️",
-      closeButton: true,
-      onClose: () => {
-        // Do nothing on close without confirmation
-      },
-      toastId: `confirm-delete-${quizId}`,
-      onClick: () => {
-        // If user clicks the toast, proceed to delete
-        axios
-          .delete(`https://quiz-mania-iota.vercel.app/delete-quiz/${quizId}`)
-          .then((response) => {
-            toast.success("Quiz deleted successfully!", {
-              position: "top-center",
-              style: { backgroundColor: "#7C3AED", color: "#fff" },
-            });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1500);
-          })
-          .catch((error) => {
-            toast.error("Failed to delete quiz.", {
-              position: "top-center",
-              style: { backgroundColor: "#ff4d4f", color: "#fff" },
-            });
-          });
-      },
-    });
+  // Handle delete quiz
+  const handleDeleteQuiz = (quizId) => {
+    setQuizToDelete(quizId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Confirm delete
+  const confirmDelete = () => {
+    if (quizToDelete) {
+      deleteQuizMutation.mutate(quizToDelete);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading quizzes...</div>;
   }
 
   return (
@@ -698,6 +691,37 @@ export function QuizManagement() {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this quiz? This action cannot be
+              undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsDeleteDialogOpen(false);
+                setQuizToDelete(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteQuizMutation.isLoading}
+            >
+              {deleteQuizMutation.isLoading ? "Deleting..." : "Confirm"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
