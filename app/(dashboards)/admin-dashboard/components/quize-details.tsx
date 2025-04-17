@@ -26,7 +26,7 @@ import { useParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useQuizData } from "@/app/hook/use-quiz-data";
 
-export default function QuizDetailsPage() {
+function QuizDetailsPage() {
   const params = useParams();
   const quizId = params.id as string;
   const { data: quizData, isLoading, isError, error } = useQuizData(quizId);
@@ -350,3 +350,4 @@ export default function QuizDetailsPage() {
     </div>
   );
 }
+export default QuizDetailsPage;

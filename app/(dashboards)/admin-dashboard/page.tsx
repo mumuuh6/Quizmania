@@ -2,9 +2,9 @@
 import { Activity, CheckCircle, FileText, Users } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { AdminHeader } from "./components/admin-header"
-import { AdminShell } from "./components/admin-shell"
+import  AdminShell  from "../admin-dashboard/components/admin-shell"
 import { RecentUsers } from "./components/recent-users"
 import { RecentQuizzes } from "./components/recent-quizzes"
 import { OverviewStats } from "./components/overview-stats"
@@ -15,25 +15,37 @@ import { AdminSettings } from "./components/admin-setting"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import axios from "axios"
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
+import { useQuery } from "@tanstack/react-query"
+import BrainLoading from "@/app/components/brain-loading"
 
 export default function AdminDashboardPage() {
   const { data: session } = useSession()
   const [adminStats, setAdminStats] = useState(null)
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
-        console.log("response from dashboard", response.data)
-        setAdminStats(response.data)
-      } catch (err) {
-        console.error("Failed to fetch Admin stats:", err)
+  // useEffect(() => {
+  //   const fetchStats = async () => {
+  //     try {
+  //       const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
+  //       console.log("response from dashboard", response.data)
+  //       setAdminStats(response.data)
+  //     } catch (err) {
+  //       console.error("Failed to fetch Admin stats:", err)
+  //     }
+  //   }
+
+  //   fetchStats()
+  // }, [])
+  const axiosInstanceNormal=UseAxiosNormal()
+  const { data: AdminStats = [], refetch,isLoading } = useQuery({
+      queryKey: ['adminStats'],
+      queryFn: async () => {
+        const res = await axiosInstanceNormal.get(`/admin/stats`);
+        setAdminStats(res.data)
+        return res.data;
       }
-    }
-
-    fetchStats()
-  }, [])
-
+    });
+    if(isLoading) return <div className=""><BrainLoading></BrainLoading></div>
   return (
     <AdminShell>
       <AdminHeader heading="Admin Dashboard" text="Manage your quiz platform and Admins."></AdminHeader>

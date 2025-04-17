@@ -1,14 +1,39 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Download, Calendar, BarChart2, TrendingUp, Users, FileText, CheckCircle, Clock } from "lucide-react"
+import { useEffect, useState } from "react";
+import {
+  Download,
+  Calendar,
+  BarChart2,
+  TrendingUp,
+  Users,
+  FileText,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { DatePickerWithRange } from "./date-range-picker"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { DatePickerWithRange } from "./date-range-picker";
 import {
   Bar,
   BarChart,
@@ -23,8 +48,8 @@ import {
   YAxis,
   Cell,
   LineChart,
-} from "recharts"
-import axios from "axios"
+} from "recharts";
+import axios from "axios";
 
 // Sample data for charts
 const userActivityData = [
@@ -34,7 +59,7 @@ const userActivityData = [
   { name: "Apr", newUsers: 210, activeUsers: 520, quizzesTaken: 1150 },
   { name: "May", newUsers: 250, activeUsers: 580, quizzesTaken: 1280 },
   { name: "Jun", newUsers: 280, activeUsers: 650, quizzesTaken: 1420 },
-]
+];
 
 const quizCategoryData = [
   { name: "Math", value: 35, color: "#4f46e5" },
@@ -43,13 +68,13 @@ const quizCategoryData = [
   { name: "History", value: 10, color: "#ec4899" },
   { name: "Geography", value: 8, color: "#f97316" },
   { name: "Computer", value: 7, color: "#10b981" },
-]
+];
 
 const difficultyDistributionData = [
   { name: "Easy", value: 45, color: "#10b981" },
   { name: "Medium", value: 35, color: "#f97316" },
   { name: "Hard", value: 20, color: "#ef4444" },
-]
+];
 
 const completionRateData = [
   { name: "Jan", rate: 68 },
@@ -58,7 +83,7 @@ const completionRateData = [
   { name: "Apr", rate: 79 },
   { name: "May", rate: 82 },
   { name: "Jun", rate: 87 },
-]
+];
 
 const scoreDistributionData = [
   { score: "0-10%", users: 5 },
@@ -71,30 +96,34 @@ const scoreDistributionData = [
   { score: "71-80%", users: 78 },
   { score: "81-90%", users: 65 },
   { score: "91-100%", users: 42 },
-]
+];
 
 export function ReportsAnalytics() {
-  const [adminStats, setAdminStats] = useState(null)
+  const [adminStats, setAdminStats] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
-        console.log("response from dashboard", response.data)
-        setAdminStats(response.data)
+        const response = await axios.get(
+          "https://quiz-mania-iota.vercel.app/admin/stats"
+        );
+        console.log("response from dashboard", response.data);
+        setAdminStats(response.data);
       } catch (err) {
-        console.error("Failed to fetch Admin stats:", err)
+        console.error("Failed to fetch Admin stats:", err);
       }
-    }
+    };
 
-    fetchStats()
-  }, [])
-  const [timeRange, setTimeRange] = useState("6months")
+    fetchStats();
+  }, []);
+  const [timeRange, setTimeRange] = useState("6months");
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-2xl font-bold tracking-tight">Reports & Analytics</h2>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Reports & Analytics
+        </h2>
         <div className="flex items-center gap-2">
           <Select defaultValue={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-[180px]">
@@ -138,40 +167,56 @@ export function ReportsAnalytics() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Users
+                </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{adminStats?.users?.length}</div>
+                <div className="text-2xl font-bold">
+                  {adminStats?.users?.length}
+                </div>
                 {/* <p className="text-xs text-muted-foreground">+180 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Quizzes</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Quizzes
+                </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{adminStats?.quizzes?.length}</div>
+                <div className="text-2xl font-bold">
+                  {adminStats?.quizzes?.length}
+                </div>
                 {/* <p className="text-xs text-muted-foreground">+42 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Completion Rate
+                </CardTitle>
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-              <div className="text-2xl font-bold">
+                <div className="text-2xl font-bold">
                   {adminStats?.quizzes?.length > 0
-                    ? ((adminStats?.solvedQuizzes?.length || 0) / adminStats?.quizzes?.length * 100).toFixed(2) + "%"
+                    ? (
+                        ((adminStats?.solvedQuizzes?.length || 0) /
+                          adminStats?.quizzes?.length) *
+                        100
+                      ).toFixed(2) + "%"
                     : "Not started yet"}
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Score</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Avg. Score
+                </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -185,7 +230,9 @@ export function ReportsAnalytics() {
             <Card className="col-span-4">
               <CardHeader>
                 <CardTitle>User Activity</CardTitle>
-                <CardDescription>New users, active users, and quizzes taken</CardDescription>
+                <CardDescription>
+                  New users, active users, and quizzes taken
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
@@ -196,8 +243,16 @@ export function ReportsAnalytics() {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="newUsers" name="New Users" fill="#4f46e5" />
-                    <Bar dataKey="activeUsers" name="Active Users" fill="#06b6d4" />
-                    <Bar dataKey="quizzesTaken" name="Quizzes Taken" fill="#10b981" />
+                    <Bar
+                      dataKey="activeUsers"
+                      name="Active Users"
+                      fill="#06b6d4"
+                    />
+                    <Bar
+                      dataKey="quizzesTaken"
+                      name="Quizzes Taken"
+                      fill="#10b981"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -205,7 +260,9 @@ export function ReportsAnalytics() {
             <Card className="col-span-3">
               <CardHeader>
                 <CardTitle>Quiz Categories</CardTitle>
-                <CardDescription>Distribution of quizzes by category</CardDescription>
+                <CardDescription>
+                  Distribution of quizzes by category
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
@@ -218,13 +275,17 @@ export function ReportsAnalytics() {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
                     >
                       {quizCategoryData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, "Percentage"]} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Percentage"]}
+                    />
                   </RechartsPieChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -235,7 +296,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Completion Rate Trend</CardTitle>
-                <CardDescription>Quiz completion rate over time</CardDescription>
+                <CardDescription>
+                  Quiz completion rate over time
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -243,8 +306,15 @@ export function ReportsAnalytics() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis domain={[0, 100]} />
-                    <Tooltip formatter={(value) => [`${value}%`, "Completion Rate"]} />
-                    <Line type="monotone" dataKey="rate" stroke="#4f46e5" strokeWidth={2} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Completion Rate"]}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="rate"
+                      stroke="#4f46e5"
+                      strokeWidth={2}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -252,7 +322,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Quiz Difficulty Distribution</CardTitle>
-                <CardDescription>Percentage of quizzes by difficulty level</CardDescription>
+                <CardDescription>
+                  Percentage of quizzes by difficulty level
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -265,13 +337,17 @@ export function ReportsAnalytics() {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
                     >
                       {difficultyDistributionData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, "Percentage"]} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Percentage"]}
+                    />
                   </RechartsPieChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -287,38 +363,56 @@ export function ReportsAnalytics() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{adminStats?.newUsersCount || 0}</div>
+                <div className="text-2xl font-bold">
+                  {adminStats?.monthWishUsers?.length || 0}
+                </div>
                 <p className="text-xs text-muted-foreground">This month</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Active Users
+                </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{adminStats?.users?.filter(user => user.userStatus === "online").length || 0}</div>
-                <p className="text-xs text-muted-foreground">+8.2% from last month</p>
+                <div className="text-2xl font-bold">
+                  {adminStats?.users?.filter(
+                    (user) => user.userStatus === "online"
+                  ).length || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  +8.2% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Retention Rate</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Retention Rate
+                </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">76.3%</div>
-                <p className="text-xs text-muted-foreground">+1.2% from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  +1.2% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Quizzes/User</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Avg. Quizzes/User
+                </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">8.4</div>
-                <p className="text-xs text-muted-foreground">+0.6 from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  +0.6 from last month
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -326,7 +420,9 @@ export function ReportsAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>User Growth</CardTitle>
-              <CardDescription>New user registrations over time</CardDescription>
+              <CardDescription>
+                New user registrations over time
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={350}>
@@ -336,8 +432,20 @@ export function ReportsAnalytics() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="newUsers" name="New Users" stroke="#4f46e5" strokeWidth={2} />
-                  <Line type="monotone" dataKey="activeUsers" name="Active Users" stroke="#10b981" strokeWidth={2} />
+                  <Line
+                    type="monotone"
+                    dataKey="newUsers"
+                    name="New Users"
+                    stroke="#4f46e5"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="activeUsers"
+                    name="Active Users"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -347,7 +455,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>User Engagement</CardTitle>
-                <CardDescription>Quizzes taken per user segment</CardDescription>
+                <CardDescription>
+                  Quizzes taken per user segment
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -363,7 +473,11 @@ export function ReportsAnalytics() {
                     <XAxis dataKey="segment" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="quizzes" name="Avg. Quizzes Taken" fill="#4f46e5" />
+                    <Bar
+                      dataKey="quizzes"
+                      name="Avg. Quizzes Taken"
+                      fill="#4f46e5"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -399,42 +513,58 @@ export function ReportsAnalytics() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Quizzes</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Quizzes
+                </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{adminStats?.quizzes?.length}</div>
+                <div className="text-2xl font-bold">
+                  {adminStats?.quizzes?.length}
+                </div>
                 {/* <p className="text-xs text-muted-foreground">+42 from last month</p> */}
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Quizzes Taken</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Quizzes Taken
+                </CardTitle>
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">24,853</div>
-                <p className="text-xs text-muted-foreground">+1,245 from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  +1,245 from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Completion Time</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Avg. Completion Time
+                </CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">14:32</div>
-                <p className="text-xs text-muted-foreground">-1:20 from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  -1:20 from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Popular Category</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Popular Category
+                </CardTitle>
                 <BarChart2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Math</div>
-                <p className="text-xs text-muted-foreground">35% of all quizzes</p>
+                <p className="text-xs text-muted-foreground">
+                  35% of all quizzes
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -443,7 +573,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Quiz Categories</CardTitle>
-                <CardDescription>Distribution of quizzes by category</CardDescription>
+                <CardDescription>
+                  Distribution of quizzes by category
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -456,13 +588,17 @@ export function ReportsAnalytics() {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
                     >
                       {quizCategoryData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, "Percentage"]} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Percentage"]}
+                    />
                   </RechartsPieChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -470,7 +606,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Quiz Difficulty Distribution</CardTitle>
-                <CardDescription>Percentage of quizzes by difficulty level</CardDescription>
+                <CardDescription>
+                  Percentage of quizzes by difficulty level
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -483,13 +621,17 @@ export function ReportsAnalytics() {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
                     >
                       {difficultyDistributionData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, "Percentage"]} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Percentage"]}
+                    />
                   </RechartsPieChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -499,7 +641,9 @@ export function ReportsAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Most Popular Quizzes</CardTitle>
-              <CardDescription>Quizzes with the highest completion rates</CardDescription>
+              <CardDescription>
+                Quizzes with the highest completion rates
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={350}>
@@ -518,7 +662,11 @@ export function ReportsAnalytics() {
                   <XAxis type="number" />
                   <YAxis type="category" dataKey="name" />
                   <Tooltip />
-                  <Bar dataKey="completions" name="Completions" fill="#4f46e5" />
+                  <Bar
+                    dataKey="completions"
+                    name="Completions"
+                    fill="#4f46e5"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -529,12 +677,16 @@ export function ReportsAnalytics() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Score</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Avg. Score
+                </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">76.2%</div>
-                <p className="text-xs text-muted-foreground">+1.8% from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  +1.8% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
@@ -544,27 +696,37 @@ export function ReportsAnalytics() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">82.5%</div>
-                <p className="text-xs text-muted-foreground">+2.3% from last month</p>
+                <p className="text-xs text-muted-foreground">
+                  +2.3% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Highest Avg. Score</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Highest Avg. Score
+                </CardTitle>
                 <BarChart2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Biology</div>
-                <p className="text-xs text-muted-foreground">82% average score</p>
+                <p className="text-xs text-muted-foreground">
+                  82% average score
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Lowest Avg. Score</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Lowest Avg. Score
+                </CardTitle>
                 <BarChart2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Physics</div>
-                <p className="text-xs text-muted-foreground">68% average score</p>
+                <p className="text-xs text-muted-foreground">
+                  68% average score
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -591,7 +753,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Performance by Category</CardTitle>
-                <CardDescription>Average scores across different categories</CardDescription>
+                <CardDescription>
+                  Average scores across different categories
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -608,7 +772,9 @@ export function ReportsAnalytics() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="category" />
                     <YAxis domain={[0, 100]} />
-                    <Tooltip formatter={(value) => [`${value}%`, "Average Score"]} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Average Score"]}
+                    />
                     <Bar dataKey="score" name="Average Score" fill="#4f46e5" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -617,7 +783,9 @@ export function ReportsAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Performance by Difficulty</CardTitle>
-                <CardDescription>Average scores across difficulty levels</CardDescription>
+                <CardDescription>
+                  Average scores across difficulty levels
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -631,7 +799,9 @@ export function ReportsAnalytics() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="difficulty" />
                     <YAxis domain={[0, 100]} />
-                    <Tooltip formatter={(value) => [`${value}%`, "Average Score"]} />
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, "Average Score"]}
+                    />
                     <Bar dataKey="score" name="Average Score">
                       <Cell fill="#10b981" />
                       <Cell fill="#f97316" />
@@ -645,5 +815,5 @@ export function ReportsAnalytics() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

@@ -107,19 +107,19 @@ export default function AboutPage() {
                 {
                   name: "Jaber Ahmed Riyan",
                   role: "Backend Developer",
-                  bio: "Former educator with a passion for AI and learning technologies.",
+                  bio: "Experienced backend developer specializing in Node.js and Express.",
                   image: "https://i.ibb.co.com/N27VRy61/Whats-App-Image-2024-06-16-at-21-17-30-339e9296.jpg",
                 },
                 {
                   name: "Ifratul Jannat Ritu",
                   role: "UI/UX Designer",
-                  bio: "AI researcher with expertise in natural language processing and adaptive learning.",
-                  image: "/placeholder.svg?height=300&width=300",
+                  bio: "Creative designer focused on enhancing user experience through intuitive design.",
+                  image: "https://i.ibb.co.com/8LJfHRcx/Whats-App-Image-2025-02-06-at-12-09-41-PM.jpg",
                 },
                 {
-                  name: "Mahmuda Akter mumu",
-                  role: "Frontend Developer",
-                  bio: "Educational content specialist with a background in curriculum development.",
+                  name: "Mahmuda Akter Mumu",
+                  role: "Frontend Developerr",
+                  bio: "Passionate about creating user-friendly interfaces and enhancing user experience.",
                   image: "https://lh3.googleusercontent.com/a/ACg8ocLmuPEKDHpuj5xJlTINwgZ46x3yiEAv1JN0OZGtOqbvpVWAnkY=s192-c-rg-br100",
                 },
                 {
