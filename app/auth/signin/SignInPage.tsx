@@ -31,6 +31,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import BrainLoading from "@/app/components/brain-loading";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
 
 export default function Signin() {
   const router = useRouter();
@@ -38,6 +40,7 @@ export default function Signin() {
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const axiosInstanceNormal = UseAxiosNormal()
   // Use useEffect to handle the data change
   useEffect(() => {
     const storeUserInfo = async () => {
@@ -49,8 +52,8 @@ export default function Signin() {
             email: data.user.email,
             picture: data.user.image,
           };
-          const response = await axios.post(
-            "https://quiz-mania-iota.vercel.app/signup",
+          const response = await axiosInstanceNormal.post(
+            "/signup",
             userInfo
           );
           console.log("User info stored:", response.data);
@@ -64,10 +67,10 @@ export default function Signin() {
     if (status === "authenticated") {
       storeUserInfo();
     }
-  }, [data, status, router]);
+  }, [data, status, router, axiosInstanceNormal]);
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <BrainLoading></BrainLoading>;
   }
 
   const handleGoogleSignIn = async () => {
@@ -225,7 +228,7 @@ export default function Signin() {
                       <DialogHeader>
                         <DialogTitle>Forgot Password</DialogTitle>
                         <DialogDescription>
-                          Enter your email address and we'll send you a link to
+                          Enter your email address and we&apos;ll send you a link to
                           reset your password
                         </DialogDescription>
                       </DialogHeader>
