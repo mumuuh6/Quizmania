@@ -1,6 +1,6 @@
 import { ReportsAnalytics } from "../components/reports-analytics"
 import { AdminHeader } from "../components/admin-header"
-import { AdminShell } from "../components/admin-shell"
+import  AdminShell  from "../components/admin-shell"
 
 export default function ReportsPage() {
   return (
