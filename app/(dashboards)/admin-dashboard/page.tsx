@@ -12,29 +12,14 @@ import  {UserManagement}  from "./components/user-management"
 import { QuizManagement } from "./components/quiz-management"
 import { ReportsAnalytics } from "./components/reports-analytics"
 import { AdminSettings } from "./components/admin-setting"
-import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 import { useQuery } from "@tanstack/react-query"
 import BrainLoading from "@/app/components/brain-loading"
 
 export default function AdminDashboardPage() {
-  const { data: session } = useSession()
+  
   const [adminStats, setAdminStats] = useState(null)
-
-  // useEffect(() => {
-  //   const fetchStats = async () => {
-  //     try {
-  //       const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
-  //       console.log("response from dashboard", response.data)
-  //       setAdminStats(response.data)
-  //     } catch (err) {
-  //       console.error("Failed to fetch Admin stats:", err)
-  //     }
-  //   }
-
-  //   fetchStats()
-  // }, [])
   const axiosInstanceNormal=UseAxiosNormal()
   const { data: AdminStats = [], refetch,isLoading } = useQuery({
       queryKey: ['adminStats'],
@@ -44,7 +29,7 @@ export default function AdminDashboardPage() {
         return res.data;
       }
     });
-    if(isLoading) return <div className=""><BrainLoading></BrainLoading></div>
+    if(isLoading) return <div><BrainLoading></BrainLoading></div>
   return (
     <AdminShell>
       <AdminHeader heading="Admin Dashboard" text="Manage your quiz platform and Admins."></AdminHeader>
