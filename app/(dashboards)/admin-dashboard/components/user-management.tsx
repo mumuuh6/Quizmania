@@ -53,7 +53,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
 import { useSession } from "next-auth/react";

@@ -49,7 +49,9 @@ import {
   Cell,
   LineChart,
 } from "recharts";
-import axios from "axios";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
+import { useQuery } from "@tanstack/react-query";
+
 
 // Sample data for charts
 const userActivityData = [
@@ -99,24 +101,34 @@ const scoreDistributionData = [
 ];
 
 export function ReportsAnalytics() {
-  const [adminStats, setAdminStats] = useState(null);
+  // const [adminStats, setAdminStats] = useState(null);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get(
-          "https://quiz-mania-iota.vercel.app/admin/stats"
-        );
-        console.log("response from dashboard", response.data);
-        setAdminStats(response.data);
-      } catch (err) {
-        console.error("Failed to fetch Admin stats:", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchStats = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://quiz-mania-iota.vercel.app/admin/stats"
+  //       );
+  //       console.log("response from dashboard", response.data);
+  //       setAdminStats(response.data);
+  //     } catch (err) {
+  //       console.error("Failed to fetch Admin stats:", err);
+  //     }
+  //   };
 
-    fetchStats();
-  }, []);
+  //   fetchStats();
+  // }, []);
+  const axiosInstanceNormal = UseAxiosNormal()
+
+  const { data:adminStats, isLoading, error } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const res = await axiosInstanceNormal.get("/admin/stats")
+      return res.data
+    }
+  })
   const [timeRange, setTimeRange] = useState("6months");
+
 
   return (
     <div className="space-y-6">

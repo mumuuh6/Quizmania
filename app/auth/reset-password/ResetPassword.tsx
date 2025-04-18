@@ -9,9 +9,10 @@ import { toast } from "react-toastify"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import axios from "axios"
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 
 export default function ResetPasswordPage() {
+  const axiosInstanceNormal = UseAxiosNormal()
     const [userSetId, setUserSetId] = useState<string | null>(null)
     const Router=useRouter()
   const searchParams=useSearchParams()
@@ -56,7 +57,7 @@ export default function ResetPasswordPage() {
     }
     console.log("passwrd",password)
     try{
-        const response= await axios.patch(`https://quiz-mania-iota.vercel.app/reset-password/${userSetId}`,{password:password}
+        const response= await axiosInstanceNormal.patch(`/reset-password/${userSetId}`,{password:password}
         )
         console.log(response.data);
         if(response.data.expired){
