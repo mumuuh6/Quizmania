@@ -1,8 +1,9 @@
 "use client";
+
 import { Badge } from "@/components/ui/badge";
-import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
 
 interface QuizItem {
   _id: string;
@@ -17,30 +18,32 @@ interface QuizItem {
 
 export function RecentQuizzes() {
   const { data: session } = useSession();
-  const [userStats, setUserStats] = useState<{ solvedQuiz: QuizItem[] } | null>(
-    null
-  );
+  const axiosInstanceNormal = UseAxiosNormal();
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      if (!session?.user?.email) return;
-      try {
-        const response = await axios.get(
-          `https://quiz-mania-iota.vercel.app/user/stats/${session.user.email}`
-        );
-        setUserStats(response.data);
-      } catch (err) {
-        console.error("Failed to fetch user stats:", err);
-      }
-    };
+  const { data: userStats, isLoading, error } = useQuery({
+    queryKey: ["userStats", session?.user?.email],
+    enabled: !!session?.user?.email, // Only fetch if email exists
+    queryFn: async () => {
+      const response = await axiosInstanceNormal.get(
+        `/user/stats/${session?.user?.email}`
+      );
+      return response.data;
+    },
+    // Optional: Define retry behavior or stale time if needed.
+  });
 
-    fetchStats();
-  }, [session?.user?.email]);
+  if (isLoading) {
+    return <p className="text-muted-foreground">Loading quizzes...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500">Failed to load quizzes.</p>;
+  }
 
   return (
     <div className="space-y-4">
       {Array.isArray(userStats?.solvedQuiz) &&
-        userStats?.solvedQuiz?.map((quiz) => {
+        userStats?.solvedQuiz.map((quiz) => {
           const total = quiz.correctQuizAnswer + quiz.wrongQuizAnswer;
           const score =
             total > 0 ? Math.round((quiz.correctQuizAnswer / total) * 100) : 0;

@@ -51,29 +51,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import BrainLoading from "@/app/components/brain-loading";
 
 export function QuizManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("all");
-  const [selectedQuizzes, setSelectedQuizzes] = useState([]);
+  const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
   const [isAddQuizOpen, setIsAddQuizOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState(null);
   const queryClient = useQueryClient();
-
+  const axiosInstanceNormal = UseAxiosNormal();
   // Fetch quizzes using TanStack Query
   const { data: quizzes = [], isLoading } = useQuery({
     queryKey: ["quizzes"],
     queryFn: async () => {
-      const res = await axios.get(
-        "https://quiz-mania-iota.vercel.app/admin/stats"
-      );
+      const res = await axiosInstanceNormal.get("/admin/stats");
       const { quizzes: rawQuizzes } = res.data;
 
       return rawQuizzes.map((quiz) => ({
@@ -99,7 +98,7 @@ export function QuizManagement() {
   // Mutation for deleting a quiz
   const deleteQuizMutation = useMutation({
     mutationFn: (quizId: string) =>
-      axios.delete(`https://quiz-mania-iota.vercel.app/delete-quiz/${quizId}`),
+      axiosInstanceNormal.delete(`/delete-quiz/${quizId}`),
     onSuccess: (_, quizId) => {
       // Update the quizzes cache
       queryClient.setQueryData(["quizzes"], (oldQuizzes) =>
@@ -171,7 +170,9 @@ export function QuizManagement() {
   };
 
   if (isLoading) {
-    return <div>Loading quizzes...</div>;
+    return <div>
+              <BrainLoading></BrainLoading>
+          </div>;
   }
 
   return (

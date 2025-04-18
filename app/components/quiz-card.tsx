@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import path from "path";
-import axios from "axios";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 import { time } from "console";
 import { use, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -45,6 +45,7 @@ export function QuizCard({
 }: QuizCardProps) {
   const [loading, setLoading] = useState(false);
   const [quizSetId, setQuizSetId] = useState(null);
+  const axiosInstanceNormal=UseAxiosNormal()
   const {data: session} = useSession();
   const Router=useRouter();
   const handlestartQuiz = async() => {
@@ -57,7 +58,7 @@ export function QuizCard({
       timeLimit: timeLimit,
     };
     try{
-      const response =await axios.post("https://quiz-mania-iota.vercel.app/generate-quiz",{
+      const response =await axiosInstanceNormal.post("https://quiz-mania-iota.vercel.app/generate-quiz",{
         user:session?.user?.email||"",
         quizCriteria: quizCriteria,
       });

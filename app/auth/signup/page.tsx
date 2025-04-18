@@ -17,12 +17,12 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 const image_hosting_key = process.env.NEXT_PUBLIC_IMGBB_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 export default function SignupPage() {
   const router = useRouter();
-
+const axiosInstanceNormal=UseAxiosNormal()
   const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -95,8 +95,8 @@ export default function SignupPage() {
       console.log(userData);
 
       try {
-        const response = await axios.post(
-          "https://quiz-mania-iota.vercel.app/signup",
+        const response = await axiosInstanceNormal.post(
+          "/signup",
           userData
         );
         if(response?.data?.status) {
