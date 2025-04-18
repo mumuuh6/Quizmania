@@ -1,5 +1,4 @@
 "use client"
-
 import {
   CartesianGrid,
   Legend,
@@ -10,41 +9,38 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { useEffect, useState } from "react"
-import axios from "axios"
+import { useQuery } from "@tanstack/react-query"
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 
 export function OverviewStats() {
-  const [chartData, setChartData] = useState([
-    { name: "Loading", users: 0, quizzes: 0, completions: 0 },
-  ])
+  const axiosInstanceNormal = UseAxiosNormal()
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
-        const { users, quizzes, solvedQuizzes } = res.data
-
-        const transformedData = [
-          {
-            name: "Total",
-            users: users.length,
-            quizzes: quizzes.length,
-            completions: solvedQuizzes.length,
-          },
-        ]
-
-        setChartData(transformedData)
-      } catch (error) {
-        console.error("Failed to fetch stats", error)
-      }
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const res = await axiosInstanceNormal.get("/admin/stats")
+      return res.data
     }
+  })
 
-    fetchStats()
-  }, [])
+  const chartData = data?.users && data?.quizzes && data?.solvedQuizzes ? [
+    {
+      name: "Total",
+      users: data.users.length,
+      quizzes: data.quizzes.length,
+      completions: data.solvedQuizzes.length,
+    }
+  ] : [
+    { name: "Loading", users: 0, quizzes: 0, completions: 0 }
+  ]
+
+  if (error) {
+    return <p style={{ color: "red" }}>Failed to load stats.</p>
+  }
 
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <LineChart data={chartData}>
+      <LineChart data={isLoading ? [{ name: "Loading", users: 0, quizzes: 0, completions: 0 }] : chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="name"

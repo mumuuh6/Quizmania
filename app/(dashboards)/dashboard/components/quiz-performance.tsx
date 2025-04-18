@@ -10,56 +10,57 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
 
 export function QuizPerformance() {
-  const [data, setData] = useState([]);
   const { data: session } = useSession();
+  const axiosInstanceNormal = UseAxiosNormal();
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await axios.get(`
-https://quiz-mania-iota.vercel.app/user/stats/${session?.user?.email}`);
-        const solvedQuizzes = res.data.solvedQuiz;
+  const { data = [], isLoading, error } = useQuery({
+    queryKey: ["userQuizStats", session?.user?.email],
+    enabled: !!session?.user?.email, // Only fetch if email exists
+    queryFn: async () => {
+      const res = await axiosInstanceNormal.get(
+        `/user/stats/${session?.user?.email}`
+      );
+      const solvedQuizzes = res.data.solvedQuiz;
 
-        // Group and structure topic-wise data
-        const topicMap: Record<
-          string,
-          { topic: string; total: number; correct: number }
-        > = {};
+      // Group and structure topic-wise data
+      const topicMap: Record<
+        string,
+        { topic: string; total: number; correct: number }
+      > = {};
 
-        solvedQuizzes.forEach((quiz: any) => {
-          const topic = quiz.quizCriteria.topic;
-          if (!topicMap[topic]) {
-            topicMap[topic] = {
-              topic,
-              total: 0,
-              correct: 0,
-            };
-          }
+      solvedQuizzes.forEach((quiz: any) => {
+        const topic = quiz.quizCriteria.topic;
+        if (!topicMap[topic]) {
+          topicMap[topic] = {
+            topic,
+            total: 0,
+            correct: 0,
+          };
+        }
+        topicMap[topic].total += quiz.parsedQuizData.length;
+        topicMap[topic].correct += quiz.correctQuizAnswer;
+      });
 
-          topicMap[topic].total += quiz.parsedQuizData.length;
-          topicMap[topic].correct += quiz.correctQuizAnswer;
-        });
+      return Object.values(topicMap).map((item) => ({
+        name: item.topic.charAt(0).toUpperCase() + item.topic.slice(1),
+        score: Math.round((item.correct / item.total) * 100),
+        average: Math.floor(Math.random() * 30) + 60, // Fake average
+      }));
+    },
+  });
 
-        // Convert to chart-ready format
-        const formatted = Object.values(topicMap).map((item) => ({
-          name: item.topic.charAt(0).toUpperCase() + item.topic.slice(1),
-          score: Math.round((item.correct / item.total) * 100),
-          average: Math.floor(Math.random() * 30) + 60, // Fake average (e.g., for now)
-        }));
+  if (isLoading) {
+    return <p className="text-muted-foreground">Loading quiz performance...</p>;
+  }
 
-        setData(formatted);
-      } catch (error) {
-        console.error("Error fetching user quiz stats:", error);
-      }
-    };
-
-    fetchStats();
-  }, [session?.user?.email]);
+  if (error) {
+    return <p className="text-red-500">Failed to load performance data.</p>;
+  }
 
   return (
     <ResponsiveContainer width="100%" height={350}>

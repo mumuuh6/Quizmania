@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 
 import {
   Form,
@@ -60,6 +60,7 @@ const formSchema = z.object({
 
 export default function QuizForm() {
   const router = useRouter();
+  const axiosInstanceNormal=UseAxiosNormal();
   const [loading, setLoading] = useState(false);
   const [quizSetId, setQuizSetId] = useState(null);
   const { data: session } = useSession();
@@ -85,7 +86,7 @@ export default function QuizForm() {
     setLoading(true);
     console.log(values); // Debugging purpose
     try {
-      const res = await axios.post(
+      const res = await axiosInstanceNormal.post(
         "https://quiz-mania-iota.vercel.app/generate-quiz",
         values
       );

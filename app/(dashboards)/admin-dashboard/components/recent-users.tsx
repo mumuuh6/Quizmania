@@ -1,29 +1,27 @@
 "use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import axios from "axios"
-import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 
 export function RecentUsers() {
-  const [recentUsers, setRecentUsers] = useState([])
+  const axiosInstanceNormal = UseAxiosNormal()
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get("https://quiz-mania-iota.vercel.app/admin/stats")
-        console.log("response from dashboard", response.data)
-        setRecentUsers(response.data.users)
-      } catch (err) {
-        console.error("Failed to fetch Admin stats:", err)
-      }
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const res = await axiosInstanceNormal.get("/admin/stats")
+      return res.data
     }
+  })
 
-    fetchStats()
-  }, [])
+  const recentUsers = data?.users || []
 
   return (
     <div className="space-y-4">
-      {recentUsers.slice(0, 7).map((user) => {
+      {isLoading && <p className="text-muted-foreground">Loading recent users...</p>}
+      {error && <p className="text-red-500">Failed to load users.</p>}
+      {!isLoading && !error && recentUsers.slice(0, 7).map((user) => {
         const lastActive = new Date(user?.lastLoginTime)
         const now = new Date()
         const diffInMs = now.getTime() - lastActive.getTime()
@@ -36,8 +34,8 @@ export function RecentUsers() {
               <Avatar className="h-9 w-9">
                 <AvatarImage src={user?.picture} alt={user?.username} className="object-cover" />
                 <AvatarFallback>
-                  {user?.username.charAt(0)}
-                  {user?.username.split(" ")[1]?.charAt(0)}
+                  {user?.username?.charAt(0)}
+                  {user?.username?.split(" ")[1]?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="space-y-1">

@@ -19,7 +19,6 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 import { signIn, useSession } from "next-auth/react";
-import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import {
@@ -145,8 +144,8 @@ export default function Signin() {
         lastLoginTime: new Date().toISOString(),
       };
       try {
-        const response = await axios.post(
-          `https://quiz-mania-iota.vercel.app/signin/${email}`,
+        const response = await axiosInstanceNormal.post(
+          `/signin/${email}`,
           userInformation
         );
         if (response?.data?.status && response.data.userInfo) {
@@ -179,8 +178,8 @@ export default function Signin() {
     if (form) {
       const formData = new FormData(form);
       const forgot_email = formData.get("forgot-email") as string;
-      const response = await axios.get(
-        `https://quiz-mania-iota.vercel.app/reset-password/${forgot_email}`
+      const response = await axiosInstanceNormal.get(
+        `/reset-password/${forgot_email}`
       );
       if (response?.data?.status) {
         toast.success(response.data.message);
