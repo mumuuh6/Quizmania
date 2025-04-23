@@ -39,56 +39,50 @@ export default function Signin() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   // Use useEffect to handle the data change
+
   useEffect(() => {
     const storeUserInfo = async () => {
-      if (data?.user) {
+      const loginMethod = localStorage.getItem("login-method");
+
+      if (status === "authenticated" && data?.user) {
         try {
-          //console.log("User data from data?.user:", data.user);
           const userInfo = {
             username: data.user.name,
             email: data.user.email,
             picture: data.user.image,
           };
-          const response = await axios.post(
-            "https://quiz-mania-iota.vercel.app/signup",
+
+          const isSocialLogin = loginMethod === "social";
+
+          await axios.post(
+            `http://localhost:5000/signup?sociallogin=${isSocialLogin}`,
             userInfo
           );
-          console.log("User info stored:", response.data);
-          router.push("/");
+          console.log("User info stored successfully.");
+
+          toast.success("Social login successful.");
+          router.push(callbackUrl ? callbackUrl : "/");
         } catch (error) {
-          console.error("Error storing user info:", error);
+          console.log("Error storing user info:", error);
         }
       }
     };
 
-    if (status === "authenticated") {
-      storeUserInfo();
-    }
-  }, [data, status, router]);
+    storeUserInfo();
+  }, [data, status, router, callbackUrl]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   const handleGoogleSignIn = async () => {
-    try {
-      await signIn("google");
-      
-      toast.success(` You'r Successfully Logged in`);
-      // it will be handled by the useEffect
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-    }
+    localStorage.setItem("login-method", "social");
+    await signIn("google");
   };
 
   const handleGithubSignIn = async () => {
-    try {
-      await signIn("github");
-      toast.success(` You'r Successfully Logged in`);
-      // data handling moved to useEffect
-    } catch (error) {
-      console.error("Error signing in with Github:", error);
-    }
+    localStorage.setItem("login-method", "social");
+    await signIn("github");
   };
 
   const handleSignInByEmail = async (
@@ -139,6 +133,7 @@ export default function Signin() {
         lastLoginTime: new Date().toISOString(),
       };
       try {
+        localStorage.setItem("login-method", "email");
         const response = await axios.post(
           `https://quiz-mania-iota.vercel.app/signin/${email}`,
           userInformation
@@ -184,7 +179,9 @@ export default function Signin() {
       }
     }
   };
+
   console.log("data:", data, status);
+
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
@@ -216,7 +213,8 @@ export default function Signin() {
                   <DialogTrigger asChild>
                     <Button
                       variant="link"
-                      className="p-0 h-auto font-normal text-sm">
+                      className="p-0 h-auto font-normal text-sm"
+                    >
                       Forgot password?
                     </Button>
                   </DialogTrigger>
@@ -225,8 +223,8 @@ export default function Signin() {
                       <DialogHeader>
                         <DialogTitle>Forgot Password</DialogTitle>
                         <DialogDescription>
-                          Enter your email address and we'll send you a link to
-                          reset your password
+                          Enter your email address and we&apos;ll send you a
+                          link to reset your password
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 py-4">
@@ -245,7 +243,8 @@ export default function Signin() {
                         <Button
                           onClick={handlesubmit}
                           type="submit"
-                          className="w-full cursor-pointer">
+                          className="w-full cursor-pointer"
+                        >
                           Send Reset Link
                         </Button>
                       </DialogFooter>
@@ -257,7 +256,8 @@ export default function Signin() {
             <Button
               onClick={handleSignInByEmail}
               type="submit"
-              className="w-full cursor-pointer">
+              className="w-full cursor-pointer"
+            >
               Sign In
             </Button>
           </form>
@@ -278,7 +278,8 @@ export default function Signin() {
               onClick={handleGithubSignIn}
               className="cursor-pointer"
               variant="outline"
-              size="icon">
+              size="icon"
+            >
               <Github className="h-4 w-4" />
             </Button>
             <Button variant="outline" size="icon">
@@ -288,12 +289,14 @@ export default function Signin() {
               variant="outline"
               className="cursor-pointer"
               size="icon"
-              onClick={handleGoogleSignIn}>
+              onClick={handleGoogleSignIn}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="16"
                 width="15.25"
-                viewBox="0 0 488 512">
+                viewBox="0 0 488 512"
+              >
                 <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
               </svg>
             </Button>
@@ -304,7 +307,8 @@ export default function Signin() {
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
-              className="text-primary underline underline-offset-4 hover:text-primary/90 ">
+              className="text-primary underline underline-offset-4 hover:text-primary/90 "
+            >
               Sign up
             </Link>
           </p>

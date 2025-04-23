@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Github, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,12 +36,18 @@ export default function SignupPage() {
         picture: formData.get("picture") as File,
         password: formData.get("password") as string,
         confirmPassword: formData.get("confirm-password") as string,
-      
       };
-      
-      if (!data.username || !data.email || !data.phone || !data.password || !data.confirmPassword || !data.picture) {
+
+      if (
+        !data.username ||
+        !data.email ||
+        !data.phone ||
+        !data.password ||
+        !data.confirmPassword ||
+        !data.picture
+      ) {
         toast.error("Please fill in all required fields.");
-        }
+      }
       if (data.password.length < 6) {
         toast.error("Password should be at least 6 characters.");
         return;
@@ -60,14 +65,15 @@ export default function SignupPage() {
         return;
       }
       if (!/[!@#$%^&*(),.?":{}|<>]/.test(data.password)) {
-        toast.error("Password must contain at least one special character (!@#$%^&* etc.).");
+        toast.error(
+          "Password must contain at least one special character (!@#$%^&* etc.)."
+        );
         return;
       }
       if (data.password !== data.confirmPassword) {
         toast.error("Passwords do not match.");
         return;
       }
-
 
       // Upload the image to imgbb
       const imageFile = data.picture;
@@ -99,15 +105,13 @@ export default function SignupPage() {
           "https://quiz-mania-iota.vercel.app/signup",
           userData
         );
-        if(response?.data?.status) {
+        if (response?.data?.status) {
           toast.success(`${response.data.message}`);
           router.push("/auth/signin");
-        }
-        else if(!response?.data?.status) {
+        } else if (!response?.data?.status) {
           toast.error(`${response.data.message}`);
         }
         console.log("Response from Sign-up:", response);
-        
       } catch (error) {
         console.error("Error signing up:", error);
       }
