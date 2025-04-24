@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Brain } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function BrainLoading() {
   const [progress, setProgress] = useState(0)
@@ -23,30 +24,55 @@ export default function BrainLoading() {
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[100vh] p-6 bg-[#f8f5ff] dark:bg-gray-900">
-      <div className="relative flex flex-col items-center gap-6 max-w-md mx-auto text-center">
-        <div className="relative">
-          <div className="absolute inset-0 bg-purple-100 dark:bg-purple-900/30 rounded-full opacity-20 dark:opacity-40 animate-pulse"></div>
-          <div className="relative animate-bounce" style={{ animationDuration: "2s" }}>
-            <Brain className="w-16 h-16 text-[#8A3FFC]" />
-          </div>
-        </div>
-
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Loading Your Quiz...</h2>
-        <p className="text-gray-600 dark:text-gray-400">Preparing your personalized AI-powered questions</p>
-
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
-          <div
-            className="bg-[#8A3FFC] h-2.5 rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-          <div className="animate-spin h-4 w-4 border-2 border-[#8A3FFC] border-t-transparent rounded-full"></div>
-          <span>Loading knowledge base...</span>
-        </div>
+    <div className="min-h-[100vh] bg-gray-400 dark:bg-gray-900">
+    {/* Main content */}
+    <main className="max-w-7xl mx-auto p-4 md:p-6">
+      {/* Hero section */}
+      <div className="mb-8">
+        <Skeleton className="h-[200px] w-full rounded-xl mb-4" />
+        <Skeleton className="h-8 w-[300px] mb-2" />
+        <Skeleton className="h-4 w-full max-w-2xl mb-6" />
+        <Skeleton className="h-4 w-full max-w-xl" />
       </div>
-    </div>
+
+      {/* Content grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="flex flex-col space-y-3">
+            <Skeleton className="h-[125px] w-full rounded-lg" />
+            <Skeleton className="h-5 w-[80%]" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-[90%]" />
+          </div>
+        ))}
+      </div>
+
+      {/* Additional content section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[200px]" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-[90%]" />
+          <Skeleton className="h-4 w-[95%]" />
+          <Skeleton className="h-8 w-[120px] rounded-md" />
+        </div>
+        <Skeleton className="h-[250px] rounded-xl" />
+      </div>
+    </main>
+
+    {/* Footer */}
+    <footer className="w-full p-6 border-t border-gray-200 dark:border-gray-800">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="space-y-3">
+            <Skeleton className="h-5 w-[100px]" />
+            <Skeleton className="h-4 w-[80px]" />
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-4 w-[90px]" />
+          </div>
+        ))}
+      </div>
+    </footer>
+  </div>
   )
 }

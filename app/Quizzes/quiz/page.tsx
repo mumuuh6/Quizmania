@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
-import axios from "axios";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 import LottieLoader from '../../../public/loader.json';
 
 import dynamic from "next/dynamic";
@@ -19,6 +19,7 @@ const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
 // }
 export default function QuizPage() {
   const searchParams = useSearchParams();
+  const axiosInstanceNormal=UseAxiosNormal()
   const router = useRouter();
   const difficulty = searchParams.get("difficulty") || "easy";
   const subject = searchParams.get("topic") || "general-knowledge";
@@ -43,8 +44,8 @@ export default function QuizPage() {
   
     useEffect(() => {
     // Fetch quiz data from the API
-    axios
-      .get(`https://quiz-mania-iota.vercel.app/get-quiz-set/${quizSetId}`)
+    axiosInstanceNormal
+      .get(`/get-quiz-set/${quizSetId}`)
       .then((res) => {
         const quizData = res.data?.parsedQuizData || [];
         console.log("Quiz data fetched successfully:", quizData);
@@ -111,7 +112,7 @@ export default function QuizPage() {
     console.log("Payload:", payload);
     setLoading(true);
 
-    axios
+    axiosInstanceNormal
       .post("https://quiz-mania-iota.vercel.app/answer/checking", payload, {
         headers: { "Content-Type": "application/json" },
       })
@@ -136,7 +137,6 @@ export default function QuizPage() {
   if (loading) {
     return <div className="w-sm md:w-xl mx-auto">
       <Lottieplayer animationData={LottieLoader} loop={true} />
-      
     </div>;
   }
 

@@ -71,6 +71,7 @@ export function Navbar() {
         `/signin/${session?.user?.email}`
       );
       setCheckRole(res?.data?.userInfo?.role);
+
       return res.data;
     },
     enabled: !!session?.user?.email,
@@ -96,7 +97,9 @@ export function Navbar() {
 
   return (
     <header
+
       className={`sticky top-0 z-50 w-full border-b bg-background/100 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${
+
         isVisible ? "translate-y-0" : "-translate-y-full"
       } transition-transform duration-300`}
     >
@@ -183,7 +186,7 @@ export function Navbar() {
               </DropdownMenu>
               <button
                 onClick={handleSignOut}
-                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md"
+                className="text-sm font-medium bg-primary cursor-pointer text-white px-4 py-2 rounded-md"
               >
                 Log Out
               </button>
@@ -276,8 +279,10 @@ export function Navbar() {
                     </div>
                     <button
                       onClick={handleSignOut}
+
                       className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-md w-full cursor-pointer"
                     >
+
                       Log Out
                     </button>
                   </div>

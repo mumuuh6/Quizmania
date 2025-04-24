@@ -19,7 +19,6 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 import { signIn, useSession } from "next-auth/react";
-import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import {
@@ -31,6 +30,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import BrainLoading from "@/app/components/brain-loading";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
 
 export default function Signin() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function Signin() {
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const axiosInstanceNormal = UseAxiosNormal()
   // Use useEffect to handle the data change
 
   useEffect(() => {
@@ -52,10 +54,10 @@ export default function Signin() {
             picture: data.user.image,
           };
 
-          const isSocialLogin = loginMethod === "social";
+         const isSocialLogin = loginMethod === "social";
+          const response = await axiosInstanceNormal.post(
+            `/signup?sociallogin=${isSocialLogin}`,
 
-          await axios.post(
-            `http://localhost:5000/signup?sociallogin=${isSocialLogin}`,
             userInfo
           );
           console.log("User info stored successfully.");
@@ -68,16 +70,20 @@ export default function Signin() {
       }
     };
 
+
     storeUserInfo();
   }, [data, status, router, callbackUrl]);
 
+
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <BrainLoading></BrainLoading>;
   }
 
   const handleGoogleSignIn = async () => {
+
     localStorage.setItem("login-method", "social");
     await signIn("google");
+
   };
 
   const handleGithubSignIn = async () => {
@@ -133,9 +139,11 @@ export default function Signin() {
         lastLoginTime: new Date().toISOString(),
       };
       try {
-        localStorage.setItem("login-method", "email");
-        const response = await axios.post(
-          `https://quiz-mania-iota.vercel.app/signin/${email}`,
+
+         localStorage.setItem("login-method", "email");
+        const response = await axiosInstanceNormal.post(
+          `/signin/${email}`,
+
           userInformation
         );
         if (response?.data?.status && response.data.userInfo) {
@@ -168,8 +176,8 @@ export default function Signin() {
     if (form) {
       const formData = new FormData(form);
       const forgot_email = formData.get("forgot-email") as string;
-      const response = await axios.get(
-        `https://quiz-mania-iota.vercel.app/reset-password/${forgot_email}`
+      const response = await axiosInstanceNormal.get(
+        `/reset-password/${forgot_email}`
       );
       if (response?.data?.status) {
         toast.success(response.data.message);
@@ -223,8 +231,11 @@ export default function Signin() {
                       <DialogHeader>
                         <DialogTitle>Forgot Password</DialogTitle>
                         <DialogDescription>
+
                           Enter your email address and we&apos;ll send you a
                           link to reset your password
+
+
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 py-4">
