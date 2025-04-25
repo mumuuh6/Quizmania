@@ -3,7 +3,7 @@ import { Brain } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-background">
+    <footer className="bg-muted/50 border-t bg-background">
       <div className="md:w-[95%] mx-auto py-8 md:py-12 px-2 md:px-0">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="flex flex-col gap-2">
