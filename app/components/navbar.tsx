@@ -51,6 +51,11 @@ const routes = [
     label: "Quiz",
     special: true,
   },
+  {
+    href: "/teacher/create-quiz",
+    label: "Teacher Quiz",
+    special: true,
+  },
 ];
 
 export function Navbar() {
@@ -129,6 +134,7 @@ export function Navbar() {
                 >
                   {route.label}
                 </Link>
+
               </PrivateRoute>
             ) : (
               <Link
