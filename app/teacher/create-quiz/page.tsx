@@ -304,7 +304,7 @@ export default function CreateQuizPage() {
   }
 
   return (
-    <div className="container py-8">
+    <div className="md:w-[95%] mx-auto py-8">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col space-y-6">
           <div className="flex items-center justify-between">
@@ -326,7 +326,7 @@ export default function CreateQuizPage() {
               <TabsList>
                 <TabsTrigger value="details">Quiz Details</TabsTrigger>
                 <TabsTrigger value="questions">Questions</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
+                
               </TabsList>
 
               <TabsContent value="details" className="space-y-4 pt-4">
@@ -370,10 +370,11 @@ export default function CreateQuizPage() {
                       <div className="space-y-2">
                         <Label htmlFor="difficulty">Difficulty</Label>
                         <Select
+                          
                           value={quiz.difficulty}
                           onValueChange={(value) => handleQuizChange("difficulty", value)}
                         >
-                          <SelectTrigger id="difficulty">
+                          <SelectTrigger id="difficulty" className="w-full">
                             <SelectValue placeholder="Select difficulty" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1176,7 +1177,7 @@ function QuizPreview({ quiz }: QuizPreviewProps) {
 
                 {question.explanation && (
                   <div className="mt-4 p-3 bg-muted/30 rounded-md">
-                    <p className="text-sm font-medium">Explanation:</p>
+                    <p className="text-sm font-medium">Correct Answer:</p>
                     <p className="text-sm">{question.explanation}</p>
                   </div>
                 )}
