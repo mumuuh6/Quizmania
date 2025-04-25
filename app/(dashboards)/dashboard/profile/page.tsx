@@ -9,24 +9,12 @@ import { DashboardHeader } from "../components/dashboard-header"
 import { DashboardShell } from "../components/dashboard-shell"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Switch } from "@/components/ui/switch"
-import { useQuery } from "@tanstack/react-query"
-import { useSession } from "next-auth/react"
-import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
+import { useDashboard } from "../DashboardContext"
 
 
 export default function ProfilePage() {
-    const axiosInstanceNormal = UseAxiosNormal();
-    const {data:session}=useSession();
-    const { data: userProfile, isLoading:profileloading ,error:profileError } = useQuery({
-        queryKey: ["userStats", session?.user?.email],
-        queryFn: async () => {
-          const res = await axiosInstanceNormal.get(`/signin/${session?.user?.email}`);
-          console.log(res.data.userInfo,"userProfile");
-          return res.data.userInfo;
-        },
-        enabled: !!session?.user?.email,
-      });
-
+    const {userProfile}=useDashboard()  
+    console.log(userProfile?.picture,"userProfile2")
   return (
     <DashboardShell>
       <DashboardHeader heading="Profile" text="Manage your account settings and preferences." />
@@ -49,7 +37,7 @@ export default function ProfilePage() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex flex-col items-center gap-4">
                   <Avatar className="h-32 w-32">
-                    <AvatarImage src={userProfile?.picture} alt="@username" />
+                    <AvatarImage src={userProfile?.picture} onError={() => console.log("Image failed to load!")} alt="@username" />
                     <AvatarFallback className="text-4xl">JD</AvatarFallback>
                   </Avatar>
                   <Button variant="outline" size="sm">
