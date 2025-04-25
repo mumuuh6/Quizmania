@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Timer, AlertCircle, AlertTriangle } from "lucide-react";
+import { Timer, AlertCircle, AlertTriangle, Divide } from "lucide-react";
 import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 import LottieLoader from '../../../public/loader.json';
 
@@ -39,23 +39,35 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [viewResult, setViewResult] = useState(false);
   const [viewQues, setViewQues] = useState([])
-  
+  const [teacherCreated, setTeacherCreated] = useState(false);
   
   
     useEffect(() => {
-    // Fetch quiz data from the API
-    axiosInstanceNormal
-      .get(`/get-quiz-set/${quizSetId}`)
-      .then((res) => {
-        const quizData = res.data?.parsedQuizData || [];
-        console.log("Quiz data fetched successfully:", quizData);
-        setQuestions(quizData);
-        setLoading(false);
-      })
-      .catch((error) => {
+    
+    const fetchQuizData =async()=>{
+      try {
+        const response = await axiosInstanceNormal.get(`/get-quiz-set/${quizSetId}`);
+        const quizData = response.data?.parsedQuizData || [];
+        if(!quizData.length){
+          const fallbackres=await axiosInstanceNormal.get(`/teacher/generate-quiz/${quizSetId}`);
+          const fallbackData = fallbackres.data?.parsedQuizData || [];
+          console.log("Fallback quiz data fetched successfully:", fallbackData);
+          setQuestions(fallbackData);
+          setTeacherCreated(true);
+          setLoading(false);
+        }
+        else{
+          console.log("Quiz data fetched successfully:", quizData);
+          setQuestions(quizData);
+          setLoading(false);
+        }
+      } catch (error) {
         console.error("Error fetching quiz data:", error);
         setLoading(false);
-      });
+      }
+    }
+    fetchQuizData();
+
 
     // Set up timer
     const timer = setInterval(() => {
@@ -98,6 +110,7 @@ export default function QuizPage() {
   const calculateScore = () => {
     const answers = questions.map((question, index) => ({
       question: question.question,
+      type: question.type,
       userAnswer: selectedAnswers[index] || null, // Use index instead of question.id
     }));
 
@@ -105,15 +118,17 @@ export default function QuizPage() {
     setQuizCompleted(true);
 
     const payload = {
+      user: session?.user?.email,
       id: quizSetId,
       answers: answers,
     };
 
-    console.log("Payload:", payload);
+    console.log("Payload:", JSON.stringify(payload));
     setLoading(true);
+    const endpoint=teacherCreated?`/answer/checking?teacherCreated=${teacherCreated}`:"/answer/checking";
 
     axiosInstanceNormal
-      .post("https://quiz-mania-iota.vercel.app/answer/checking", payload, {
+      .post(endpoint, payload, {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
@@ -190,7 +205,7 @@ export default function QuizPage() {
                 <Alert className=" ">
                   <AlertCircle className="h-4 w-4 text-blue-600" />
                   <AlertDescription className=" flex justify-center py-1">
-                    Keep practicing! You'll improve with more quizzes.
+                    Keep practicing! You will improve with more quizzes.
                   </AlertDescription>
                 </Alert>
               )}
@@ -214,30 +229,35 @@ export default function QuizPage() {
                     <p className="my-2"><span className=" text-md ">Question:{index+1}</span></p>
                     <p className="font-bold text-2xl">{ques.question}</p>
                     
-                    <div>
-                      <p className="mb-6"><span className="font-bold text-md"></span></p>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {ques.options.map((option, index) => {
-    const isSelected = ques.userAnswer === option;
-    const isCorrect = ques.answer === option;
-    
-    return (
-      <li
-        key={index}
-        className={`border-2 rounded-lg px-6 py-4 font-medium transition-colors 
-          ${isSelected && isCorrect ? 'border-green-500 shadow-[0px_0px_10px_0px_#008000]' : ''} 
-          ${isSelected && !isCorrect ? 'border-red-500 shadow-[0px_0px_10px_0px_#ff0000]' : ''}
-          ${!isSelected ? 'border-gray-700' : ''}
-        `}
-      >
-        {String.fromCharCode(65 + index)}. {option}
-      </li>
-    );
-  })}
-</ul>
+                    {ques.type === 'Multiple Choice' || ques.type === 'true or false' ? (
+          <div className="mt-4">
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {ques.options.map((option, optionIndex) => {
+                const isSelected = ques.userAnswer === option;
+                const isCorrect = ques.answer === option;
 
-                      
-                    </div>
+                return (
+                  <li
+                    key={optionIndex}
+                    className={`border-2 rounded-lg px-6 py-4 font-medium transition-colors
+                      ${isSelected && isCorrect ? 'border-green-500 shadow-[0px_0px_10px_0px_#008000]' : ''} 
+                      ${isSelected && !isCorrect ? 'border-red-500 shadow-[0px_0px_10px_0px_#ff0000]' : ''} 
+                      ${!isSelected ? 'border-gray-700' : ''}
+                    `}
+                  >
+                    {String.fromCharCode(65 + optionIndex)}. {option}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ) : null}
+        {ques.type === 'Short Answer'||ques.type === 'fill in the blank' ? (
+          <div className="mt-4">
+            <p className="text-xl font-medium">Your Answer: </p>
+            <p className="border-2 p-4 rounded-lg mt-2">{ques.userAnswer || "No answer provided."}</p>
+          </div>
+        ) : null}
                   </div>
                   <div className="mt-4">
                     {ques.userAnswer === ques.answer ? (
@@ -260,7 +280,6 @@ export default function QuizPage() {
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-
   return (
     <div className="container mx-auto py-10">
       <Card className="mx-auto max-w-2xl">
@@ -283,8 +302,11 @@ export default function QuizPage() {
         </CardHeader>
         <CardContent>
           <h3 className="text-xl font-medium mb-4">{currentQuestion.question}</h3>
-          <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
-            {currentQuestion.options.map((option: string,index) => (
+          {
+            currentQuestion?.type=='Multiple Choice'||currentQuestion?.type=="true or false"?(
+              <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
+            {
+            currentQuestion?.options?.map((option: string,index) => (
               <div key={option} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${selectedAnswers[currentQuestion.id] === option
                 ? "bg-primary/5 border-primary"
                 : "hover:bg-muted/50"
@@ -297,6 +319,30 @@ export default function QuizPage() {
               
             ))}
           </RadioGroup>
+            ):currentQuestion?.type === "Short Answer" ? (
+              <div>
+                <input
+                  type="text"
+                  value={selectedAnswers[currentQuestionIndex] || ""}
+                  onChange={(e) => handleAnswerSelect(currentQuestionIndex, e.target.value)}
+                  placeholder="Type your answer here"
+                  className="border p-4 rounded-lg w-full"
+                />
+              </div>
+            ) : currentQuestion?.type === "fill in the blank" ? (
+              <div>
+                <input
+                  type="text"
+                  value={selectedAnswers[currentQuestionIndex] || ""}
+                  onChange={(e) => handleAnswerSelect(currentQuestionIndex, e.target.value)}
+                  placeholder="fill in the blank"
+                  className="border p-4 rounded-lg w-full"
+                />
+              </div>
+            ) : (
+              <div>mumu</div>
+            )
+          }
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Previous</Button>
