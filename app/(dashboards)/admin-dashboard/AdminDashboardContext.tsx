@@ -5,25 +5,24 @@ import { useSession } from "next-auth/react";
 import UseAxiosNormal from "../../hook/(axoisSecureNormal)/axiosNormal";
 import BrainLoading from "../../components/brain-loading";
 
-interface DashboardContextType {
-  userStats: any;
+interface AdminDashboardContextType {
+  adminStats: any;
   userProfile:any;
 }
 
-const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
+const AdminDashboardContext = createContext<AdminDashboardContextType | undefined>(undefined);
 
-export const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
+export const AdminDashboardProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
   const axiosInstanceNormal = UseAxiosNormal();
 
-  const { data: userStats, isLoading, error } = useQuery({
-    queryKey: ["userStats", session?.user?.email],
+  const { data:adminStats, isLoading, error } = useQuery({
+    queryKey: ['adminStats'],
     queryFn: async () => {
-      const res = await axiosInstanceNormal.get(`/user/stats/${session?.user?.email}`);
-      return res.data;
-    },
-    enabled: !!session?.user?.email,
-  });
+      const res = await axiosInstanceNormal.get("/admin/stats")
+      return res.data
+    }
+  })
   const { data: userProfile, isLoading:profileloading ,error:profileError } = useQuery({
     queryKey: ["userProfile", session?.user?.email],
     queryFn: async () => {
@@ -37,16 +36,16 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   if (error||profileError) return <div>Error loading user stats</div>;
   
   return (
-    <DashboardContext.Provider value={{ userStats,userProfile}}>
+    <AdminDashboardContext.Provider value={{ adminStats,userProfile}}>
       {children}
-    </DashboardContext.Provider>
+    </AdminDashboardContext.Provider>
   );
 };
 
-export const useDashboard = () => {
-  const context = useContext(DashboardContext);
+export const useAdminDashboard = () => {
+  const context = useContext(AdminDashboardContext);
   if (!context) {
-    throw new Error("useDashboard must be used within a DashboardProvider");
+    throw new Error("useAdminDashboard must be used within a DashboardProvider");
   }
   return context;
 };
