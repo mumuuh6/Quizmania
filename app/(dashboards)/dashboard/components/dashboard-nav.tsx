@@ -31,11 +31,11 @@ const navItems: NavItem[] = [
     href: "/dashboard/performance",
     icon: TrendingUp,
   },
-  {
-    title: "Learning",
-    href: "/dashboard/learning",
-    icon: BookOpen,
-  },
+  // {
+  //   title: "Learning",
+  //   href: "/dashboard/learning",
+  //   icon: BookOpen,
+  // },
   {
     title: "Achievements",
     href: "/dashboard/achievements",
@@ -46,11 +46,11 @@ const navItems: NavItem[] = [
     href: "/dashboard/profile",
     icon: User,
   },
-  {
-    title: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
+  // {
+  //   title: "Settings",
+  //   href: "/dashboard/settings",
+  //   icon: Settings,
+  // },
 ]
 
 export function DashboardNav() {
