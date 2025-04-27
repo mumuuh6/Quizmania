@@ -73,7 +73,7 @@ const quizzes = [
 
 export default function TeacherQuizzesPage() {
   return (
-    <div className="container py-8">
+    <div className="container py-8 md:w-[95%] mx-auto">
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">My Quizzes</h1>
@@ -118,10 +118,7 @@ export default function TeacherQuizzesPage() {
                     <SelectItem value="hard">Hard</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" size="sm" className="h-9">
-                  <Filter className="mr-2 h-4 w-4" />
-                  More Filters
-                </Button>
+                
               </div>
             </div>
           </CardHeader>

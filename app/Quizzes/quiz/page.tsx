@@ -306,8 +306,8 @@ export default function QuizPage() {
             currentQuestion?.type=='Multiple Choice'||currentQuestion?.type=="true or false"?(
               <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
             {
-            currentQuestion?.options?.map((option: string,index) => (
-              <div key={option} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${selectedAnswers[currentQuestion.id] === option
+            currentQuestion?.options?.map((option: string,index:number) => (
+              <div key={index} className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${selectedAnswers[currentQuestion.id] === option
                 ? "bg-primary/5 border-primary"
                 : "hover:bg-muted/50"
                 }` 
