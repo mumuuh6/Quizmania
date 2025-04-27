@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 // Define protected routes
-const protectedRoutes = ["/dashboard", "/Quizzes"];
+const protectedRoutes = ["/dashboard", "/Quizzes","/teacher"];
 
 interface PrivateRouteProps {
   children: ReactNode;

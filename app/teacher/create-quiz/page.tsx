@@ -23,6 +23,8 @@ import axios from "axios"
 import { useSession } from "next-auth/react"
 import { timeLog } from "console"
 import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
+import GlassModal from "@/app/Glassmorphism/page"
+import { toast } from "react-toastify"
 
 // Question types
 type OptionType = {
@@ -148,7 +150,8 @@ export default function CreateQuizPage() {
   const [previewMode, setPreviewMode] = useState(false);
   const {data:session}=useSession();
   const [quizSetId, setQuizSetId] = useState<string | null>(null);
-  const axiosInstanceNormal=UseAxiosNormal()
+  const axiosInstanceNormal=UseAxiosNormal();
+  const [modalOpen, setmodalOpen] = useState(false);
   // Handle quiz metadata changes
   const handleQuizChange = (field: keyof QuizType, value: any) => {
     setQuiz((prev) => ({ ...prev, [field]: value }))
@@ -229,7 +232,33 @@ export default function CreateQuizPage() {
 
   // Handle form submission
   const handleSubmit = async(e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+    // Validate quiz data before submission
+    if (!quiz.topic) {
+      toast.error("Please enter a quiz topic.");
+      return;
+    }
+    
+    if (!quiz.category) {
+      toast.error("Please select a quiz category.");
+      return;
+    }
+    
+    if (!quiz.difficulty) {
+      toast.error("Please select a difficulty level.");
+      return;
+    }
+    
+    if (!quiz.timeLimit) {
+      toast.error("Please set a time limit for the quiz.");
+      return;
+    }
+    
+    if (quiz.questions.length < 2) {
+      toast.error("Please add at least two questions from the Questions tab.");
+      return;
+    }
+    
 
     // Here you would typically save the quiz to your backend
     console.log("Quiz to save:", quiz)
@@ -256,7 +285,7 @@ export default function CreateQuizPage() {
           question:text,
           answer:explanation,
           type: type,
-          options: type === "Multiple Choice" ? options?.map((option) => option.text) :["true","false"],
+          options: type === "Multiple Choice" ? options?.map((option) => option.text) :type === "true or false" ? ["true","false"] : "N/A",
           points:points,
           multipleCorrect:multipleCorrect,
         }
@@ -266,7 +295,8 @@ export default function CreateQuizPage() {
     try{
         const response= await axiosInstanceNormal.post('/teacher/generate-quiz',TeacherQuiz)
         console.log(response.data.result.insertedId);
-        router.push(`/Quizzes/quiz?quizSetId=${response.data.insertedQuiz._id}`)
+        setQuizSetId(response.data.insertedQuiz._id);
+        setmodalOpen(true);  
     }
     catch(error){
         console.error("Error saving quiz:", error)
@@ -320,7 +350,14 @@ export default function CreateQuizPage() {
               </Button>
             </div>
           </div>
-
+          {
+            modalOpen && (
+              <GlassModal
+              isOpen={modalOpen}
+              link={modalOpen ? `https://quizzmaniaa.vercel.app/Quizzes/quiz?quizSetId=${quizSetId}` : "https://quizzmaniaa.vercel.app/teacher/quizzes"}
+></GlassModal>
+            )
+          }
           {!previewMode ? (
             <Tabs defaultValue="details">
               <TabsList>
