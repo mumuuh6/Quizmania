@@ -7,7 +7,7 @@ import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 const axiosNormal = axios.create({
-  baseURL: `https://quiz-mania-iota.vercel.app`, // Use Next.js env variable convention
+  baseURL: `https://quiz-mania-backup.vercel.app`, // Use Next.js env variable convention
 });
 
 const UseAxiosNormal = () => {
