@@ -280,10 +280,11 @@ export default function CreateQuizPage() {
         const options = type === "Multiple Choice" ? (question as MCQQuestionType).options : [];
         const options2 =type === "true or false" ? (question as TrueFalseQuestionType).correct : [];
         const multipleCorrect = type === "Multiple Choice" ? (question as MCQQuestionType).multipleCorrect : undefined;
-
+        const acceptedans =type ==="Short Answer"? (question as ShortAnswerQuestionType).acceptableAnswers :[];
+        const blanks = type === "fill in the blank" ? (question as FillInTheBlankQuestionType).blanks : [];
         return{
           question:text,
-          answer:explanation,
+          answer:type === "Multiple Choice" ? explanation:type==="Short Answer"? acceptedans:type==="fill in the blank"?blanks.map(blank=>blank.answer):"N/A",
           type: type,
           options: type === "Multiple Choice" ? options?.map((option) => option.text) :type === "true or false" ? ["true","false"] : "N/A",
           points:points,
@@ -295,6 +296,7 @@ export default function CreateQuizPage() {
     try{
         const response= await axiosInstanceNormal.post('/teacher/generate-quiz',TeacherQuiz)
         console.log(response.data.result.insertedId);
+        
         setQuizSetId(response.data.insertedQuiz._id);
         setmodalOpen(true);  
     }
@@ -933,6 +935,7 @@ function FillBlankEditor({ question, updateQuestion }: FillBlankEditorProps) {
               <div className="flex-shrink-0 w-24 text-sm font-medium">Blank {index + 1}:</div>
 
               <Input
+                id="blankAnswer"
                 value={blank.answer}
                 onChange={(e) => updateBlankAnswer(blank.id, e.target.value)}
                 placeholder="Correct answer"
