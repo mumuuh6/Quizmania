@@ -12,10 +12,6 @@ import  {UserManagement}  from "./components/user-management"
 import { QuizManagement } from "./components/quiz-management"
 import { ReportsAnalytics } from "./components/reports-analytics"
 import { AdminSettings } from "./components/admin-setting"
-import { useState } from "react"
-import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
-import { useQuery } from "@tanstack/react-query"
-import BrainLoading from "@/app/components/brain-loading"
 import { useAdminDashboard } from "./AdminDashboardContext"
 
 export default function AdminDashboardContent() {

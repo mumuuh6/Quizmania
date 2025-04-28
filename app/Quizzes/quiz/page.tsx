@@ -24,7 +24,7 @@ export default function QuizPage() {
   const router = useRouter();
   const difficulty = searchParams.get("difficulty") || "easy";
   const subject = searchParams.get("topic") || "general-knowledge";
-  const quantity = Number.parseInt(searchParams.get("questions") || "5");
+  // const quantity = Number.parseInt(searchParams.get("questions") || "5");
   const timeLimit = Number.parseInt(searchParams.get("time") || "5") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,6 @@ export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [timeRemaining, setTimeRemaining] = useState(timeLimit);
-  const [quizData, setQuizData] = useState(null);
   const { data: session } = useSession();
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
@@ -135,7 +134,7 @@ export default function QuizPage() {
                   return toast.error(res.data.message);
                 }
         setScore(res.data.quizSet.correctQuizAnswer);
-        const combinedQuizData = res.data.quizSet.createdQuiz.parsedQuizData.map((question) => {
+        const combinedQuizData = res.data?.quizSet?.createdQuiz?.parsedQuizData?.map((question) => {
           // Find the answer object for this question from parsedQuizData.answers
           const answerData = res.data.quizSet.parsedQuizData.answers.find(
             (answer) => answer.question === question.question
@@ -334,7 +333,7 @@ export default function QuizPage() {
         <CardContent>
           <h3 className="text-xl font-medium mb-4">{currentQuestion.question}</h3>
           {
-            currentQuestion?.type=='Multiple Choice'||currentQuestion?.type=="true or false"?(
+            currentQuestion?.type=='Multiple Choice'||currentQuestion?.type=="true or false"||currentQuestion?.type=="True or False"?(
               <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
             {
             currentQuestion?.options?.map((option: string,index:number) => (
