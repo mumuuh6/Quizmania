@@ -1,9 +1,9 @@
 "use client";
-import { use, useState } from "react";
+import {  useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button"; // or use your button
 import { toast } from "react-toastify"; // optional for showing "Copied!" message
-import { on } from "events";
+
 import { useRouter } from "next/navigation";
 
 interface GlassModalProps {

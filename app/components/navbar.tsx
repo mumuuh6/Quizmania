@@ -48,13 +48,9 @@ const routes = [
   },
   {
     href: "/Quizzes",
-    label: "Quiz",
+    label: "Generate-Quiz",
     special: true,
-  },
-  {
-    href: "/teacher/create-quiz",
-    label: "Teacher Quiz",
-    special: true,
+    type: "quiz",
   },
 ];
 
@@ -124,8 +120,14 @@ export function Navbar() {
                     route.type == "dashboard"
                       ? checkRole == "admin"
                         ? "/admin-dashboard"
-                        : "/dashboard"
-                      : route.href
+                        : checkRole == "teacher"
+                          ?"/teacher"
+                        :"/dashboard"
+                    : route.type == "quiz"
+                      ? checkRole == "teacher"
+                        ? "/teacher/create-quiz"
+                        : "/Quizzes"
+                    : route.href
                   }
                   className={cn(
                     "text-sm font-medium transition-colors hover:text-primary",

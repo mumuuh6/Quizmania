@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState} from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Loader2, Sparkles, Save, Edit, RefreshCw, CheckCircle } from "lucide-react"
@@ -265,17 +265,10 @@ export default function AIQuizGeneratorPage() {
 
       updateQuestion(index, regeneratedQuestion)
 
-    //   toast({
-    //     title: "Question Regenerated",
-    //     description: "The question has been regenerated.",
-    //   })
-    } catch (error) {
+    toast.info("Question regenerated successfully!");
+    } catch (error:any) {
       console.error("Error regenerating question:", error)
-    //   toast({
-    //     title: "Regeneration Failed",
-    //     description: "There was an error regenerating the question. Please try again.",
-    //     variant: "destructive",
-    //   })
+    toast.error(error.message);
     }
   }
 
