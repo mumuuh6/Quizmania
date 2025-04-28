@@ -13,6 +13,7 @@ import LottieLoader from '../../../public/loader.json';
 
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 const Lottieplayer=dynamic(() => import("lottie-react"), { ssr: false });
 // const Lottieplayerv2=()=>{
 //   return <Lottieplayer animationData={LottieLoader} loop={true}></Lottieplayer>
@@ -26,7 +27,6 @@ export default function QuizPage() {
   const quantity = Number.parseInt(searchParams.get("questions") || "5");
   const timeLimit = Number.parseInt(searchParams.get("time") || "5") * 60;
   const quizSetId = searchParams.get("quizSetId") || "1";
-  console.log("Fromquizpage",difficulty);
   const [loading, setLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [questions, setQuestions] = useState<any[]>([]);
@@ -128,13 +128,31 @@ export default function QuizPage() {
     const endpoint=teacherCreated?`/answer/checking?teacherCreated=${teacherCreated}`:"/answer/checking";
 
     axiosInstanceNormal
-      .post(endpoint, payload, {
-        headers: { "Content-Type": "application/json" },
-      })
+      .post(endpoint, payload)
       .then((res) => {
         console.log("Score and answers submitted successfully:", res.data);
+                if(!res.data.status){
+                  return toast.error(res.data.message);
+                }
         setScore(res.data.quizSet.correctQuizAnswer);
-        setViewQues(res.data.quizSet.parsedQuizData)
+        const combinedQuizData = res.data.quizSet.createdQuiz.parsedQuizData.map((question) => {
+          // Find the answer object for this question from parsedQuizData.answers
+          const answerData = res.data.quizSet.parsedQuizData.answers.find(
+            (answer) => answer.question === question.question
+          );
+        
+          return {
+            type: question.type,
+            question: question.question,
+            options: question.options,
+            answer: question.answer, // correct answer from created quiz
+            status: answerData ? answerData.status : "", // status from user's answer
+            userAnswer: answerData ? answerData.userAnswer : "", // user's selected answer
+          };
+        });
+        
+        
+        setViewQues(teacherCreated ? combinedQuizData : res.data.quizSet.parsedQuizData);
         setLoading(false);
       })
       .catch((error) => {
@@ -230,11 +248,11 @@ export default function QuizPage() {
                     <p className="font-bold text-2xl">{ques.question}</p>
                     
                     {ques.type === 'Multiple Choice' || ques.type === 'true or false' ? (
-          <div className="mt-4">
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {ques.options.map((option, optionIndex) => {
-                const isSelected = ques.userAnswer === option;
-                const isCorrect = ques.answer === option;
+                      <div className="mt-4">
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {ques.options?.map((option, optionIndex) => {
+                          const isSelected = ques.userAnswer === option;
+                          const isCorrect = ques.answer === option;
 
                 return (
                   <li
@@ -259,15 +277,28 @@ export default function QuizPage() {
           </div>
         ) : null}
                   </div>
-                  <div className="mt-4">
-                    {ques.userAnswer === ques.answer ? (
-                      <span className="text-green-600 ">Your answer is Correct </span>
-                    ) : (
-                      
-                      <p className="flex flex-col "><span className="font-bold text-xl mb-2">Correct Answer is: {String.fromCharCode(65 + ques.options.indexOf(ques.answer))}</span> 
-                      <span className="text-red-600">Your Answer is Wrong</span></p>
-                    )}
-                  </div>
+                  {
+                    ques.type === "Multiple Choice" || ques.type === "true or false" ? 
+                    (<div className="mt-4">
+                      {ques.userAnswer === ques.answer ? (
+                        <span className="text-green-600 ">Your answer is Correct </span>
+                      ) : (
+                        
+                        <p className="flex flex-col "><span className="font-bold text-xl mb-2">Correct Answer is: {String.fromCharCode(65 + ques.options.indexOf(ques.answer))}</span> 
+                        <span className="text-red-600">Your Answer is Wrong</span></p>
+                      )}
+                    </div>):
+                    ques.type === "Short Answer"||ques.type === "fill in the blank"?(
+                      <div className="mt-4">
+                        {ques.status==="correct" ? (
+                          <span className="text-green-600 ">Your answer is Correct </span>
+                        ) : (
+                          <p className="flex flex-col "><span className="font-bold text-xl mb-2">Correct Answer is: {ques.answer}</span> 
+                          <span className="text-red-600">Your Answer is Wrong</span></p>
+                        )}
+                      </div>
+                    ):(<div>p</div>)
+                  }
 
                 </div>
               ))}
