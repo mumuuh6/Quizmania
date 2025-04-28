@@ -152,6 +152,7 @@ export default function CreateQuizPage() {
   const [quizSetId, setQuizSetId] = useState<string | null>(null);
   const axiosInstanceNormal=UseAxiosNormal();
   const [modalOpen, setmodalOpen] = useState(false);
+  
   // Handle quiz metadata changes
   const handleQuizChange = (field: keyof QuizType, value: any) => {
     setQuiz((prev) => ({ ...prev, [field]: value }))
@@ -296,7 +297,7 @@ export default function CreateQuizPage() {
     try{
         const response= await axiosInstanceNormal.post('/teacher/generate-quiz',TeacherQuiz)
         console.log(response.data.result.insertedId);
-        
+        console.log("Quiz saved successfully:", response.data.result);
         setQuizSetId(response.data.insertedQuiz._id);
         setmodalOpen(true);  
     }
@@ -310,7 +311,7 @@ export default function CreateQuizPage() {
     // Redirect to the quizzes list page
     //  router.push('/teacher/quizzes')
   }
-
+console.log("quiz",quiz)
   // Get the active question
   const getActiveQuestion = () => {
     return quiz.questions.find((q) => q.id === activeQuestion) || quiz.questions[0]
@@ -356,8 +357,8 @@ export default function CreateQuizPage() {
             modalOpen && (
               <GlassModal
               isOpen={modalOpen}
-              link={modalOpen ? `https://quizzmaniaa.vercel.app/Quizzes/quiz?quizSetId=${quizSetId}` : "https://quizzmaniaa.vercel.app/teacher/quizzes"}
-></GlassModal>
+              link={modalOpen ? `https://quizzmaniaa.vercel.app/Quizzes/quiz?topic=${quiz.topic}&&difficulty=${quiz.difficulty}&&time=${quiz.timeLimit}&&quizSetId=${quizSetId}` : "https://quizzmaniaa.vercel.app/teacher/quizzes"}
+              ></GlassModal>
             )
           }
           {!previewMode ? (
@@ -402,7 +403,7 @@ export default function CreateQuizPage() {
                           id="category"
                           value={quiz.category}
                           onChange={(e) => handleQuizChange("category", e.target.value)}
-                          placeholder="E.g., Math, Science, History"
+                          placeholder="E.g.Mixed,mcq,fill in the blank"
                         />
                       </div>
 
@@ -560,45 +561,7 @@ export default function CreateQuizPage() {
                 </div>
               </TabsContent>
 
-              {/* <TabsContent value="settings" className="space-y-4 pt-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Quiz Settings</CardTitle>
-                    <CardDescription>Configure how your quiz behaves</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label htmlFor="randomizeQuestions">Randomize Questions</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Present questions in a random order for each student
-                        </p>
-                      </div>
-                      <Switch
-                        id="randomizeQuestions"
-                        checked={quiz.randomizeQuestions}
-                        onCheckedChange={(checked) => handleQuizChange("randomizeQuestions", checked)}
-                      />
-                    </div>
-
-                    <Separator />
-
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label htmlFor="showResults">Show Results Immediately</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Show students their results as soon as they complete the quiz
-                        </p>
-                      </div>
-                      <Switch
-                        id="showResults"
-                        checked={quiz.showResults}
-                        onCheckedChange={(checked) => handleQuizChange("showResults", checked)}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent> */}
+              
             </Tabs>
           ) : (
             <QuizPreview quiz={quiz} />
