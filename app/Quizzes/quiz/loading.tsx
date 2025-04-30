@@ -1,5 +1,7 @@
+import BrainLoading from "@/app/components/brain-loading";
+
 export default function Loading() {
-    return <div>Loading...</div>
+    return <BrainLoading></BrainLoading>
   }
   
   

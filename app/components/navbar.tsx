@@ -40,12 +40,7 @@ const routes = [
     href: "/contact",
     label: "Contact",
   },
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-    special: true,
-    type: "dashboard",
-  },
+
   {
     href: "/Quizzes",
     label: "Generate-Quiz",
@@ -115,15 +110,9 @@ export function Navbar() {
               <PrivateRoute key={route.href}>
                 <Link
                   href={
-                    route.type == "dashboard"
-                      ? checkRole == "admin"
-                        ? "/admin-dashboard"
-                        : checkRole == "teacher"
-                          ?"/teacher"
-                        :"/dashboard"
-                    : route.type == "quiz"
+                     route.type == "quiz"
                       ? checkRole == "teacher"
-                        ? "/teacher/create-quiz"
+                        ? "/teacher"
                         : "/Quizzes"
                     : route.href
                   }
@@ -185,7 +174,13 @@ export function Navbar() {
                       className="cursor-pointer"
                       value="dashboard"
                     >
-                      <Link href="/dashboard">Dashboard</Link>
+                      <Link href={
+                        checkRole == "admin"
+                          ? "/admin-dashboard"
+                          : checkRole == "teacher"
+                            ?"/teacher/quizzes"
+                        :"/dashboard"
+                      }>Dashboard</Link>
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
