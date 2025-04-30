@@ -46,7 +46,7 @@ export default function AboutPage() {
                 </p>
                 <p>
                   We started with a simple idea: what if quizzes could adapt to
-                  each person's interests, knowledge level, and learning style?
+                  each person&apos;s interests, knowledge level, and learning style?
                   What if they could be both challenging and fun?
                 </p>
                 <p>
@@ -80,7 +80,7 @@ export default function AboutPage() {
                 <CheckCircle className="h-12 w-12 text-primary" />
                 <h3 className="mt-4 text-xl font-medium">Quality</h3>
                 <p className="mt-2 text-muted-foreground">
-                  We're committed to providing accurate, well-researched content
+                  We&apos;re committed to providing accurate, well-researched content
                   that truly helps you learn.
                 </p>
               </div>
@@ -127,13 +127,7 @@ export default function AboutPage() {
                   role: "Lead Developer",
                   bio: "Full-stack developer with a focus on AI and machine learning applications.",
                   image: "https://i.ibb.co.com/YBRJnfkZ/profilepick.jpg",
-                },
-                {
-                  name: "Abdur Rahman",
-                  role: "Marketing Manager",
-                  bio: "Digital marketing expert with a passion for education and technology.",
-                  image: "/placeholder.svg?height=300&width=300",
-                },
+                }
                 
               ].map((member, index) => (
                 <div

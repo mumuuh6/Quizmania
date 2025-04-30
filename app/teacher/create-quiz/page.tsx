@@ -48,7 +48,7 @@ type MCQQuestionType = BaseQuestionType & {
 }
 
 type TrueFalseQuestionType = BaseQuestionType & {
-  type: "true or false"
+  type: "True or False"
   correct: boolean
 }
 
@@ -102,7 +102,7 @@ const createEmptyMCQ = (): MCQQuestionType => ({
 const createEmptyTrueFalse = (): TrueFalseQuestionType => ({
   id: uuidv4(),
   text: "",
-  type: "true or false",
+  type: "True or False",
   points: 1,
   explanation: "",
   correct: true,
@@ -166,7 +166,7 @@ export default function CreateQuizPage() {
       case "Multiple Choice":
         newQuestion = createEmptyMCQ()
         break
-      case "true or false":
+      case "True or False":
         newQuestion = createEmptyTrueFalse()
         break
       case "fill in the blank":
@@ -267,7 +267,8 @@ export default function CreateQuizPage() {
     const TeacherQuiz={
       user:session?.user?.email,
 
-      quizCriteria:{
+      quizCriteria:
+      {
         topic:quiz.topic,
         difficulty:quiz.difficulty,
         quizType:quiz.category,
@@ -279,7 +280,7 @@ export default function CreateQuizPage() {
       parsedQuizData:quiz?.questions?.map((question) =>  {
         const { id, text, type, points, explanation } = question;
         const options = type === "Multiple Choice" ? (question as MCQQuestionType).options : [];
-        const options2 =type === "true or false" ? (question as TrueFalseQuestionType).correct : [];
+        const options2 =type === "True or False" ? (question as TrueFalseQuestionType).correct : [];
         const multipleCorrect = type === "Multiple Choice" ? (question as MCQQuestionType).multipleCorrect : undefined;
         const acceptedans =type ==="Short Answer"? (question as ShortAnswerQuestionType).acceptableAnswers :[];
         const blanks = type === "fill in the blank" ? (question as FillInTheBlankQuestionType).blanks : [];
@@ -287,13 +288,14 @@ export default function CreateQuizPage() {
           question:text,
           answer:type === "Multiple Choice" ? explanation:type==="Short Answer"? acceptedans:type==="fill in the blank"?blanks.map(blank=>blank.answer):"N/A",
           type: type,
-          options: type === "Multiple Choice" ? options?.map((option) => option.text) :type === "true or false" ? ["true","false"] : "N/A",
+          options: type === "Multiple Choice" ? options?.map((option) => option.text) :type === "True or False" ? ["true","false"] : "N/A",
           points:points,
           multipleCorrect:multipleCorrect,
         }
-      })
+      }),
+      quizCreatedType:'Manual Created',
     }
-    console.log("TeacherQuiz:", TeacherQuiz);
+    console.log("TeacherQuiz:", JSON.stringify(TeacherQuiz));
     try{
         const response= await axiosInstanceNormal.post('/teacher/generate-quiz',TeacherQuiz)
         console.log(response.data.result.insertedId);
@@ -324,7 +326,7 @@ console.log("quiz",quiz)
     switch (question.type) {
       case "Multiple Choice":
         return <MCQEditor question={question as MCQQuestionType} updateQuestion={updateQuestion} />
-      case "true or false":
+      case "True or False":
         return <TrueFalseEditor question={question as TrueFalseQuestionType} updateQuestion={updateQuestion} />
       case "fill in the blank":
         return <FillBlankEditor question={question as FillInTheBlankQuestionType} updateQuestion={updateQuestion} />
@@ -523,7 +525,7 @@ console.log("quiz",quiz)
                             <Button type="button" variant="outline" onClick={() => addQuestion("Multiple Choice")}>
                               Multiple Choice
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => addQuestion("true or false")}>
+                            <Button type="button" variant="outline" onClick={() => addQuestion("True or False")}>
                               True/False
                             </Button>
                             <Button type="button" variant="outline" onClick={() => addQuestion("fill in the blank")}>
@@ -1126,7 +1128,7 @@ function QuizPreview({ quiz }: QuizPreviewProps) {
                   </div>
                 )}
 
-                {question.type === "true or false" && (
+                {question.type === "True or False" && (
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <RadioGroup value={question.correct ? "true" : "false"}>

@@ -131,7 +131,9 @@ export default function QuizPage() {
       .then((res) => {
         console.log("Score and answers submitted successfully:", res.data);
                 if(!res.data.status){
-                  return toast.error(res.data.message);
+                   toast.error(res.data.message);
+                   router.push("/dashboard")
+                   return 
                 }
         setScore(res.data.quizSet.correctQuizAnswer);
         const combinedQuizData = res.data?.quizSet?.createdQuiz?.parsedQuizData?.map((question) => {
@@ -156,6 +158,7 @@ export default function QuizPage() {
       })
       .catch((error) => {
         console.error("Error submitting score and answers:", error);
+
         setLoading(false);
       });
   };
@@ -246,7 +249,7 @@ export default function QuizPage() {
                     <p className="my-2"><span className=" text-md ">Question:{index+1}</span></p>
                     <p className="font-bold text-2xl">{ques.question}</p>
                     
-                    {ques.type === 'Multiple Choice' || ques.type === 'true or false' ? (
+                    {ques.type === 'Multiple Choice' || ques.type ==="True or False" ? (
                       <div className="mt-4">
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {ques.options?.map((option, optionIndex) => {
@@ -269,7 +272,7 @@ export default function QuizPage() {
             </ul>
           </div>
         ) : null}
-        {ques.type === 'Short Answer'||ques.type === 'fill in the blank' ? (
+        {ques.type === 'Short Answer'||ques.type === 'fill in the blank'||ques.type ==="fill in the blanks" ? (
           <div className="mt-4">
             <p className="text-xl font-medium">Your Answer: </p>
             <p className="border-2 p-4 rounded-lg mt-2">{ques.userAnswer || "No answer provided."}</p>
@@ -277,7 +280,7 @@ export default function QuizPage() {
         ) : null}
                   </div>
                   {
-                    ques.type === "Multiple Choice" || ques.type === "true or false" ? 
+                    ques.type === "Multiple Choice" || ques.type === "True or False" ? 
                     (<div className="mt-4">
                       {ques.userAnswer === ques.answer ? (
                         <span className="text-green-600 ">Your answer is Correct </span>
@@ -287,7 +290,7 @@ export default function QuizPage() {
                         <span className="text-red-600">Your Answer is Wrong</span></p>
                       )}
                     </div>):
-                    ques.type === "Short Answer"||ques.type === "fill in the blank"?(
+                    ques.type === "Short Answer"||ques.type === "fill in the blank"  ||ques.type ==="fill in the blanks"?(
                       <div className="mt-4">
                         {ques.status==="correct" ? (
                           <span className="text-green-600 ">Your answer is Correct </span>
@@ -333,7 +336,7 @@ export default function QuizPage() {
         <CardContent>
           <h3 className="text-xl font-medium mb-4">{currentQuestion.question}</h3>
           {
-            currentQuestion?.type=='Multiple Choice'||currentQuestion?.type=="true or false"||currentQuestion?.type=="True or False"?(
+            currentQuestion?.type=='Multiple Choice'||currentQuestion?.type=="True or False"||currentQuestion?.type=="True or False"?(
               <RadioGroup value={selectedAnswers[currentQuestionIndex] || ""} onValueChange={(value) => handleAnswerSelect(currentQuestionIndex, value)}>
             {
             currentQuestion?.options?.map((option: string,index:number) => (
@@ -359,7 +362,7 @@ export default function QuizPage() {
                   className="border p-4 rounded-lg w-full"
                 />
               </div>
-            ) : currentQuestion?.type === "fill in the blank" ? (
+            ) : currentQuestion?.type === "fill in the blank"||currentQuestion?.type ==="fill in the blanks" ? (
               <div>
                 <input
                   type="text"
