@@ -20,9 +20,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
 import { toast } from "react-toastify"
+import GlassModal from "@/app/Glassmorphism/page"
 
 // Types for AI quiz generation
-type QuestionType = "Multiple Choice" | "true or false" | "fill in the blank" | "Short Answer"
+type QuestionType = "Multiple Choice" | "True or False" | "fill in the blanks" | "Short Answer"
 
 type GenerationParams = {
   topic: string
@@ -62,6 +63,8 @@ export default function AIQuizGeneratorPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [activeTab, setActiveTab] = useState<string>("parameters")
   const [editingQuestion, setEditingQuestion] = useState<number | null>(null)
+  const [quiz,setQuiz]=useState([]);
+  const [modal, setModal] = useState(false)
 
   // Create axios instance
   const axiosInstance = UseAxiosNormal();
@@ -73,7 +76,7 @@ export default function AIQuizGeneratorPage() {
     difficulty: "easy",
     questionCount: 5,
     timeLimit: 7,
-    questionTypes: ["Multiple Choice", "true or false","fill in the blank", "Short Answer"],
+    questionTypes: ["Multiple Choice", "True or False","fill in the blanks", "Short Answer"],
     includeExplanations: true,
   })
 
@@ -104,61 +107,53 @@ export default function AIQuizGeneratorPage() {
   // Generate quiz with AI
   const generateQuiz = async () => {
     if (!params.topic) {
-    //   toast({
-    //     title: "Topic Required",
-    //     description: "Please enter a topic for your quiz.",
-    //     variant: "destructive",
-    //   })
-    toast.error("Please enter a topic for your quiz.")
+    toast.error("Please enter a topic for your quiz.");
       return
     }
 
     setIsGenerating(true)
     setGeneratedQuiz(null)
-
+    const teacherAiCreated=
+    {
+      //add ai- before generate-quiz
+      user: session?.user?.email,
+      quizCriteria: {
+        topic: params.topic,
+        description: params.description,
+        difficulty: params.difficulty,
+        quantity: params.questionCount,
+        timeLimit: params.timeLimit,
+        quizType: params.questionTypes,
+        includeExplanations: params.includeExplanations,
+        created: new Date().toISOString(),
+      },
+      quizCreatedType:'AI Created',
+    }
+    console.log(JSON.stringify(teacherAiCreated))
     try {
       // This would be your actual API call to generate a quiz with AI
-      const response = await axiosInstance.post("/teacher/generate-quiz", {//add ai- before generate-quiz
-        user: session?.user?.email,
-        params: {
-          topic: params.topic,
-          description: params.description,
-          difficulty: params.difficulty,
-          quantity: params.questionCount,
-          timeLimit: params.timeLimit,
-          quizType: params.questionTypes,
-          includeExplanations: params.includeExplanations,
-        },
-      })
+      const response = await axiosInstance.post("/generate-quiz?teacherAiCreated=true",teacherAiCreated)
+      console.log("AI Quiz Generation Response:", response.data)
 
       // Simulate a response if your API isn't ready yet
       // In a real implementation, you'd use the actual response data
+      
+
+      // Mock response data for testing
       const mockQuiz: AIGeneratedQuiz = {
         topic: params.topic,
         description: params.description || `AI-generated quiz about ${params.topic}`,
         difficulty: params.difficulty,
         timeLimit: params.timeLimit,
-        questions: Array.from({ length: params.questionCount }, (_, i) => ({
-          id: `q-${i}`,
-          question: `Sample question ${i + 1} about ${params.topic}?`,
-          type: params.questionTypes[i % params.questionTypes.length],
-          options:
-            params.questionTypes[i % params.questionTypes.length] === "Multiple Choice"
-              ? ["Option A", "Option B", "Option C", "Option D"]
-              : params.questionTypes[i % params.questionTypes.length] === "true or false"
-                ? ["True", "False"]
-                : params.questionTypes[i % params.questionTypes.length] === "fill in the blank"
-                  ? ["___"]:params.questionTypes[i % params.questionTypes.length] === "Short Answer"
-                    ? ["___"]:undefined,
-          answer:
-            params.questionTypes[i % params.questionTypes.length] === "Multiple Choice"
-              ? "Option A"
-              : params.questionTypes[i % params.questionTypes.length] === "true or false"
-                ? "True"
-                : "Sample answer",
-          explanation: params.includeExplanations ? "This is a sample explanation for the correct answer." : undefined,
-          points: 1,
-        })),
+        questions: response.data.quizzes.map((quiz,i)=>({
+          id:`question-${i+1}`,
+          question: quiz.question ,
+          type: quiz.type,
+          options: quiz.options,
+          answer: quiz.answer,
+          explanation: quiz.explanation,
+          points: quiz.points,
+        }))
       }
 
       // Use the actual response data when your API is ready
@@ -206,21 +201,14 @@ export default function AIQuizGeneratorPage() {
 
       // Save the quiz to your backend
       const response = await axiosInstance.post("/teacher/generate-quiz", quizData)
+      setQuiz(response.data.result.insertedId)
+      setModal(true);
+    toast.success("Quiz saved successfully!")
 
-    //   toast({
-    //     title: "Quiz Saved",
-    //     description: "Your AI-generated quiz has been saved successfully.",
-    //   })
-
-      // Redirect to the quizzes list or the quiz detail page
-      router.push("/teacher/quizzes")
+      
     } catch (error) {
       console.error("Error saving quiz:", error)
-    //   toast({
-    //     title: "Save Failed",
-    //     description: "There was an error saving your quiz. Please try again.",
-    //     variant: "destructive",
-    //   })
+    toast.error("Error saving quiz. Please try again.")
     } finally {
       setIsSaving(false)
     }
@@ -328,7 +316,7 @@ export default function AIQuizGeneratorPage() {
                   <div className="space-y-2">
                     <Label htmlFor="difficulty">Difficulty Level</Label>
                     <Select value={params.difficulty} onValueChange={(value) => handleParamChange("difficulty", value)}>
-                      <SelectTrigger id="difficulty">
+                      <SelectTrigger id="difficulty" className="w-full">
                         <SelectValue placeholder="Select difficulty" />
                       </SelectTrigger>
                       <SelectContent>
@@ -369,7 +357,7 @@ export default function AIQuizGeneratorPage() {
                 <div className="space-y-2">
                   <Label>Question Types</Label>
                   <div className="flex flex-wrap gap-2 pt-2">
-                    {(["Multiple Choice", "true or false", "fill in the blank", "Short Answer"] as const).map(
+                    {(["Multiple Choice", "True or False", "fill in the blanks", "Short Answer"] as const).map(
                       (type) => (
                         <Badge
                           key={type}
@@ -440,7 +428,7 @@ export default function AIQuizGeneratorPage() {
                           <CardHeader>
                             <div className="flex justify-between items-start">
                               <CardTitle className="text-lg">Question {index + 1}</CardTitle>
-                              <div className="flex space-x-2">
+                              {/* <div className="flex space-x-2">
                                 <Button variant="outline" size="sm" onClick={() => regenerateQuestion(index)}>
                                   <RefreshCw className="h-4 w-4 mr-1" />
                                   Regenerate
@@ -449,7 +437,7 @@ export default function AIQuizGeneratorPage() {
                                   <Edit className="h-4 w-4 mr-1" />
                                   Edit
                                 </Button>
-                              </div>
+                              </div> */}
                             </div>
                             <Badge>{question.type}</Badge>
                           </CardHeader>
@@ -462,7 +450,7 @@ export default function AIQuizGeneratorPage() {
                                   <div
                                     key={optIndex}
                                     className={`p-3 rounded-md border ${
-                                      option === question.answer ? "border-green-500 bg-green-50" : "border-gray-200"
+                                      option === question.answer ? "border-green-500" : "border-gray-200"
                                     }`}
                                   >
                                     {option === question.answer && (
@@ -474,11 +462,11 @@ export default function AIQuizGeneratorPage() {
                               </div>
                             )}
 
-                            {question.type === "true or false" && (
+                            {question.type === "True or False" && (
                               <div className="flex space-x-4">
                                 <div
                                   className={`p-3 rounded-md border ${
-                                    question.answer === "True" ? "border-green-500 bg-green-50" : "border-gray-200"
+                                    question.answer === "True" ? "border-green-500 " : "border-gray-200"
                                   }`}
                                 >
                                   {question.answer === "True" && (
@@ -488,7 +476,7 @@ export default function AIQuizGeneratorPage() {
                                 </div>
                                 <div
                                   className={`p-3 rounded-md border ${
-                                    question.answer === "False" ? "border-green-500 bg-green-50" : "border-gray-200"
+                                    question.answer === "False" ? "border-green-500 " : "border-gray-200"
                                   }`}
                                 >
                                   {question.answer === "False" && (
@@ -499,7 +487,7 @@ export default function AIQuizGeneratorPage() {
                               </div>
                             )}
 
-                            {(question.type === "fill in the blank" || question.type === "Short Answer") && (
+                            {(question.type === "fill in the blanks" || question.type === "Short Answer") && (
                               <Alert>
                                 <AlertDescription>
                                   <strong>Answer:</strong> {question.answer}
@@ -539,6 +527,15 @@ export default function AIQuizGeneratorPage() {
               </Card>
             )}
           </TabsContent>
+          
+          {
+            modal && (
+              <GlassModal
+              isOpen={modal}
+              link={modal ? `https://quizzmaniaa.vercel.app/Quizzes/quiz?topic=${generatedQuiz.topic}&&difficulty=${generatedQuiz.difficulty}&&time=${generatedQuiz.timeLimit}&&quizSetId=${quiz}` : "https://quizzmaniaa.vercel.app/teacher/quizzes"}
+              ></GlassModal>
+            )
+          }
         </Tabs>
       </div>
     </div>
@@ -608,7 +605,7 @@ function QuestionEditor({ question, onSave, onCancel }: QuestionEditorProps) {
         </div>
       )}
 
-      {editedQuestion.type === "true or false" && (
+      {editedQuestion.type === "True or False" && (
         <div className="space-y-2">
           <Label>Correct Answer</Label>
           <div className="flex space-x-4">
@@ -630,7 +627,7 @@ function QuestionEditor({ question, onSave, onCancel }: QuestionEditorProps) {
         </div>
       )}
 
-      {(editedQuestion.type === "fill in the blank" || editedQuestion.type === "Short Answer") && (
+      {(editedQuestion.type === "fill in the blanks" || editedQuestion.type === "Short Answer") && (
         <div className="space-y-2">
           <Label htmlFor="answer">Correct Answer</Label>
           <Input id="answer" value={editedQuestion.answer} onChange={(e) => updateField("answer", e.target.value)} />

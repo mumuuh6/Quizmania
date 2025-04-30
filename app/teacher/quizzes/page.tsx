@@ -1,5 +1,6 @@
+"use client"
 import Link from "next/link"
-import { PlusCircle, Search, Filter, Eye, Edit, Trash2, MoreHorizontal } from "lucide-react"
+import { PlusCircle, Search,  Eye, Edit, Trash2, MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -16,62 +17,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
+import { useQuery } from "@tanstack/react-query"
+import { useSession } from "next-auth/react"
+import { useState } from "react"
+import BrainLoading from "@/app/components/brain-loading"
 
-// Sample data for the quizzes
-const quizzes = [
-  {
-    id: "q1",
-    title: "Mathematics Fundamentals",
-    category: "Math",
-    questions: 20,
-    difficulty: "easy",
-    created: "2023-06-15",
-    status: "published",
-    attempts: 245,
-  },
-  {
-    id: "q2",
-    title: "World Geography",
-    category: "Geography",
-    questions: 25,
-    difficulty: "medium",
-    created: "2023-06-12",
-    status: "published",
-    attempts: 187,
-  },
-  {
-    id: "q3",
-    title: "Computer Science Fundamentals",
-    category: "Computer",
-    questions: 30,
-    difficulty: "hard",
-    created: "2023-06-08",
-    status: "draft",
-    attempts: 0,
-  },
-  {
-    id: "q4",
-    title: "English Literature",
-    category: "English",
-    questions: 20,
-    difficulty: "medium",
-    created: "2023-06-05",
-    status: "published",
-    attempts: 156,
-  },
-  {
-    id: "q5",
-    title: "World History",
-    category: "History",
-    questions: 25,
-    difficulty: "medium",
-    created: "2023-06-01",
-    status: "archived",
-    attempts: 98,
-  },
-]
 
 export default function TeacherQuizzesPage() {
+  const { data: session, status } = useSession();
+  const [quizzes, setQuizzes] = useState([])
+  const axiosInstanceNormal=UseAxiosNormal();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["quizzes"],
+    queryFn: async () => {
+      const res = await axiosInstanceNormal.get(`/teacher/stats?teacherEmail=${session?.user?.email}`);
+      console.log("Quizzes Data:", res.data);
+      setQuizzes(res.data.withAttempts)
+      return res.data;
+    },
+    enabled: !!session?.user?.email,
+  });
+  
+  if (isLoading) return <BrainLoading></BrainLoading>;
+  console.log("Quiz List:", quizzes);
   return (
     <div className="container py-8 md:w-[95%] mx-auto">
       <div className="flex flex-col space-y-6">
@@ -93,7 +62,7 @@ export default function TeacherQuizzesPage() {
                 <Input placeholder="Search quizzes..." className="h-9 md:w-[300px]" />
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Select defaultValue="all">
+                {/* <Select defaultValue="all">
                   <SelectTrigger className="h-9 w-[130px]">
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
@@ -106,7 +75,7 @@ export default function TeacherQuizzesPage() {
                     <SelectItem value="geography">Geography</SelectItem>
                     <SelectItem value="computer">Computer</SelectItem>
                   </SelectContent>
-                </Select>
+                </Select> */}
                 <Select defaultValue="all">
                   <SelectTrigger className="h-9 w-[130px]">
                     <SelectValue placeholder="Difficulty" />
@@ -126,13 +95,13 @@ export default function TeacherQuizzesPage() {
             <Tabs defaultValue="all" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="all">All Quizzes ({quizzes.length})</TabsTrigger>
-                <TabsTrigger value="published">
+                {/* <TabsTrigger value="published">
                   Published ({quizzes.filter((q) => q.status === "published").length})
                 </TabsTrigger>
                 <TabsTrigger value="draft">Drafts ({quizzes.filter((q) => q.status === "draft").length})</TabsTrigger>
                 <TabsTrigger value="archived">
                   Archived ({quizzes.filter((q) => q.status === "archived").length})
-                </TabsTrigger>
+                </TabsTrigger> */}
               </TabsList>
 
               <TabsContent value="all" className="space-y-4">
@@ -142,51 +111,42 @@ export default function TeacherQuizzesPage() {
                       <TableRow>
                         <TableHead>Title</TableHead>
                         <TableHead>Category</TableHead>
-                        <TableHead>Status</TableHead>
+                        
                         <TableHead>Questions</TableHead>
                         <TableHead>Difficulty</TableHead>
                         <TableHead>Created</TableHead>
                         <TableHead>Attempts</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        {/* <TableHead className="text-right">Actions</TableHead> */}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {quizzes.map((quiz) => (
-                        <TableRow key={quiz.id}>
-                          <TableCell className="font-medium">{quiz.title}</TableCell>
-                          <TableCell>{quiz.category}</TableCell>
+                        <TableRow key={quiz._id}>
+                          <TableCell className="font-medium">{quiz.quizCriteria.topic}</TableCell>
+                          <TableCell>{Array.isArray(quiz.quizCriteria.quizType)
+  ? quiz.quizCriteria.quizType.join(", ")
+  : quiz.quizCriteria.quizType}
+</TableCell>
+                          
+                          <TableCell>{quiz.quizCriteria.quantity}</TableCell>
                           <TableCell>
                             <Badge
                               variant={
-                                quiz.status === "published"
-                                  ? "default"
-                                  : quiz.status === "draft"
-                                    ? "secondary"
-                                    : "outline"
-                              }
-                              className="capitalize"
-                            >
-                              {quiz.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{quiz.questions}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                quiz.difficulty === "easy"
+                                quiz.quizCriteria.difficulty === "easy"
                                   ? "outline"
-                                  : quiz.difficulty === "medium"
+                                  : quiz.quizCriteria.difficulty === "medium"
                                     ? "secondary"
                                     : "default"
                               }
                               className="capitalize"
                             >
-                              {quiz.difficulty}
+                              {quiz.quizCriteria.difficulty}
                             </Badge>
                           </TableCell>
-                          <TableCell>{quiz.created}</TableCell>
-                          <TableCell>{quiz.attempts}</TableCell>
-                          <TableCell className="text-right">
+                          <TableCell>{new Date(quiz.quizCriteria.created).toLocaleDateString()}</TableCell>
+                          <TableCell>{quiz.totalAttempt
+                          }</TableCell>
+                          {/* <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">
@@ -211,7 +171,7 @@ export default function TeacherQuizzesPage() {
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       ))}
                     </TableBody>
