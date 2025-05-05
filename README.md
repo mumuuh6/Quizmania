@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QUIZMANIA - AI-Powered Quiz App (Frontend)
+
+Welcome to the **QUIZMANIA** frontend repository - an intelligent, AI-driven quiz platform designed to deliver personalized and adaptive quizzes with a smooth and engaging user experience.
+
+---
+
+## Project Overview
+
+QUIZMANIA is an educational quiz application that dynamically generates quizzes using AI, adapts difficulty based on user performance, and provides real-time feedback and analytics. The frontend is built with modern web technologies to ensure responsiveness, usability, and seamless interaction.
+
+---
+
+## Features
+
+- Dynamic AI-generated quizzes on various subjects (Math, Science, History, Programming, etc.)
+- Adaptive difficulty adjustment based on past user performance
+- Multiple question formats: Multiple Choice (MCQ), True/False, Fill-in-the-Blanks
+- User authentication with email/password and third-party providers (Google, GitHub)
+- User dashboard with quiz history, scores, and progress analytics
+- Gamification elements: reward points, badges, streak tracking, and challenges
+- Flashcards for pre-quiz review
+- Timer-based quizzes and self-assessment options
+- Responsive UI built with Next.js, React, TypeScript, ShadCN UI, and Tailwind CSS
+
+---
+
+## Technology Stack
+
+- **Framework:** Next.js (with server-side rendering and API routes)
+- **UI Library:** React.js with ShadCN UI components and Tailwind CSS for styling
+- **Language:** TypeScript
+- **Authentication:** NextAuth.js or Firebase Authentication integration
+- **Deployment:** Vercel
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
+- Node.js (v16+ recommended)
+- npm or yarn package manager
+
+### Installation
+
+git clone <frontend-repo-url>
+cd quizmania-frontend
+npm install
+
+text
+
+### Running Locally
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+text
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) to view the app in the browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `/app` - Main Next.js app folder with pages and components
+- `/lib` - Utility functions and constants
+- `/components` - Reusable UI components
+- `/styles` - Tailwind CSS and custom styles
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+- Select quiz topics and difficulty levels
+- Take quizzes with AI-generated questions
+- View real-time feedback and explanations
+- Track progress and earn badges
+- Participate in challenges and timed quizzes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Contributions are welcome! Please open issues or submit pull requests for bug fixes and feature enhancements.
+
+---
+
+## License
+
+This project is licensed under the MIT License.
