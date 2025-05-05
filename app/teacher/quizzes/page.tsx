@@ -1,14 +1,34 @@
-"use client"
-import Link from "next/link"
-import { PlusCircle, Search,  Eye, Edit, Trash2, MoreHorizontal } from "lucide-react"
+"use client";
+import Link from "next/link";
+import {
+  PlusCircle,
+  Search,
+  Eye,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,29 +36,47 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal"
-import { useQuery } from "@tanstack/react-query"
-import { useSession } from "next-auth/react"
-import { useState } from "react"
-import BrainLoading from "@/app/components/brain-loading"
-
+} from "@/components/ui/dropdown-menu";
+import UseAxiosNormal from "@/app/hook/(axoisSecureNormal)/axiosNormal";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import BrainLoading from "@/app/components/brain-loading";
+import UseUser from "@/app/hook/UseUser/UseUser";
+import { useRouter } from "next/navigation";
 
 export default function TeacherQuizzesPage() {
   const { data: session, status } = useSession();
-  const [quizzes, setQuizzes] = useState([])
-  const axiosInstanceNormal=UseAxiosNormal();
+  const [quizzes, setQuizzes] = useState([]);
+  const axiosInstanceNormal = UseAxiosNormal();
+  const { userInfo, userInfoLoading } = UseUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!userInfoLoading) {
+      if (!userInfo || userInfo.role !== "teacher") {
+        if (userInfo.role == "user") {
+          router.push("/dashboard");
+        }
+        if (userInfo.role == "admin") {
+          router.push("/admin-dashboard");
+        }
+      }
+    }
+  }, [userInfo, userInfoLoading, router]);
   const { data, isLoading, error } = useQuery({
     queryKey: ["quizzes"],
     queryFn: async () => {
-      const res = await axiosInstanceNormal.get(`/teacher/stats?teacherEmail=${session?.user?.email}`);
+      const res = await axiosInstanceNormal.get(
+        `/teacher/stats?teacherEmail=${session?.user?.email}`
+      );
       console.log("Quizzes Data:", res.data);
-      setQuizzes(res.data.withAttempts)
+      setQuizzes(res.data.withAttempts);
       return res.data;
     },
     enabled: !!session?.user?.email,
   });
-  
+
   if (isLoading) return <BrainLoading></BrainLoading>;
   console.log("Quiz List:", quizzes);
   return (
@@ -59,7 +97,10 @@ export default function TeacherQuizzesPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-2 w-full md:w-auto">
                 <Search className="h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search quizzes..." className="h-9 md:w-[300px]" />
+                <Input
+                  placeholder="Search quizzes..."
+                  className="h-9 md:w-[300px]"
+                />
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 {/* <Select defaultValue="all">
@@ -87,14 +128,15 @@ export default function TeacherQuizzesPage() {
                     <SelectItem value="hard">Hard</SelectItem>
                   </SelectContent>
                 </Select>
-                
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="all">All Quizzes ({quizzes.length})</TabsTrigger>
+                <TabsTrigger value="all">
+                  All Quizzes ({quizzes.length})
+                </TabsTrigger>
                 {/* <TabsTrigger value="published">
                   Published ({quizzes.filter((q) => q.status === "published").length})
                 </TabsTrigger>
@@ -111,7 +153,7 @@ export default function TeacherQuizzesPage() {
                       <TableRow>
                         <TableHead>Title</TableHead>
                         <TableHead>Category</TableHead>
-                        
+
                         <TableHead>Questions</TableHead>
                         <TableHead>Difficulty</TableHead>
                         <TableHead>Created</TableHead>
@@ -122,12 +164,15 @@ export default function TeacherQuizzesPage() {
                     <TableBody>
                       {quizzes.map((quiz) => (
                         <TableRow key={quiz._id}>
-                          <TableCell className="font-medium">{quiz.quizCriteria.topic}</TableCell>
-                          <TableCell>{Array.isArray(quiz.quizCriteria.quizType)
-  ? quiz.quizCriteria.quizType.join(", ")
-  : quiz.quizCriteria.quizType}
-</TableCell>
-                          
+                          <TableCell className="font-medium">
+                            {quiz.quizCriteria.topic}
+                          </TableCell>
+                          <TableCell>
+                            {Array.isArray(quiz.quizCriteria.quizType)
+                              ? quiz.quizCriteria.quizType.join(", ")
+                              : quiz.quizCriteria.quizType}
+                          </TableCell>
+
                           <TableCell>{quiz.quizCriteria.quantity}</TableCell>
                           <TableCell>
                             <Badge
@@ -135,17 +180,19 @@ export default function TeacherQuizzesPage() {
                                 quiz.quizCriteria.difficulty === "easy"
                                   ? "outline"
                                   : quiz.quizCriteria.difficulty === "medium"
-                                    ? "secondary"
-                                    : "default"
+                                  ? "secondary"
+                                  : "default"
                               }
-                              className="capitalize"
-                            >
+                              className="capitalize">
                               {quiz.quizCriteria.difficulty}
                             </Badge>
                           </TableCell>
-                          <TableCell>{new Date(quiz.quizCriteria.created).toLocaleDateString()}</TableCell>
-                          <TableCell>{quiz.totalAttempt
-                          }</TableCell>
+                          <TableCell>
+                            {new Date(
+                              quiz.quizCriteria.created
+                            ).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>{quiz.totalAttempt}</TableCell>
                           {/* <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -198,7 +245,9 @@ export default function TeacherQuizzesPage() {
                         .filter((quiz) => quiz.status === "published")
                         .map((quiz) => (
                           <TableRow key={quiz.id}>
-                            <TableCell className="font-medium">{quiz.title}</TableCell>
+                            <TableCell className="font-medium">
+                              {quiz.title}
+                            </TableCell>
                             <TableCell>{quiz.category}</TableCell>
                             <TableCell>{quiz.questions}</TableCell>
                             <TableCell>
@@ -207,11 +256,10 @@ export default function TeacherQuizzesPage() {
                                   quiz.difficulty === "easy"
                                     ? "outline"
                                     : quiz.difficulty === "medium"
-                                      ? "secondary"
-                                      : "default"
+                                    ? "secondary"
+                                    : "default"
                                 }
-                                className="capitalize"
-                              >
+                                className="capitalize">
                                 {quiz.difficulty}
                               </Badge>
                             </TableCell>
@@ -248,7 +296,9 @@ export default function TeacherQuizzesPage() {
                         .filter((quiz) => quiz.status === "draft")
                         .map((quiz) => (
                           <TableRow key={quiz.id}>
-                            <TableCell className="font-medium">{quiz.title}</TableCell>
+                            <TableCell className="font-medium">
+                              {quiz.title}
+                            </TableCell>
                             <TableCell>{quiz.category}</TableCell>
                             <TableCell>{quiz.questions}</TableCell>
                             <TableCell>
@@ -257,11 +307,10 @@ export default function TeacherQuizzesPage() {
                                   quiz.difficulty === "easy"
                                     ? "outline"
                                     : quiz.difficulty === "medium"
-                                      ? "secondary"
-                                      : "default"
+                                    ? "secondary"
+                                    : "default"
                                 }
-                                className="capitalize"
-                              >
+                                className="capitalize">
                                 {quiz.difficulty}
                               </Badge>
                             </TableCell>
@@ -298,7 +347,9 @@ export default function TeacherQuizzesPage() {
                         .filter((quiz) => quiz.status === "archived")
                         .map((quiz) => (
                           <TableRow key={quiz.id}>
-                            <TableCell className="font-medium">{quiz.title}</TableCell>
+                            <TableCell className="font-medium">
+                              {quiz.title}
+                            </TableCell>
                             <TableCell>{quiz.category}</TableCell>
                             <TableCell>{quiz.questions}</TableCell>
                             <TableCell>
@@ -307,11 +358,10 @@ export default function TeacherQuizzesPage() {
                                   quiz.difficulty === "easy"
                                     ? "outline"
                                     : quiz.difficulty === "medium"
-                                      ? "secondary"
-                                      : "default"
+                                    ? "secondary"
+                                    : "default"
                                 }
-                                className="capitalize"
-                              >
+                                className="capitalize">
                                 {quiz.difficulty}
                               </Badge>
                             </TableCell>
@@ -334,5 +384,5 @@ export default function TeacherQuizzesPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
