@@ -6,13 +6,14 @@ const UseUser = () => {
   const { data: session, status } = useSession();
   const axiosInstanceNormal = UseAxiosNormal();
 
-  const { data: userInfo, isLoading: userInfoLoading } = useQuery({
-    queryKey: ["user", session?.user?.email],
+  const { data: userInfo = {}, isLoading: userInfoLoading } = useQuery({
+    queryKey: ["userInfo", session?.user?.email],
+    enabled: !!session?.user?.email,
     queryFn: async () => {
       const res = await axiosInstanceNormal.get(
         `/signin/${session?.user?.email}`
       );
-      return res.data.userInfo;
+      return res.data.userInfo || {};
     },
   });
 

@@ -35,7 +35,9 @@ export default function DashboardPage() {
   //   enabled: !!session?.user?.email,
   // });
 
-  if (userInfoLoading) return <BrainLoading />;
+  if (userInfoLoading || !userInfo || userInfo.role !== "user") {
+    return <BrainLoading />; // or just return null;
+  }
 
   return (
     <DashboardProvider>
