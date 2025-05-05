@@ -77,7 +77,9 @@ export default function TeacherQuizzesPage() {
     enabled: !!session?.user?.email,
   });
 
-  if (isLoading) return <BrainLoading></BrainLoading>;
+  if (userInfoLoading || !userInfo || userInfo.role !== "teacher") {
+    return <BrainLoading />; // or just return null;
+  }
   console.log("Quiz List:", quizzes);
   return (
     <div className="container py-8 md:w-[95%] mx-auto">
@@ -135,7 +137,7 @@ export default function TeacherQuizzesPage() {
             <Tabs defaultValue="all" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="all">
-                  All Quizzes ({quizzes.length})
+                  All Quizzes ({quizzes?.length})
                 </TabsTrigger>
                 {/* <TabsTrigger value="published">
                   Published ({quizzes.filter((q) => q.status === "published").length})
@@ -162,38 +164,39 @@ export default function TeacherQuizzesPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {quizzes.map((quiz) => (
-                        <TableRow key={quiz._id}>
-                          <TableCell className="font-medium">
-                            {quiz.quizCriteria.topic}
-                          </TableCell>
-                          <TableCell>
-                            {Array.isArray(quiz.quizCriteria.quizType)
-                              ? quiz.quizCriteria.quizType.join(", ")
-                              : quiz.quizCriteria.quizType}
-                          </TableCell>
+                      {quizzes &&
+                        quizzes.map((quiz) => (
+                          <TableRow key={quiz._id}>
+                            <TableCell className="font-medium">
+                              {quiz.quizCriteria.topic}
+                            </TableCell>
+                            <TableCell>
+                              {Array.isArray(quiz.quizCriteria.quizType)
+                                ? quiz.quizCriteria.quizType.join(", ")
+                                : quiz.quizCriteria.quizType}
+                            </TableCell>
 
-                          <TableCell>{quiz.quizCriteria.quantity}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                quiz.quizCriteria.difficulty === "easy"
-                                  ? "outline"
-                                  : quiz.quizCriteria.difficulty === "medium"
-                                  ? "secondary"
-                                  : "default"
-                              }
-                              className="capitalize">
-                              {quiz.quizCriteria.difficulty}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {new Date(
-                              quiz.quizCriteria.created
-                            ).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>{quiz.totalAttempt}</TableCell>
-                          {/* <TableCell className="text-right">
+                            <TableCell>{quiz.quizCriteria.quantity}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  quiz.quizCriteria.difficulty === "easy"
+                                    ? "outline"
+                                    : quiz.quizCriteria.difficulty === "medium"
+                                    ? "secondary"
+                                    : "default"
+                                }
+                                className="capitalize">
+                                {quiz.quizCriteria.difficulty}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(
+                                quiz.quizCriteria.created
+                              ).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>{quiz.totalAttempt}</TableCell>
+                            {/* <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">
@@ -219,8 +222,8 @@ export default function TeacherQuizzesPage() {
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell> */}
-                        </TableRow>
-                      ))}
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -241,38 +244,39 @@ export default function TeacherQuizzesPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {quizzes
-                        .filter((quiz) => quiz.status === "published")
-                        .map((quiz) => (
-                          <TableRow key={quiz.id}>
-                            <TableCell className="font-medium">
-                              {quiz.title}
-                            </TableCell>
-                            <TableCell>{quiz.category}</TableCell>
-                            <TableCell>{quiz.questions}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  quiz.difficulty === "easy"
-                                    ? "outline"
-                                    : quiz.difficulty === "medium"
-                                    ? "secondary"
-                                    : "default"
-                                }
-                                className="capitalize">
-                                {quiz.difficulty}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{quiz.created}</TableCell>
-                            <TableCell>{quiz.attempts}</TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Actions</span>
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                      {quizzes &&
+                        quizzes
+                          .filter((quiz) => quiz.status === "published")
+                          .map((quiz) => (
+                            <TableRow key={quiz.id}>
+                              <TableCell className="font-medium">
+                                {quiz.title}
+                              </TableCell>
+                              <TableCell>{quiz.category}</TableCell>
+                              <TableCell>{quiz.questions}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    quiz.difficulty === "easy"
+                                      ? "outline"
+                                      : quiz.difficulty === "medium"
+                                      ? "secondary"
+                                      : "default"
+                                  }
+                                  className="capitalize">
+                                  {quiz.difficulty}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{quiz.created}</TableCell>
+                              <TableCell>{quiz.attempts}</TableCell>
+                              <TableCell className="text-right">
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Actions</span>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -292,37 +296,38 @@ export default function TeacherQuizzesPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {quizzes
-                        .filter((quiz) => quiz.status === "draft")
-                        .map((quiz) => (
-                          <TableRow key={quiz.id}>
-                            <TableCell className="font-medium">
-                              {quiz.title}
-                            </TableCell>
-                            <TableCell>{quiz.category}</TableCell>
-                            <TableCell>{quiz.questions}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  quiz.difficulty === "easy"
-                                    ? "outline"
-                                    : quiz.difficulty === "medium"
-                                    ? "secondary"
-                                    : "default"
-                                }
-                                className="capitalize">
-                                {quiz.difficulty}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{quiz.created}</TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Actions</span>
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                      {quizzes &&
+                        quizzes
+                          .filter((quiz) => quiz.status === "draft")
+                          .map((quiz) => (
+                            <TableRow key={quiz.id}>
+                              <TableCell className="font-medium">
+                                {quiz.title}
+                              </TableCell>
+                              <TableCell>{quiz.category}</TableCell>
+                              <TableCell>{quiz.questions}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    quiz.difficulty === "easy"
+                                      ? "outline"
+                                      : quiz.difficulty === "medium"
+                                      ? "secondary"
+                                      : "default"
+                                  }
+                                  className="capitalize">
+                                  {quiz.difficulty}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{quiz.created}</TableCell>
+                              <TableCell className="text-right">
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Actions</span>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -343,38 +348,39 @@ export default function TeacherQuizzesPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {quizzes
-                        .filter((quiz) => quiz.status === "archived")
-                        .map((quiz) => (
-                          <TableRow key={quiz.id}>
-                            <TableCell className="font-medium">
-                              {quiz.title}
-                            </TableCell>
-                            <TableCell>{quiz.category}</TableCell>
-                            <TableCell>{quiz.questions}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  quiz.difficulty === "easy"
-                                    ? "outline"
-                                    : quiz.difficulty === "medium"
-                                    ? "secondary"
-                                    : "default"
-                                }
-                                className="capitalize">
-                                {quiz.difficulty}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{quiz.created}</TableCell>
-                            <TableCell>{quiz.created}</TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Actions</span>
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                      {quizzes &&
+                        quizzes
+                          .filter((quiz) => quiz.status === "archived")
+                          .map((quiz) => (
+                            <TableRow key={quiz.id}>
+                              <TableCell className="font-medium">
+                                {quiz.title}
+                              </TableCell>
+                              <TableCell>{quiz.category}</TableCell>
+                              <TableCell>{quiz.questions}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    quiz.difficulty === "easy"
+                                      ? "outline"
+                                      : quiz.difficulty === "medium"
+                                      ? "secondary"
+                                      : "default"
+                                  }
+                                  className="capitalize">
+                                  {quiz.difficulty}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{quiz.created}</TableCell>
+                              <TableCell>{quiz.created}</TableCell>
+                              <TableCell className="text-right">
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Actions</span>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                     </TableBody>
                   </Table>
                 </div>
